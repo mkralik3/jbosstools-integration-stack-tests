@@ -112,6 +112,25 @@ public class TableEditor extends AbstractModelEditor {
 	}	
 	
 	/**
+	 * Sets specified selection into specified cell of table.
+	 * Note: row, column index starts from 0.
+	 */
+	public void setCellCCombo(int rowIndex, int columnIndex, String selection){
+		new DefaultTable().getItem(rowIndex).doubleClick(columnIndex);
+		new DefaultCCombo(new CellEditor(new DefaultTable().getItem(rowIndex), columnIndex)).setSelection(selection);
+		KeyboardFactory.getKeyboard().type(KeyEvent.VK_TAB);
+		AbstractWait.sleep(TimePeriod.SHORT);
+	}
+	
+	/**
+	 * Sets specified selection into specified cell of table.
+	 * Note: row index starts from 0.
+	 */
+	public void setCellCCombo(int rowIndex, String columnName, String selection){
+		setCellCCombo(rowIndex, new DefaultTable().getHeaderIndex(columnName), selection);
+	}
+	
+	/**
 	 * Sets specified text into specified cell of table via Properties view.
 	 * Note: row index starts from 0.
 	 */
@@ -129,6 +148,40 @@ public class TableEditor extends AbstractModelEditor {
 		new DefaultTable().getItem(firstCellText).select();
 		AbstractWait.sleep(TimePeriod.SHORT);
 		setProperty(value, propertyPath);
+	}
+	
+	/**
+	 * Get specified text from specified cell of table.
+	 * Note: row index starts from 0.
+	 */
+	public String getCellText(int rowIndex, int columnIndex){
+		return new DefaultTable().getItem(rowIndex).getText(columnIndex);
+	}
+	
+	/**
+	 * Get specified text from specified cell of table.
+	 * Note: row index starts from 0.
+	 */
+	public String getCellText(int rowIndex, String columnName){
+		return getCellText(rowIndex, new DefaultTable().getHeaderIndex(columnName));
+	}
+	
+	/**
+	 * Click on specified button into specified cell of table.
+	 * Note: row index starts from 0.
+	 */
+	public void clickOnButton(int rowIndex, int columnIndex, String value){
+		new DefaultTable().getItem(rowIndex).doubleClick(columnIndex);
+		new PushButton(new CellEditor(new DefaultTable().getItem(rowIndex), columnIndex)).click();
+		AbstractWait.sleep(TimePeriod.SHORT);
+	}
+	
+	/**
+	 * Click on specified button into specified cell of table.
+	 * Note: row index starts from 0.
+	 */
+	public void clickOnButton(int rowIndex, String columnName, String value){
+		clickOnButton(rowIndex, new DefaultTable().getHeaderIndex(columnName), value);
 	}
 	
 	/**

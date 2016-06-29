@@ -155,6 +155,15 @@ public class ModelEditor extends SWTBotEditor {
 		tabItem.activate();
 		return tabItem;
 	}
+	
+	public TransformationEditor openTransformationEditor(){
+		SWTBotGefViewer viewer = getGraphicalViewer(TRANSFORMATION_DIAGRAM);
+		viewer.select(viewer.editParts(IsTransformation.isTransformation()));
+		new ContextMenu("Edit").select();;
+		AbstractWait.sleep(TimePeriod.getCustom(3));
+		return new TransformationEditor();
+	}
+	
 	@Deprecated // use %ModelEditor.openTransformantion()
 	public void showTransformation() {
 		viewer = getGraphicalViewer(TRANSFORMATION_DIAGRAM);
