@@ -91,7 +91,6 @@ public class TableEditor extends AbstractModelEditor {
 		setCellText(rowIndex, new DefaultTable().getHeaderIndex(columnName), value);
 	}
 	
-
 	/**
 	 * Sets specified text into specified cell of table.
 	 * @param firstCellValue - defines row by text of cell in first column.
@@ -128,6 +127,24 @@ public class TableEditor extends AbstractModelEditor {
 	 */
 	public void setCellCCombo(int rowIndex, String columnName, String selection){
 		setCellCCombo(rowIndex, new DefaultTable().getHeaderIndex(columnName), selection);
+	}
+	/**
+	 * Sets specified selection into specified cell of table.
+	 * @param firstCellValue - defines row by text of cell in first column.
+	 */
+	public void setCellCCombo(String firstCellText, int columnIndex, String selection){
+		new DefaultTable().getItem(firstCellText).doubleClick(columnIndex);
+		new DefaultCCombo(new CellEditor(new DefaultTable().getItem(firstCellText), columnIndex)).setSelection(selection);
+		KeyboardFactory.getKeyboard().type(KeyEvent.VK_TAB);
+		AbstractWait.sleep(TimePeriod.SHORT);
+	}
+	
+	/**
+	 * Sets specified selection into specified cell of table.
+	 * @param firstCellValue - defines row by text of cell in first column.
+	 */
+	public void setCellCCombo(String firstCellText, String columnName, String selection){
+		setCellCCombo(firstCellText, new DefaultTable().getHeaderIndex(columnName), selection);
 	}
 	
 	/**
@@ -167,10 +184,26 @@ public class TableEditor extends AbstractModelEditor {
 	}
 	
 	/**
+	 * Get specified text from specified cell of table.
+	 * @param firstCellValue - defines row by text of cell in first column.
+	 */
+	public String getCellText(String firstCellText, int columnIndex){
+		return new DefaultTable().getItem(firstCellText).getText(columnIndex);
+	}
+	
+	/**
+	 * Get specified text from specified cell of table.
+	 * @param firstCellValue - defines row by text of cell in first column.
+	 */
+	public String getCellText(String firstCellText, String columnName){
+		return getCellText(firstCellText, new DefaultTable().getHeaderIndex(columnName));
+	}
+	
+	/**
 	 * Click on specified button into specified cell of table.
 	 * Note: row index starts from 0.
 	 */
-	public void clickOnButton(int rowIndex, int columnIndex, String value){
+	public void clickOnButton(int rowIndex, int columnIndex){
 		new DefaultTable().getItem(rowIndex).doubleClick(columnIndex);
 		new PushButton(new CellEditor(new DefaultTable().getItem(rowIndex), columnIndex)).click();
 		AbstractWait.sleep(TimePeriod.SHORT);
@@ -180,8 +213,26 @@ public class TableEditor extends AbstractModelEditor {
 	 * Click on specified button into specified cell of table.
 	 * Note: row index starts from 0.
 	 */
-	public void clickOnButton(int rowIndex, String columnName, String value){
-		clickOnButton(rowIndex, new DefaultTable().getHeaderIndex(columnName), value);
+	public void clickOnButton(int rowIndex, String columnName){
+		clickOnButton(rowIndex, new DefaultTable().getHeaderIndex(columnName));
+	}
+	
+	/**
+	 * Click on specified button into specified cell of table.
+	 * @param firstCellValue - defines row by text of cell in first column.
+	 */
+	public void clickOnButton(String firstCellText, int columnIndex){
+		new DefaultTable().getItem(firstCellText).doubleClick(columnIndex);
+		new PushButton(new CellEditor(new DefaultTable().getItem(firstCellText), columnIndex)).click();
+		AbstractWait.sleep(TimePeriod.SHORT);
+	}
+	
+	/**
+	 * Click on specified button into specified cell of table.
+	 * @param firstCellValue - defines row by text of cell in first column.
+	 */
+	public void clickOnButton(String firstCellText, String columnName){
+		clickOnButton(firstCellText, new DefaultTable().getHeaderIndex(columnName));
 	}
 	
 	/**

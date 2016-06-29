@@ -20,13 +20,9 @@ import org.jboss.reddeer.junit.requirement.inject.InjectRequirement;
 import org.jboss.reddeer.junit.runner.RedDeerSuite;
 import org.jboss.reddeer.requirements.openperspective.OpenPerspectiveRequirement.OpenPerspective;
 import org.jboss.reddeer.requirements.server.ServerReqState;
-import org.jboss.reddeer.swt.api.TableItem;
 import org.jboss.reddeer.swt.impl.button.PushButton;
-import org.jboss.reddeer.swt.impl.ctab.DefaultCTabItem;
 import org.jboss.reddeer.swt.impl.shell.DefaultShell;
 import org.jboss.reddeer.swt.impl.styledtext.DefaultStyledText;
-import org.jboss.reddeer.swt.impl.tab.DefaultTabItem;
-import org.jboss.reddeer.swt.impl.table.DefaultTable;
 import org.jboss.reddeer.swt.impl.tree.DefaultTreeItem;
 import org.jboss.tools.teiid.reddeer.connection.TeiidJDBCHelper;
 import org.jboss.tools.teiid.reddeer.editor.ModelEditor;
@@ -177,14 +173,13 @@ public class DDLtest {
 		
 		//check if rest method was set
 		new ModelExplorer().openModelEditor(PROJECT_NAME,nameViewModel + ".xmi");
-		new DefaultCTabItem("Table Editor").activate();
-		new DefaultTabItem("Procedures").activate();
-		List<TableItem> items = new DefaultTable().getItems();
-		assertTrue("GET".equals(items.get(0).getText(8)));
-		assertTrue("product/{instr_id}".equals(items.get(0).getText(9)));
-		assertTrue("POST".equals(items.get(1).getText(8)));
-		assertTrue("product/".equals(items.get(1).getText(9)));
-		
+		TableEditor tableEditor = new TableEditor(nameViewModel + ".xmi", "Package Diagram");
+		tableEditor.openTab("Procedures");
+		assertTrue(tableEditor.getCellText(0, "REST:Rest Method").equals("GET"));
+		assertTrue(tableEditor.getCellText(0, "REST:URI").equals("product/{instr_id}"));
+		assertTrue(tableEditor.getCellText(1, "REST:Rest Method").equals("POST"));
+		assertTrue(tableEditor.getCellText(1, "REST:URI").equals("product/"));
+
 		createVDB(nameViewModel);
 		
 		TeiidJDBCHelper jdbchelper = new TeiidJDBCHelper(teiidServer, NAME_VDB);
@@ -205,7 +200,7 @@ public class DDLtest {
  			try{
  				jdbchelper.executeQueryNoResultSet("DELETE FROM ProductsInfo WHERE INSTR_ID LIKE 'TEIID'");
  			} catch (SQLException e) {
- 	 			fail(e.getMessage());
+ 	 			fail(e.getMessage() + "\n delete data manually! ");
  	 		}
  		}
 		jdbchelper.closeConnection();
@@ -264,15 +259,23 @@ public class DDLtest {
 		
 		importDDL(nameViewModel, PATH_TO_LIB + "udfViewModel.ddl");
 		
+		//set UDF jar path
 		Properties props = new Properties();
 		props.setProperty("dirName", UDF_LIB_PATH);
 		props.setProperty("intoFolder", PROJECT_NAME);
 		props.setProperty("file", UDF);
 		props.setProperty("createTopLevel", "true");
 		new ImportManager().importGeneralItem(ImportGeneralItemWizard.Type.FILE_SYSTEM, props);
-		
 		new ModelExplorer().openModelEditor(PROJECT_NAME,nameViewModel + ".xmi");
 		setUDFpath(nameViewModel,PROJECT_NAME,"lib",UDF);
+		
+		new ModelExplorer().openModelEditor(PROJECT_NAME,nameViewModel + ".xmi");
+		TableEditor tableEditor = new TableEditor(nameViewModel + ".xmi", "Package Diagram");
+		tableEditor.openTab("Procedures");
+		assertTrue(tableEditor.getCellText(0, "relational:Function Category").equals("TEST_FUNCTIONS"));
+		assertTrue(tableEditor.getCellText(0, "relational:Java Class").equals("userdefinedfunctions.ConcatNull"));
+		assertTrue(tableEditor.getCellText(0, "relational:Java Method").equals("concatNull"));
+		assertTrue(tableEditor.getCellText(0, "relational:UDF Jar Path").equals("lib/"+UDF));
 		
 		createVDB(nameViewModel);
 
@@ -330,6 +333,11 @@ public class DDLtest {
 		
 		importDDL(nameViewModel, PATH_TO_LIB + "accessPatternViewModel.ddl");
 		
+		new ModelExplorer().openModelEditor(PROJECT_NAME,nameViewModel + ".xmi");
+		TableEditor tableEditor = new TableEditor(nameViewModel + ".xmi", "Package Diagram");
+		tableEditor.openTab("Access Patterns");
+		assertTrue(tableEditor.getCellText(0, "Columns").equals("NAME : string(60)"));
+		
 		createVDB(nameViewModel);
 
 		TeiidJDBCHelper jdbchelper = new TeiidJDBCHelper(teiidServer, NAME_VDB);
@@ -344,6 +352,7 @@ public class DDLtest {
 		jdbchelper.closeConnection();
 	}
 	
+	@Ignore //TODO jira close run if
 	@Test
 	@Jira("TEIIDDES-2788")
 	@RunIf(conditionClass = IssueIsClosed.class)
@@ -430,7 +439,7 @@ public class DDLtest {
 	private void setUDFpath(String viewModel, String... pathToUDF){
 		TableEditor tableEditor = new TableEditor(viewModel + ".xmi", "Package Diagram");
 		tableEditor.openTab("Procedures");
-		tableEditor.clickOnButton(0, "relational:UDF Jar Path", "...");
+		tableEditor.clickOnButton(0, "relational:UDF Jar Path");
 		
 		new DefaultShell("Select UDF jar");
 		new PushButton("OK").click();
