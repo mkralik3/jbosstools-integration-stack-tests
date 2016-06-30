@@ -49,10 +49,10 @@ import org.jboss.tools.teiid.reddeer.requirement.TeiidServerRequirement.TeiidSer
 import org.jboss.tools.teiid.reddeer.view.GuidesView;
 import org.jboss.tools.teiid.reddeer.view.ModelExplorer;
 import org.jboss.tools.teiid.reddeer.view.SQLResult;
-import org.jboss.tools.teiid.reddeer.wizard.FlatImportWizard;
-import org.jboss.tools.teiid.reddeer.wizard.ImportJDBCDatabaseWizard;
 import org.jboss.tools.teiid.reddeer.wizard.MetadataModelWizard;
-import org.jboss.tools.teiid.reddeer.wizard.WsdlImportWizard;
+import org.jboss.tools.teiid.reddeer.wizard.imports.FlatImportWizard;
+import org.jboss.tools.teiid.reddeer.wizard.imports.ImportJDBCDatabaseWizard;
+import org.jboss.tools.teiid.reddeer.wizard.imports.WsdlImportWizard;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
