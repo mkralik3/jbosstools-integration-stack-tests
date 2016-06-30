@@ -3,13 +3,13 @@ package org.jboss.tools.teiid.reddeer.manager;
 import java.util.Properties;
 
 import org.jboss.tools.teiid.reddeer.ModelProject;
-import org.jboss.tools.teiid.reddeer.wizard.ImportFileWizard;
-import org.jboss.tools.teiid.reddeer.wizard.ImportGeneralItemWizard;
-import org.jboss.tools.teiid.reddeer.wizard.ImportJDBCDatabaseWizard;
-import org.jboss.tools.teiid.reddeer.wizard.ImportProjectWizard;
-import org.jboss.tools.teiid.reddeer.wizard.LdapImportWizard;
-import org.jboss.tools.teiid.reddeer.wizard.SalesforceImportWizard;
-import org.jboss.tools.teiid.reddeer.wizard.TeiidImportWizard;
+import org.jboss.tools.teiid.reddeer.wizard.imports.ImportFileWizard;
+import org.jboss.tools.teiid.reddeer.wizard.imports.ImportGeneralItemWizard;
+import org.jboss.tools.teiid.reddeer.wizard.imports.ImportJDBCDatabaseWizard;
+import org.jboss.tools.teiid.reddeer.wizard.imports.ImportProjectWizard;
+import org.jboss.tools.teiid.reddeer.wizard.imports.LdapImportWizard;
+import org.jboss.tools.teiid.reddeer.wizard.imports.SalesforceImportWizard;
+import org.jboss.tools.teiid.reddeer.wizard.imports.TeiidImportWizard;
 import org.jboss.tools.teiid.ui.bot.test.TeiidBot;
 
 public class ImportManager {

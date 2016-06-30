@@ -20,7 +20,7 @@ import org.jboss.tools.teiid.reddeer.manager.ImportManager;
 import org.jboss.tools.teiid.reddeer.manager.PerspectiveAndViewManager;
 import org.jboss.tools.teiid.reddeer.requirement.TeiidServerRequirement.TeiidServer;
 import org.jboss.tools.teiid.reddeer.view.ModelExplorer;
-import org.jboss.tools.teiid.reddeer.wizard.ImportGeneralItemWizard;
+import org.jboss.tools.teiid.reddeer.wizard.imports.ImportGeneralItemWizard;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
