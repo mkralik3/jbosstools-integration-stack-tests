@@ -3,8 +3,7 @@ package org.jboss.tools.teiid.reddeer.manager;
 import java.util.Properties;
 
 import org.jboss.tools.teiid.reddeer.ModelProject;
-import org.jboss.tools.teiid.reddeer.wizard.imports.ImportFileWizard;
-import org.jboss.tools.teiid.reddeer.wizard.imports.ImportGeneralItemWizard;
+import org.jboss.tools.teiid.reddeer.wizard.imports.ImportFromFileSystemWizard;
 import org.jboss.tools.teiid.reddeer.wizard.imports.ImportJDBCDatabaseWizard;
 import org.jboss.tools.teiid.reddeer.wizard.imports.ImportProjectWizard;
 import org.jboss.tools.teiid.reddeer.wizard.imports.LdapImportWizard;
@@ -13,14 +12,6 @@ import org.jboss.tools.teiid.reddeer.wizard.imports.TeiidImportWizard;
 import org.jboss.tools.teiid.ui.bot.test.TeiidBot;
 
 public class ImportManager {
-
-	/**
-	 * Import file from General: File System
-	 */
-	@Deprecated
-	public void importFromFileSystem(String path, String importFolder) {
-		new ImportFileWizard().importFile(path, importFolder);
-	}
 
 	/**
 	 * Import metadata from Salesforce account
@@ -150,8 +141,17 @@ public class ImportManager {
 	 *            ImportGeneralItemWizard.Type
 	 * @param itemProps
 	 */
-	public void importGeneralItem(String generalItemType, Properties itemProps) {
-		new ImportGeneralItemWizard(generalItemType, itemProps).execute();
+	@Deprecated
+	public void importGeneralItem(Properties itemProps) {
+		ImportFromFileSystemWizard wizard = new ImportFromFileSystemWizard();
+		wizard.open();
+		wizard.setPath(itemProps.getProperty("dirName"))
+			  .setFolder( itemProps.getProperty("intoFolder"))
+			  .selectFile(itemProps.getProperty("file"));
+			  if (itemProps.getProperty("createTopLevel") != null) {
+				  wizard.setCreteTopLevelFolder(true);
+			  }
+	    wizard.finish();
 	}
 
 }

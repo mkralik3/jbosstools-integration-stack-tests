@@ -51,7 +51,6 @@ public abstract class TeiidImportWizard extends ImportWizardDialog {
 		log.info("Stupid waiting for " + TimePeriod.NORMAL.getSeconds() + " s");
 		AbstractWait.sleep(TimePeriod.NORMAL);
 	}
-
+	@Deprecated
 	public abstract void execute();
-
 }

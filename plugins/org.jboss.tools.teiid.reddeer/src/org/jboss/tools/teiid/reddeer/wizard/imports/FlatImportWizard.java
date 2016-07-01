@@ -176,10 +176,8 @@ public class FlatImportWizard extends TeiidImportWizard {
 		new LabeledText("New view table name:").setText(viewTableName);
 		return this;
 	}
-
-	@Override
-	public void execute() {
-		throw new UnsupportedOperationException();
+	@Deprecated
+	public void execute(){
+		//delete after refactor all importers
 	}
-
 }
