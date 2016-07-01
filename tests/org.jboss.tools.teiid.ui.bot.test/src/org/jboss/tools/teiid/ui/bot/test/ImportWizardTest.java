@@ -11,14 +11,13 @@ import org.jboss.reddeer.workbench.impl.shell.WorkbenchShell;
 import org.jboss.tools.common.reddeer.condition.IssueIsClosed;
 import org.jboss.tools.common.reddeer.condition.IssueIsClosed.Jira;
 import org.jboss.tools.teiid.reddeer.manager.ConnectionProfileManager;
-import org.jboss.tools.teiid.reddeer.manager.ImportManager;
 import org.jboss.tools.teiid.reddeer.manager.ImportMetadataManager;
 import org.jboss.tools.teiid.reddeer.perspective.TeiidPerspective;
 import org.jboss.tools.teiid.reddeer.requirement.TeiidServerRequirement.TeiidServer;
 import org.jboss.tools.teiid.reddeer.view.ModelExplorer;
 import org.jboss.tools.teiid.reddeer.wizard.imports.DDLCustomImportWizard;
 import org.jboss.tools.teiid.reddeer.wizard.imports.FlatImportWizard;
-import org.jboss.tools.teiid.reddeer.wizard.imports.ImportGeneralItemWizard;
+import org.jboss.tools.teiid.reddeer.wizard.imports.ImportFromFileSystemWizard;
 import org.jboss.tools.teiid.reddeer.wizard.imports.WsdlImportWizard;
 import org.jboss.tools.teiid.reddeer.wizard.imports.WsdlWebImportWizard;
 import org.jboss.tools.teiid.reddeer.wizard.imports.MetadataImportWizard.ImportType;
@@ -183,14 +182,15 @@ public class ImportWizardTest {
 	public void wsdlToWSImportTest() {
 
 		// import wsdl
-		Properties iProps = new Properties();
-		iProps.setProperty("dirName", teiidBot.toAbsolutePath("resources/wsdl"));
-		iProps.setProperty("file", "Hello.wsdl");
-		iProps.setProperty("intoFolder", MODEL_PROJECT);
-		new ImportManager().importGeneralItem(ImportGeneralItemWizard.Type.FILE_SYSTEM, iProps);
+		ImportFromFileSystemWizard wizard = new ImportFromFileSystemWizard();
+		wizard.open();
+		wizard.setPath("resources/wsdl")
+			  .setFolder(MODEL_PROJECT)
+			  .selectFile("Hello.wsdl")
+			  .finish();
 
 		// import from workspace
-		iProps = new Properties();
+		Properties iProps = new Properties();
 		iProps.setProperty("modelName", "WsdlToWS");
 		iProps.setProperty("project", MODEL_PROJECT);
 		iProps.setProperty("wsdlName", "Hello.wsdl");
