@@ -44,7 +44,6 @@ import org.junit.runner.RunWith;
 
 public class ReuseVDBTest {
 	private static final String PROJECT_NAME = "reuseVDB";
-	private static final String PROJECT_LOCATION = "resources/projects/"+ PROJECT_NAME;
 	private static final String NAME_ORACLE_MODEL = "sourceModel";
 	private static final String VIEW_SOURCE_MODEL = "viewFromSource";
 	private static final String SOURCE_VDB = "sourceVDB";
@@ -58,7 +57,7 @@ public class ReuseVDBTest {
 		
 	@BeforeClass
 	public static void before() {
-		new ModelExplorer().importProject(PROJECT_LOCATION);
+		new ModelExplorer().importProject(PROJECT_NAME);
 		new ModelExplorer().changeConnectionProfile(ConnectionProfileConstants.SQL_SERVER_2008_PARTS_SUPPLIER, PROJECT_NAME, NAME_ORACLE_MODEL);
 	}
 	
