@@ -53,7 +53,7 @@ public class TeiidConnectionImportTest extends SWTBotTestCase {
 
 	private static final String PROJECT_NAME = "TeiidConnImporter";
 	private static final String SOURCE_VDB_NAME = "teiid";
-	private static final String projectLocation = "resources/projects/TeiidConnImporter";
+	private static final String projectLocation = "TeiidConnImporter";
 
 	private static final String modeshapeCPName = "ModeShapeDS";
 
@@ -75,7 +75,7 @@ public class TeiidConnectionImportTest extends SWTBotTestCase {
 	public static void createProject() {
 		new TeiidDesignerPreferencePage().setTeiidConnectionImporterTimeout(240);
 
-		new ModelExplorer().importProject(teiidBot.toAbsolutePath(projectLocation));
+		new ModelExplorer().importProject(projectLocation);
 		new ModelExplorer().getModelProject(PROJECT_NAME).open();
 
 	}

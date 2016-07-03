@@ -61,7 +61,6 @@ public class ImportDDLtest {
 	private static TeiidBot teiidBot = new TeiidBot();
 
 	private static final String PROJECT_NAME = "DDLimport";
-	private static final String PROJECT_LOCATION = "resources/projects/"+ PROJECT_NAME;
 	private static final String NAME_SOURCE_MODEL = "sourceModel";
 	private static final String NAME_VIEW_ORIGINAL_MODEL = "viewModelOriginal";
 	private static final String NAME_VIEW_MODEL = "viewModel";
@@ -71,7 +70,7 @@ public class ImportDDLtest {
 
 	@BeforeClass
 	public static void openPerspective() {
-		new ModelExplorer().importProject(PROJECT_LOCATION);
+		new ModelExplorer().importProject(PROJECT_NAME);
     	new ModelExplorer().changeConnectionProfile(ConnectionProfileConstants.ORACLE_11G_PARTS_SUPPLIER, PROJECT_NAME, NAME_SOURCE_MODEL);
 	}	
 
