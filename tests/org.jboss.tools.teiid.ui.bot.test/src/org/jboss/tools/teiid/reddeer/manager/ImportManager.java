@@ -3,8 +3,6 @@ package org.jboss.tools.teiid.reddeer.manager;
 import java.util.Properties;
 
 import org.jboss.tools.teiid.reddeer.ModelProject;
-import org.jboss.tools.teiid.reddeer.wizard.imports.ImportFromFileSystemWizard;
-import org.jboss.tools.teiid.reddeer.wizard.imports.ImportJDBCDatabaseWizard;
 import org.jboss.tools.teiid.reddeer.wizard.imports.ImportProjectWizard;
 import org.jboss.tools.teiid.reddeer.wizard.imports.LdapImportWizard;
 import org.jboss.tools.teiid.reddeer.wizard.imports.SalesforceImportWizard;
@@ -51,35 +49,6 @@ public class ImportManager {
 	 * Properties props = new TeiidBot().getProperties(propsFile); importFromDatabase(projectName, modelName,
 	 * connectionProfile, props); }
 	 */
-
-	/**
-	 * Import metadata from Oracle, HSQLDB, SQL Server
-	 * 
-	 * @param connectionProfile
-	 * @param propsFile
-	 *            itemList (e.g. PUBLIC/PUBLIC/TABLE/PARTS,...)
-	 */
-	public void importFromDatabase(String projectName, String modelName, String connectionProfile, Properties props, boolean importProcedures) {
-		ImportJDBCDatabaseWizard wizard = new ImportJDBCDatabaseWizard();
-		wizard.setConnectionProfile(connectionProfile);
-		wizard.setProjectName(projectName);
-		wizard.setModelName(modelName);
-		wizard.setImportProcedures(importProcedures);
-
-		if (props.getProperty("itemList") != null) {
-			String loadedProperty = props.getProperty("itemList");
-			if (loadedProperty.contains(",")) {
-				String[] itemList = loadedProperty.split(",");
-				for (String item : itemList) {
-					wizard.addItem(item.trim());
-				}
-			} else {
-				wizard.addItem(loadedProperty);
-			}
-		}
-		wizard.execute();// projectName is set on some page of wizard
-	}
-
 	// TODO: refactor the parameters
 	public void importFromLdap(String projectName, String modelName, String connectionProfile, String connectionUrl,
 			String principalDnSuffix, Properties props) {
@@ -134,24 +103,4 @@ public class ImportManager {
 	public void importProject(String location) {// TODO use generalItem instead
 		new ImportProjectWizard(location).execute();
 	}
-
-	/**
-	 * 
-	 * @param generalItemType
-	 *            ImportGeneralItemWizard.Type
-	 * @param itemProps
-	 */
-	@Deprecated
-	public void importGeneralItem(Properties itemProps) {
-		ImportFromFileSystemWizard wizard = new ImportFromFileSystemWizard();
-		wizard.open();
-		wizard.setPath(itemProps.getProperty("dirName"))
-			  .setFolder( itemProps.getProperty("intoFolder"))
-			  .selectFile(itemProps.getProperty("file"));
-			  if (itemProps.getProperty("createTopLevel") != null) {
-				  wizard.setCreteTopLevelFolder(true);
-			  }
-	    wizard.finish();
-	}
-
 }

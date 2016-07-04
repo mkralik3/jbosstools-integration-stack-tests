@@ -378,12 +378,15 @@ public class GuidesTest {
     }
 	
     private void createJDBCSource(String modelName,String projectName,String cp_name){
-    	ImportJDBCDatabaseWizard importJDBC = new ImportJDBCDatabaseWizard();
-		importJDBC.setConnectionProfile(cp_name);
-		importJDBC.setProjectName(projectName);
-		importJDBC.setModelName(modelName);
-		importJDBC.fill();
-		importJDBC.finish();
+    	ImportJDBCDatabaseWizard jdbcWizard = new ImportJDBCDatabaseWizard();
+		jdbcWizard.setConnectionProfile(cp_name)
+		          .next();
+		jdbcWizard.setTableTypes(false, true, false)
+		      	  .next();
+		jdbcWizard.next();
+		jdbcWizard.setFolder(projectName)
+		   	  	  .setModelName(modelName)
+				  .finish();
     }
     private void createFlatLocalSource(String profile, String fileName,String projectName,String modelName, String viewModelName, String viewTableName){
     	FlatImportWizard importWizard = new FlatImportWizard();
