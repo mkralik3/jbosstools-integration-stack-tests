@@ -209,12 +209,12 @@ public class TeiidBot {
 	public void simulateTablesPreview(TeiidServerRequirement teiidServer, String project, String model, String[] tables) {
 
 		String vdb_name = "Check_" + model;
-
+		
 		// create VDB		
 		VdbWizard.openVdbWizard()
 				.setLocation(project)
 				.setName(vdb_name)
-				.addModel(project, model)
+				.addModel(project, model + ".xmi")
 				.finish();
 
 		new ModelExplorer().deployVdb(project, vdb_name);
