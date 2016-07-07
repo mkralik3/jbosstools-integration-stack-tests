@@ -218,7 +218,7 @@ public class ImportJDBCDatabaseWizard extends ImportWizardDialog {
 	 * not working with teiid connection (VDB Source model)
 	 */
 	public ImportJDBCDatabaseWizard setModelName(String modelName) {
-		log.info("Set set model name to: '" + modelName + "'");
+		log.info("Set model name to: '" + modelName + "'");
 		activate();
 		new LabeledText("Model Name:").setText(modelName);
 		return this;
