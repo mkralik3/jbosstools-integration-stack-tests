@@ -3,7 +3,6 @@ package org.jboss.tools.teiid.reddeer.manager;
 import java.util.Properties;
 
 import org.jboss.tools.teiid.reddeer.ModelProject;
-import org.jboss.tools.teiid.reddeer.wizard.imports.ImportProjectWizard;
 import org.jboss.tools.teiid.reddeer.wizard.imports.LdapImportWizard;
 import org.jboss.tools.teiid.reddeer.wizard.imports.SalesforceImportWizard;
 import org.jboss.tools.teiid.reddeer.wizard.imports.TeiidImportWizard;
@@ -98,9 +97,4 @@ public class ImportManager {
 	 * Properties props = teiidBot.getProperties(propsFile); importFromWSDLToSrcView(projectName, modelName, cpName,
 	 * props); }
 	 */
-
-	@Deprecated // use org.jboss.tools.teiid.reddeer.view.ModelExplorer.importProject(String)
-	public void importProject(String location) {// TODO use generalItem instead
-		new ImportProjectWizard(location).execute();
-	}
 }
