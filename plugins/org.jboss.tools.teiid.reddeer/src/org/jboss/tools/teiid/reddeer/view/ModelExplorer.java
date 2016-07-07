@@ -509,7 +509,10 @@ public class ModelExplorer extends AbstractExplorer {
 	 * @param projectName = name of folder in 'resources/projects/' folder
 	 */
 	public void importProject(String projectName) {
-		new ImportProjectWizard(new File("resources/projects/" + projectName).getAbsolutePath()).execute();
+		ImportProjectWizard wizard = new ImportProjectWizard();
+		wizard.open();
+		wizard.setPath(new File("resources/projects/" + projectName).getAbsolutePath())
+		      .finish();
 	}
 	
 	/**

@@ -1,12 +1,11 @@
 package org.jboss.tools.teiid.reddeer.wizard.imports;
 
-import java.io.File;
-
 import org.jboss.reddeer.jface.wizard.ImportWizardDialog;
 import org.jboss.reddeer.swt.impl.button.CheckBox;
 import org.jboss.reddeer.swt.impl.button.PushButton;
 import org.jboss.reddeer.swt.impl.button.RadioButton;
 import org.jboss.reddeer.swt.impl.combo.DefaultCombo;
+import org.jboss.reddeer.swt.impl.shell.DefaultShell;
 
 /**
  * Wizard for importing an existing project.
@@ -16,31 +15,31 @@ import org.jboss.reddeer.swt.impl.combo.DefaultCombo;
  */
 public class ImportProjectWizard extends ImportWizardDialog {
 
-	public static final String ARCHIVE_LABEL = "Select archive file:";
-
-	private String location;
-
-	public ImportProjectWizard(String location) {
+	public ImportProjectWizard() {
 		super("General", "Existing Projects into Workspace");
-		this.location = location;
+		log.info("Import project wizard is opened");
 	}
-
-	public void execute() {
-		open();
-
-		if (location.toLowerCase().endsWith(".zip")) {
-			new RadioButton(ARCHIVE_LABEL).click();
-			new DefaultCombo(1).setText(location);
+	
+	public ImportProjectWizard activate() {
+		new DefaultShell(DIALOG_TITLE);
+		return this;
+	}
+	
+	public ImportProjectWizard setPath(String path){
+		log.info("Set import path: '" + path + "'");
+		activate();
+		
+		if (path.toLowerCase().endsWith(".zip")) {
+			new RadioButton("Select archive file:").click();
+			new DefaultCombo(1).setText(path);
 		} else {
-			new DefaultCombo(0).setText(new File(location).getAbsolutePath());
-			// TODO add option to choose
+			new DefaultCombo(0).setText(path);
 			if (!new CheckBox("Copy projects into workspace").isChecked()) {
 				new CheckBox("Copy projects into workspace").click();
 			}
 		}
-
 		new PushButton("Refresh").click();
-		finish();
+		return this;
 	}
 
 }

@@ -7,6 +7,7 @@ import org.jboss.tools.teiid.reddeer.connection.ConnectionProfileConstants;
 import org.jboss.tools.teiid.reddeer.manager.ImportManager;
 import org.jboss.tools.teiid.reddeer.requirement.TeiidServerRequirement;
 import org.jboss.tools.teiid.reddeer.requirement.TeiidServerRequirement.TeiidServer;
+import org.jboss.tools.teiid.reddeer.view.ModelExplorer;
 import org.jboss.tools.teiid.reddeer.wizard.ModelProjectWizard;
 import org.junit.After;
 import org.junit.Before;
@@ -43,7 +44,7 @@ public class DynamicVdbTest {
 
 	@Before
 	public void before() {
-		new ImportManager().importProject(teiidBot.toAbsolutePath("resources/projects/" + PROJECT_NAME));
+		new ModelExplorer().importProject(PROJECT_NAME);
 		new ModelProjectWizard().create(IMPORT_PROJECT_NAME);
 	}
 
