@@ -30,7 +30,6 @@ public class LdapImportWizard extends ImportWizardDialog {
 	private static final String SOURCE_MODEL_DEFINITION = "Source Model Definition";
 	private static final String CONNECTION_PROFILE = "Connection Profile";
 	
-	
 	private String principalDnSuffix;
 	
 	public LdapImportWizard() {

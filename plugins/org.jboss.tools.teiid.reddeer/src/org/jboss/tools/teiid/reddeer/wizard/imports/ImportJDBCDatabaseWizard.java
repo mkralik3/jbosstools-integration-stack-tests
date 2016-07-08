@@ -6,6 +6,7 @@ import java.util.List;
 import org.jboss.reddeer.jface.wizard.ImportWizardDialog;
 import org.jboss.reddeer.core.condition.JobIsRunning;
 import org.jboss.reddeer.core.condition.ShellWithTextIsAvailable;
+import org.jboss.reddeer.swt.api.TreeItem;
 import org.jboss.reddeer.swt.impl.button.CheckBox;
 import org.jboss.reddeer.swt.impl.button.PushButton;
 import org.jboss.reddeer.swt.impl.button.RadioButton;
@@ -15,9 +16,8 @@ import org.jboss.reddeer.swt.impl.shell.DefaultShell;
 import org.jboss.reddeer.swt.impl.tab.DefaultTabItem;
 import org.jboss.reddeer.swt.impl.table.DefaultTable;
 import org.jboss.reddeer.swt.impl.text.LabeledText;
+import org.jboss.reddeer.swt.impl.tree.DefaultTreeItem;
 import org.jboss.tools.teiid.reddeer.condition.IsInProgress;
-import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
-import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.jboss.reddeer.common.wait.TimePeriod;
 import org.jboss.reddeer.common.wait.WaitWhile;
 
@@ -188,22 +188,11 @@ public class ImportJDBCDatabaseWizard extends ImportWizardDialog {
 			new PushButton("Deselect All").click();
 		}
 		for (String item : itemList) {
-
 			String[] itemArray = item.split("/");
-			SWTBotTreeItem treeItem = new SWTWorkbenchBot().tree().getTreeItem(itemArray[0]); //TODO refactor
-			for (int i = 1; i < itemArray.length; i++) {
-
-				treeItem.expand();
-				treeItem = treeItem.getNode(itemArray[i]);
-			}
-			treeItem.check();
+			TreeItem treeItem = new DefaultTreeItem(itemArray);
+			treeItem.setChecked(true);
+			
 		}
-		/*
-		for (String item : itemList) {
-			String[] itemArray = item.split("/");
-			new DefaultTreeItem(itemArray).select();
-		}
-		*/
 		return this;
 	}
 	
