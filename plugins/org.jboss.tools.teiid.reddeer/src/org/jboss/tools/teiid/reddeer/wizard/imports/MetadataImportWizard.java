@@ -10,7 +10,7 @@ import org.jboss.reddeer.swt.impl.button.PushButton;
 import org.jboss.reddeer.swt.impl.combo.DefaultCombo;
 import org.jboss.reddeer.swt.impl.shell.DefaultShell;
 import org.jboss.reddeer.swt.impl.text.LabeledText;
-import org.jboss.reddeer.swt.impl.tree.DefaultTree;
+import org.jboss.reddeer.swt.impl.tree.DefaultTreeItem;
 
 /**
  * Wizard for importing relational model from designer text file
@@ -21,55 +21,64 @@ import org.jboss.reddeer.swt.impl.tree.DefaultTree;
 public class MetadataImportWizard extends TeiidImportWizard {
 
 	public static final String DIALOG_TITLE = "Import Metadata From Text File";
-	public static final String IMPORT_TYPE = "Import Type:";
-	public static final String MODEL_NAME = "New Model Name: ";
-	public static final String SOURCE_LOCATION = "Select Source Text File";
-	public static final String TARGET_LOCATION = "Target Location";
-
-	private String importType;
-	private String source;
-	private String target;
+	
+	public static final String TYPE_RELATIONAL_MODEL = "Relational Model (XML Format)";
+	public static final String TYPE_RELATIONAL_TABLE = "Relational Tables (CSV Format)";
+	public static final String TYPE_RELATIONAL_VIRTUAL_TABLE = "Relational Virtual Tables (CSV Format)";
+	
+	private String modelName;
 
 	public MetadataImportWizard() {
 		super("Designer Text File >> Source or View Models");
 	}
-
-	public void setImportType(String importType) {
-		this.importType = importType;
-	}
-
-	public void setSource(String source) {
-		this.source = source;
-	}
-
-	public void setTarget(String target) {
-		this.target = target;
-	}
-
-	public void execute() {
-		open();
-
-		new DefaultCombo().setSelection(importType);
-
-		next();
-
-		// Workaround due to TEIIDDES-417
-		addSelection(SOURCE_LOCATION, source);
-
-		new DefaultCombo().setSelection(source);
-		new PushButton(1).click();
-		new DefaultTree().getItems().get(0).select();
-		new LabeledText(MODEL_NAME).setText(target);
-		new PushButton("OK").click();
-		new SWTWorkbenchBot().shell(DIALOG_TITLE).activate();
+	
+	public MetadataImportWizard activate() {
 		new DefaultShell(DIALOG_TITLE);
-
-		finish();
+		return this;
 	}
-
+	
+	/**
+	 * @param importType - use types from MetadataImportWizard.<type>
+	 */
+	public MetadataImportWizard setImportType(String importType) {
+		log.info("Set import type to: '" + importType + "'");
+		activate();
+		new DefaultCombo().setSelection(importType);
+		return this;
+	}
+	
+	public MetadataImportWizard setPathToFile(String path) {
+		log.info("Set path to file: '" + path + "'");
+		activate();
+		// Workaround due to TEIIDDES-417
+		addSelection("Select Source Text File", path);
+		new DefaultCombo().setSelection(path);
+		return this;
+	}
+	
+	/**
+	 * setName must been set (MetadataImportWizard.setName)
+	 */
+	public MetadataImportWizard setProject(String project){
+		new PushButton(1).click();
+		new DefaultTreeItem(project).select();
+		new LabeledText("New Model Name: ").setText(modelName);
+		new PushButton("OK").click();
+		new DefaultShell(DIALOG_TITLE);
+		return this;
+	}
+	
+	/**
+	 * name will be filled in the MetadataImportWizard.setProject()
+	 */
+	public MetadataImportWizard setName(String name){
+		modelName = name;
+		return this;
+	}
+	
 	// Workaround due to TEIIDDES-417
 	private void addSelection(String label, final String selection) {
-		SWTBotCombo botCombo = new SWTWorkbenchBot().comboBoxWithLabel(SOURCE_LOCATION);
+		SWTBotCombo botCombo = new SWTWorkbenchBot().comboBoxWithLabel("Select Source Text File");
 		final Combo combo = botCombo.widget;
 		syncExec(new VoidResult() {
 
@@ -78,15 +87,10 @@ public class MetadataImportWizard extends TeiidImportWizard {
 				combo.add(selection);
 			}
 		});
-
 	}
-
-	public class ImportType {
-
-		public static final String RELATIONAL_MODEL = "Relational Model (XML Format)";
-		public static final String RELATIONAL_TABLE = "Relational Tables (CSV Format)";
-		public static final String RELATIONAL_VIRTUAL_TABLE = "Relational Virtual Tables (CSV Format)";
-		public static final String RELATIONAL_DATATYPE = "Datatypes (CSV Format)";
+	
+	@Deprecated
+	public void execute(){
+		//delete after refactor all importers
 	}
-
 }

@@ -18,9 +18,9 @@ import org.jboss.tools.teiid.reddeer.view.ModelExplorer;
 import org.jboss.tools.teiid.reddeer.wizard.imports.DDLCustomImportWizard;
 import org.jboss.tools.teiid.reddeer.wizard.imports.FlatImportWizard;
 import org.jboss.tools.teiid.reddeer.wizard.imports.ImportFromFileSystemWizard;
+import org.jboss.tools.teiid.reddeer.wizard.imports.MetadataImportWizard;
 import org.jboss.tools.teiid.reddeer.wizard.imports.WsdlImportWizard;
 import org.jboss.tools.teiid.reddeer.wizard.imports.WsdlWebImportWizard;
-import org.jboss.tools.teiid.reddeer.wizard.imports.MetadataImportWizard.ImportType;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -83,12 +83,15 @@ public class ImportWizardTest {
 		String source = teiidBot.toAbsolutePath("resources/dtf/relationalModel.xml");
 		String target = "RelationalModel.xmi";
 
-		Properties props = new Properties();
-		props.setProperty("source", source);
-		props.setProperty("target", target);
-		props.setProperty("importType", ImportType.RELATIONAL_MODEL);
-
-		new ImportMetadataManager().importFromDesignerTextFile(MODEL_PROJECT, props);
+		MetadataImportWizard wizard = new MetadataImportWizard();
+		wizard.open();
+		wizard.setImportType(MetadataImportWizard.TYPE_RELATIONAL_MODEL)
+			  .next();
+		wizard.setName(target)
+			  .setPathToFile(source)
+			  .setProject(MODEL_PROJECT)
+			  .finish();
+		
 
 		teiidBot.assertResource(MODEL_PROJECT, target);
 		teiidBot.checkDiagram(MODEL_PROJECT, target, "ProductSymbols");

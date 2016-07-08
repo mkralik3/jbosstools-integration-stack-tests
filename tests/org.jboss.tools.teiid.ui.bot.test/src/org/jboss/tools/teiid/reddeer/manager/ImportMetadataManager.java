@@ -105,27 +105,6 @@ public class ImportMetadataManager {
 		importWizard.importWsdl(importProps, wsdlLocation);
 	}
 
-	/**
-	 * Designer Text File >> Source or View Models
-	 * 
-	 * @param projectName
-	 * @param props
-	 */
-	public void importFromDesignerTextFile(String projectName, Properties props) {
-		MetadataImportWizard importWizard = new MetadataImportWizard();
-		String loadedProperty = null;
-		if ((loadedProperty = props.getProperty("importType")) != null) {
-			importWizard.setImportType(loadedProperty);
-		}
-		if ((loadedProperty = props.getProperty("source")) != null) {
-			importWizard.setSource(loadedProperty);
-		}
-		if ((loadedProperty = props.getProperty("target")) != null) {
-			importWizard.setTarget(loadedProperty);
-		}
-		importModel(projectName, importWizard);
-	}
-
 	public static void importModel(String projectName, TeiidImportWizard importWizard) {// import mgr
 		ModelProject modelProject = new TeiidBot().modelExplorer().getModelProject(projectName);
 		modelProject.importModel(importWizard);
