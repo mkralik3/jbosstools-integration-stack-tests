@@ -57,7 +57,7 @@ public class MetadataImportWizard extends TeiidImportWizard {
 	}
 	
 	/**
-	 * setName must been set (MetadataImportWizard.setName)
+	 * setName must be set (MetadataImportWizard.setName)
 	 */
 	public MetadataImportWizard setProject(String project){
 		new PushButton(1).click();
