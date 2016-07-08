@@ -1,23 +1,79 @@
 package org.jboss.tools.teiid.ui.bot.test;
 
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.nullValue;
+import static org.hamcrest.Matchers.startsWith;
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.StringContains.containsString;
+import static org.hamcrest.text.IsEqualIgnoringWhiteSpace.equalToIgnoringWhiteSpace;
+
+import java.io.File;
+import java.io.StringReader;
+import java.sql.ResultSet;
+import java.util.List;
+import java.util.Properties;
+import java.util.concurrent.Callable;
+
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathFactory;
+
+import org.hamcrest.core.IsNot;
+import org.hamcrest.core.StringContains;
+import org.hamcrest.text.IsEmptyString;
+import org.jboss.reddeer.common.matcher.RegexMatcher;
+import org.jboss.reddeer.core.condition.ShellWithTextIsAvailable;
+import org.jboss.reddeer.core.exception.CoreLayerException;
+import org.jboss.reddeer.eclipse.ui.problems.ProblemsView;
+import org.jboss.reddeer.eclipse.ui.problems.ProblemsView.ProblemType;
+import org.jboss.reddeer.eclipse.ui.problems.matcher.ProblemsResourceMatcher;
+import org.jboss.reddeer.eclipse.ui.views.properties.PropertiesView;
 import org.jboss.reddeer.junit.requirement.inject.InjectRequirement;
 import org.jboss.reddeer.junit.runner.RedDeerSuite;
 import org.jboss.reddeer.requirements.server.ServerReqState;
+import org.jboss.reddeer.swt.api.TableItem;
+import org.jboss.reddeer.swt.impl.button.PushButton;
+import org.jboss.reddeer.swt.impl.ctab.DefaultCTabItem;
+import org.jboss.reddeer.swt.impl.menu.ShellMenu;
+import org.jboss.reddeer.swt.impl.table.DefaultTable;
+import org.jboss.tools.teiid.reddeer.Procedure;
 import org.jboss.tools.teiid.reddeer.connection.ConnectionProfileConstants;
+//import org.jboss.tools.teiid.reddeer.VDB;
+import org.jboss.tools.teiid.reddeer.connection.TeiidJDBCHelper;
+import org.jboss.tools.teiid.reddeer.editor.DataRolesEditor;
+import org.jboss.tools.teiid.reddeer.editor.DataRolesEditor.PermissionType;
+import org.jboss.tools.teiid.reddeer.editor.ModelEditor;
+import org.jboss.tools.teiid.reddeer.editor.VDBEditor;
+//import org.jboss.tools.teiid.reddeer.manager.ImportManager;
+//import org.jboss.tools.teiid.reddeer.manager.ModelExplorerManager;
+//import org.jboss.tools.teiid.reddeer.manager.VDBManager;
+import org.jboss.tools.teiid.reddeer.matcher.TableItemMatcher;
+import org.jboss.tools.teiid.reddeer.modeling.ModelColumn;
+import org.jboss.tools.teiid.reddeer.modeling.ModelProcedure;
+import org.jboss.tools.teiid.reddeer.modeling.ModelProcedureParameter;
+import org.jboss.tools.teiid.reddeer.modeling.ModelTable;
 import org.jboss.tools.teiid.reddeer.requirement.TeiidServerRequirement;
 import org.jboss.tools.teiid.reddeer.requirement.TeiidServerRequirement.TeiidServer;
 import org.jboss.tools.teiid.reddeer.view.ModelExplorer;
+import org.jboss.tools.teiid.reddeer.view.ServersViewExt;
+import org.jboss.tools.teiid.reddeer.wizard.GenerateDynamicVdbWizard;
+import org.jboss.tools.teiid.reddeer.wizard.GenerateVdbArchiveWizard;
 import org.jboss.tools.teiid.reddeer.wizard.ModelProjectWizard;
+import org.jboss.tools.teiid.reddeer.wizard.VdbWizard;
+import org.jboss.tools.teiid.reddeer.wizard.imports.ImportProjectWizard;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
+import org.junit.Test;
 import org.junit.rules.ErrorCollector;
 import org.junit.runner.RunWith;
+import org.xml.sax.InputSource;
 
 @RunWith(RedDeerSuite.class)
 @TeiidServer(state = ServerReqState.RUNNING, connectionProfiles = {
-		ConnectionProfileConstants.ORACLE_11G_PARTS_SUPPLIER,
-		ConnectionProfileConstants.POSTGRESQL_92_DVQE })
+	ConnectionProfileConstants.ORACLE_11G_PARTS_SUPPLIER,
+	ConnectionProfileConstants.POSTGRESQL_92_DVQE })
 public class DynamicVdbTest {
 
 	private static final String PROCEDURE_MODEL = "ProcedureModel";
@@ -43,7 +99,13 @@ public class DynamicVdbTest {
 
 	@Before
 	public void before() {
-		new ModelExplorer().importProject(PROJECT_NAME);
+		//new ImportManager().importProject(teiidBot.toAbsolutePath("resources/projects/" + PROJECT_NAME));
+		
+		ImportProjectWizard importWizard = new ImportProjectWizard();
+		importWizard.open();
+		importWizard.setPath(teiidBot.toAbsolutePath("resources/projects/" + PROJECT_NAME))
+					.finish();
+		
 		new ModelProjectWizard().create(IMPORT_PROJECT_NAME);
 	}
 
@@ -52,58 +114,58 @@ public class DynamicVdbTest {
 		teiidBot.deleteProjectSafely(PROJECT_NAME);
 		teiidBot.deleteProjectSafely(IMPORT_PROJECT_NAME);
 	}
-//
-//	@Test
-//	public void exportWithSourceAndViewModel() {
-//
-//		String staticVdbName = "SourceAndViewVdb";
-//		String dynamicVdbName = staticVdbName + "Dynamic";
-//
-//		// set connection profile
-//		new ModelExplorer().changeConnectionProfile(ConnectionProfileConstants.POSTGRESQL_92_DVQE, PROJECT_NAME,
-//				BQT_MODEL_NAME);
-//
-//		// create static vdb
-//		createVdb(PROJECT_NAME, staticVdbName, VIEW_MODEL + ".xmi", BQT_MODEL_NAME + ".xmi");
-//
-//		// create dynamic vdb from static
-//		String dynamicVdbContent = createDynamicVdb(PROJECT_NAME, staticVdbName, dynamicVdbName);
-//
-//		// get tables in original models
-//		List<ModelTable> sourceTables = getTables(PROJECT_NAME, BQT_MODEL_NAME);
-//		List<ModelTable> viewTables = getTables(PROJECT_NAME, VIEW_MODEL);
-//
-//		// check source model
-//
-//		System.out.println(getXPath(dynamicVdbContent, "/vdb/model[@name='postgresql92Model']"));
-//		collector.checkThat("wrong model type created",
-//				getXPath(dynamicVdbContent, "/vdb/model[@name='postgresql92Model']/@type"), is(""));
-//		collector.checkThat("wrong source jndi name",
-//				getXPath(dynamicVdbContent, "/vdb/model[@name='postgresql92Model']/source/@connection-jndi-name"),
-//				is(BQT_MODEL_NAME));
-//		collector.checkThat("wrong source translator name",
-//				getXPath(dynamicVdbContent, "/vdb/model[@name='postgresql92Model']/source/@translator-name"),
-//				is("jdbc-simple"));
-//		checkMetadata(getXPath(dynamicVdbContent, "/vdb/model[@name='postgresql92Model']/metadata[1]"), sourceTables,
-//				CREATE_FOREIGN_TABLE);
-//
-//		// check view model
-//
-//		collector.checkThat("wrong model type created",
-//				getXPath(dynamicVdbContent, "/vdb/model[@name='bqtViewModel']/@type"), is("VIRTUAL"));
-//		checkMetadata(getXPath(dynamicVdbContent, "/vdb/model[@name='bqtViewModel']/metadata[1]"), viewTables,
-//				CREATE_VIRTUAL_TABLE);
-//
-//		new ServersViewExt().createDatasource(teiidServer.getName(), ConnectionProfileConstants.POSTGRESQL_92_DVQE,
-//				BQT_MODEL_NAME);
-//		checkDeployOk(staticVdbName, dynamicVdbName);
-//		checkPreview(dynamicVdbName, "SELECT * FROM " + BQT_MODEL_NAME + ".smalla");
-//		checkPreview(dynamicVdbName, "SELECT * FROM " + VIEW_MODEL + ".smalla");
-//
-//		checkContentsSame(staticVdbName, dynamicVdbContent);
-//
-//	}
-//
+
+	@Test
+	public void exportWithSourceAndViewModel() {
+
+		String staticVdbName = "SourceAndViewVdb";
+		String dynamicVdbName = staticVdbName + "Dynamic";
+
+		// set connection profile
+		new ModelExplorer().changeConnectionProfile(ConnectionProfileConstants.POSTGRESQL_92_DVQE, PROJECT_NAME,
+				BQT_MODEL_NAME);
+
+		// create static vdb
+		createVdb(PROJECT_NAME, staticVdbName, VIEW_MODEL + ".xmi");
+
+		// create dynamic vdb from static
+		String dynamicVdbContent = createDynamicVdb(PROJECT_NAME, staticVdbName, dynamicVdbName);
+
+		// get tables in original models
+		List<ModelTable> sourceTables = getTables(PROJECT_NAME, BQT_MODEL_NAME);
+		List<ModelTable> viewTables = getTables(PROJECT_NAME, VIEW_MODEL);
+
+		// check source model
+
+		System.out.println(getXPath(dynamicVdbContent, "/vdb/model[@name='postgresql92Model']"));
+		collector.checkThat("wrong model type created",
+				getXPath(dynamicVdbContent, "/vdb/model[@name='postgresql92Model']/@type"), is(""));
+		collector.checkThat("wrong source jndi name",
+				getXPath(dynamicVdbContent, "/vdb/model[@name='postgresql92Model']/source/@connection-jndi-name"),
+				is(BQT_MODEL_NAME));
+		collector.checkThat("wrong source translator name",
+				getXPath(dynamicVdbContent, "/vdb/model[@name='postgresql92Model']/source/@translator-name"),
+				is("postgresql"));
+		checkMetadata(getXPath(dynamicVdbContent, "/vdb/model[@name='postgresql92Model']/metadata[1]"), sourceTables,
+				CREATE_FOREIGN_TABLE);
+
+		// check view model
+
+		collector.checkThat("wrong model type created",
+				getXPath(dynamicVdbContent, "/vdb/model[@name='bqtViewModel']/@type"), is("VIRTUAL"));
+		checkMetadata(getXPath(dynamicVdbContent, "/vdb/model[@name='bqtViewModel']/metadata[1]"), viewTables,
+				CREATE_VIRTUAL_TABLE);
+
+		new ServersViewExt().createDatasource(teiidServer.getName(), ConnectionProfileConstants.POSTGRESQL_92_DVQE,
+				BQT_MODEL_NAME);
+		checkDeployOk(staticVdbName, dynamicVdbName);
+		checkPreview(dynamicVdbName, "SELECT * FROM " + BQT_MODEL_NAME + ".smalla");
+		checkPreview(dynamicVdbName, "SELECT * FROM " + VIEW_MODEL + ".smalla");
+
+		checkContentsSame(staticVdbName, dynamicVdbContent);
+
+	}
+
 //	@Test
 //	public void exportWithForeignKeys() {
 //		String staticVdbName = "FkVdb";
@@ -146,7 +208,7 @@ public class DynamicVdbTest {
 //				.replace('\n', ' ');
 //
 //		collector.checkThat("rest options not in ddl", procViewMetadata2,
-//				new RegexMatcher(".*OPTIONS \\(.*\"REST:METHOD\" 'GET', \"REST:URI\" 'proc1/\\{p1\\}'\\).*"));
+//				new RegexMatcher(".*OPTIONS\\(.*\"REST:URI\" 'test/\\{p1\\}', \"REST:METHOD\" 'GET'\\).*"));
 //		collector.checkThat("RETURNS clause not in ddl", procViewMetadata2, new RegexMatcher(".*RETURNS TABLE.*"));
 //		collector.checkThat("wrong procedure body", procViewMetadata2, new RegexMatcher(".*XMLELEMENT.*"));
 //		collector.checkThat("REST namespace not set in ddl", procViewMetadata2,
@@ -212,19 +274,19 @@ public class DynamicVdbTest {
 //
 //		// create dynamic vdb from static
 //		String dynamicVdbContent = createDynamicVdb(PROJECT_NAME, staticVdbName, dynamicVdbName);
-//
+//		
 //		// check ddl
 //		String metadata = getXPath(dynamicVdbContent, "vdb/model[@name='ProcedureModel']/metadata[1]").replace('\n',
 //				' ');
 //		collector.checkThat("Wrong metadata for UDF", metadata,
 //				new RegexMatcher(".*CREATE VIRTUAL FUNCTION udfConcatNull "
-//						+ "\\(stringLeft string\\(4000\\), stringRight string\\(4000\\)\\) RETURNS string "
-//						+ "OPTIONS\\(\"FUNCTION-CATEGORY\" 'MY_TESTING_FUNCTION_CATEGORY', "
+//						+ "\\(stringLeft string\\(4000\\), stringRight string\\(4000\\)\\) RETURNS string\\(4000\\) "
+//						+ " OPTIONS\\(\"FUNCTION-CATEGORY\" 'MY_TESTING_FUNCTION_CATEGORY', "
 //						+ "JAVA_CLASS 'userdefinedfunctions.MyConcatNull', JAVA_METHOD 'myConcatNull'\\).*"));
 //
 //		// check lib property
 //		collector.checkThat("UDF lib property not set",
-//				getXPath(dynamicVdbContent, "/vdb/property[@name='lib']/@value)"), is("myudfmodule"));
+//				getXPath(dynamicVdbContent, "/vdb/property[@name='lib']/@value"), is("MyTestUdf-1.0-SNAPSHOT"));
 //
 //		// check deployment
 //		checkDeployOk(staticVdbName, dynamicVdbName);
@@ -348,7 +410,7 @@ public class DynamicVdbTest {
 //		String overrideName = "postgresOverride";
 //
 //		// set connection profile
-//		new ModelExplorer().changeConnectionProfile(ConnectionProfileConstants.POSTGRESQL_92_DVQE, PROJECT_NAME,
+//		new ModelExplorer().changeConnectionProfile(ConnectionProfilesConstants.POSTGRESQL_92_DVQE, PROJECT_NAME,
 //				BQT_MODEL_NAME);
 //
 //		// create static vdb
@@ -876,22 +938,34 @@ public class DynamicVdbTest {
 //		wizard.finish();
 //	}
 //
-//	private void createVdb(String projectName, String vdbName, String... models) {
-//		VDBManager vdbManager = new VDBManager();
-//		vdbManager.createVDB(projectName, vdbName);
-//		vdbManager.addModelsToVDB(projectName, vdbName, models);
-//	}
-//
-//	private String createDynamicVdb(String projectName, String staticVdbName, String dynamicVdbName) {
-//		GenerateDynamicVdbWizard wizard = new ModelExplorer().getModelProject(projectName)
-//				.getVDB(staticVdbName + ".vdb").generateDynamicVDB();
-//		wizard.setName(dynamicVdbName);
-//		wizard.next();
-//		wizard.generate();
-//		String contents = wizard.getContents();
-//		wizard.finish();
-//		return contents;
-//	}
+	private void createVdb(String projectName, String vdbName, String... models) {
+		//VDBManager vdbManager = new VDBManager();
+		//vdbManager.createVDB(projectName, vdbName);
+		//vdbManager.addModelsToVDB(projectName, vdbName, models);
+		
+		VdbWizard wizard = new VdbWizard();
+		wizard.open();
+		wizard.setName(vdbName)
+			  .setLocation(projectName);
+		for(String model : models){
+			wizard.addModel(projectName, model);
+		}
+		wizard.finish();
+		
+	}
+
+	private String createDynamicVdb(String projectName, String staticVdbName, String dynamicVdbName) {
+		GenerateDynamicVdbWizard wizard = new ModelExplorer().generateDynamicVDB(projectName, staticVdbName + ".vdb");
+		wizard.setName(dynamicVdbName);
+		wizard.next();
+		wizard.generate();
+		if (new ShellWithTextIsAvailable("Generate Dynamic VDB Status\", ").test()){
+			new PushButton("OK").click();
+		}
+		String contents = wizard.getContents();
+		wizard.finish();
+		return contents;
+	}
 //
 //	private void checkXpathPermission(String xml, String role, String resource, String permission, String expected) {
 //		try {
@@ -904,65 +978,66 @@ public class DynamicVdbTest {
 //		}
 //	}
 //
-//	private void checkMetadata(String ddl, List<ModelTable> tables, String createStatement) {
-//		for (ModelTable t : tables) {
-//			collector.checkThat("table " + t.getName() + " not in ddl", ddl,
-//					new StringContains(createStatement + t.getName()));
-//			for (ModelColumn c : t.getColumns()) {
-//				String columnDef = c.getName() + ' ' + c.getDatatype();
-//				collector.checkThat("column " + c.getName() + " not in ddl", ddl, new StringContains(columnDef));
-//			}
-//		}
-//	}
-//
-//	private void checkDeployOk(String fileName, String dynamicVdbName) {
-//		VDB vdbItem = new ModelExplorer().getModelProject(PROJECT_NAME).getVDB(fileName + "-vdb.xml");
-//		vdbItem.deployVDB();
-//		new ServersViewExt().refreshServer(teiidServer.getName());
-//		String vdbStatusTooltip = new ServersViewExt().getVdbStatus(teiidServer.getName(), dynamicVdbName);
-//		collector.checkThat("vdb is not active", vdbStatusTooltip, containsString("State:  ACTIVE"));
-//	}
-//
-//	private void checkPreview(final String vdbName, final String query) {
-//		collector.checkSucceeds(new Callable<Object>() {
-//
-//			@Override
-//			public Object call() throws Exception {
-//				TeiidJDBCHelper helper = new TeiidJDBCHelper(teiidServer, vdbName);
-//				ResultSet rs = helper.executeQueryWithResultSet(query);
-//				rs.close();
-//				helper.closeConnection();
-//				return null;
-//			}
-//		});
-//	}
-//
-//	private void checkContentsSame(String staticVdbName, String dynamicVdbContent) {
-//		File projectFile = new ModelExplorerManager().selectModelProject(PROJECT_NAME).getFile();
-//		String vdbPath = new File(projectFile, staticVdbName + "-vdb.xml").getAbsolutePath();
-//		String fileContents = teiidBot.loadFileAsString(vdbPath);
-//		collector.checkThat("Created VDB different from VDB contents in wizard", fileContents,
-//				equalToIgnoringWhiteSpace(dynamicVdbContent.replace("\n", "")));
-//	}
-//
-//	private List<ModelTable> getTables(String projectName, String modelName) {
-//		ModelEditor ed = teiidBot.openModelEditor(projectName, modelName);
-//
-//		List<ModelTable> tables = ed.getTables();
-//		for (ModelTable t : tables) {
-//			t.setColumns(ed.getColumns(t.getName()));
-//		}
-//		return tables;
-//	}
-//
-//	private String getXPath(String xml, String path) {
-//		XPath xpath = XPathFactory.newInstance().newXPath();
-//		try {
-//			return xpath.evaluate(path, new InputSource(new StringReader(xml)));
-//		} catch (Exception ex) {
-//			ex.printStackTrace();
-//			System.out.println("error evaluating xpath");
-//		}
-//		return null;
-//	}
+	private void checkMetadata(String ddl, List<ModelTable> tables, String createStatement) {
+		for (ModelTable t : tables) {
+			collector.checkThat("table " + t.getName() + " not in ddl", ddl,
+					new StringContains(createStatement + t.getName()));
+			for (ModelColumn c : t.getColumns()) {
+				String columnDef = c.getName() + ' ' + c.getDatatype();
+				collector.checkThat("column " + c.getName() + " not in ddl", ddl, new StringContains(columnDef));
+			}
+		}
+	}
+
+	private void checkDeployOk(String fileName, String dynamicVdbName) {
+		//VDB vdbItem = new ModelExplorer().getModelProject(PROJECT_NAME).getVDB(fileName + "-vdb.xml");
+		//vdbItem.deployVDB();
+		new ModelExplorer().deployVdb(PROJECT_NAME, fileName + "-vdb.xml");
+		new ServersViewExt().refreshServer(teiidServer.getName());
+		String vdbStatusTooltip = new ServersViewExt().getVdbStatus(teiidServer.getName(), dynamicVdbName);
+		collector.checkThat("vdb is not active", vdbStatusTooltip, containsString("State:  ACTIVE"));
+	}
+
+	private void checkPreview(final String vdbName, final String query) {
+		collector.checkSucceeds(new Callable<Object>() {
+
+			@Override
+			public Object call() throws Exception {
+				TeiidJDBCHelper helper = new TeiidJDBCHelper(teiidServer, vdbName);
+				ResultSet rs = helper.executeQueryWithResultSet(query);
+				rs.close();
+				helper.closeConnection();
+				return null;
+			}
+		});
+	}
+
+	private void checkContentsSame(String staticVdbName, String dynamicVdbContent) {
+		File projectFile = new ModelExplorer().getModelProject(PROJECT_NAME).getFile();
+		String vdbPath = new File(projectFile, staticVdbName + "-vdb.xml").getAbsolutePath();
+		String fileContents = teiidBot.loadFileAsString(vdbPath);
+		collector.checkThat("Created VDB different from VDB contents in wizard", fileContents,
+				equalToIgnoringWhiteSpace(dynamicVdbContent.replace("\n", "")));
+	}
+
+	private List<ModelTable> getTables(String projectName, String modelName) {
+		ModelEditor ed = teiidBot.openModelEditor(projectName, modelName);
+
+		List<ModelTable> tables = ed.getTables();
+		for (ModelTable t : tables) {
+			t.setColumns(ed.getColumns(t.getName()));
+		}
+		return tables;
+	}
+
+	private String getXPath(String xml, String path) {
+		XPath xpath = XPathFactory.newInstance().newXPath();
+		try {
+			return xpath.evaluate(path, new InputSource(new StringReader(xml)));
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			System.out.println("error evaluating xpath");
+		}
+		return null;
+	}
 }
