@@ -292,7 +292,7 @@ public class ModelExplorer extends AbstractExplorer {
 	public void deployVdb(/*boolean passThruAuth, */String... vdbpath) {
 		new WorkbenchShell();
 		int i = vdbpath.length -1;
-		vdbpath[i] = (vdbpath[i].contains(".vdb")) ? vdbpath[i] : vdbpath[i] + ".vdb";
+		vdbpath[i] = (vdbpath[i].contains(".vdb") || vdbpath[i].contains(".xml")) ? vdbpath[i] : vdbpath[i] + ".vdb";
 		this.selectItem(vdbpath);
 		new ContextMenu("Modeling", "Deploy").select();
 		AbstractWait.sleep(TimePeriod.getCustom(3));
