@@ -34,6 +34,7 @@ public class LdapImportWizard extends ImportWizardDialog {
 	
 	public LdapImportWizard() {
 		super("Teiid Designer", "LDAP Service >> Source Model");
+		log.info("Import ldap wizard is opened");
 	}
 	
 	public LdapImportWizard activate() {

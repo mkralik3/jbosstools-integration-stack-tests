@@ -30,6 +30,7 @@ public class MetadataImportWizard extends TeiidImportWizard {
 
 	public MetadataImportWizard() {
 		super("Designer Text File >> Source or View Models");
+		log.info("Import metadata wizard is opened");
 	}
 	
 	public MetadataImportWizard activate() {

@@ -23,6 +23,7 @@ public class RestImportWizard extends TeiidImportWizard {
 	
 	public RestImportWizard() {
 		super("Web Service Source >> Source and View Model (REST)");
+		log.info("Rest import wizard is opened");
 	}
 	
 	public RestImportWizard activate() {

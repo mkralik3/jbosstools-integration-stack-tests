@@ -17,7 +17,7 @@ public class ImportProjectWizard extends ImportWizardDialog {
 
 	public ImportProjectWizard() {
 		super("General", "Existing Projects into Workspace");
-		log.info("Import project wizard is opened");
+		log.info("Project import wizard is opened");
 	}
 	
 	public ImportProjectWizard activate() {
