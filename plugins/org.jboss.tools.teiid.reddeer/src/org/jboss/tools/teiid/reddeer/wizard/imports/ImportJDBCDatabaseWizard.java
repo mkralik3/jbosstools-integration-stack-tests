@@ -6,7 +6,6 @@ import java.util.List;
 import org.jboss.reddeer.jface.wizard.ImportWizardDialog;
 import org.jboss.reddeer.core.condition.JobIsRunning;
 import org.jboss.reddeer.core.condition.ShellWithTextIsAvailable;
-import org.jboss.reddeer.swt.api.TreeItem;
 import org.jboss.reddeer.swt.impl.button.CheckBox;
 import org.jboss.reddeer.swt.impl.button.PushButton;
 import org.jboss.reddeer.swt.impl.button.RadioButton;
@@ -32,7 +31,7 @@ public class ImportJDBCDatabaseWizard extends ImportWizardDialog {
 
 	public ImportJDBCDatabaseWizard() {
 		super("Teiid Designer", "JDBC Database >> Source Model");
-		log.info("Import JDBC Database wizard is opened");
+		log.info("JDBC Database import wizard is opened");
 	}
 
 	public ImportJDBCDatabaseWizard activate() {
@@ -189,7 +188,7 @@ public class ImportJDBCDatabaseWizard extends ImportWizardDialog {
 		}
 		for (String item : itemList) {
 			String[] itemArray = item.split("/");
-			TreeItem treeItem = new DefaultTreeItem(itemArray);
+			DefaultTreeItem treeItem = new DefaultTreeItem(itemArray);
 			treeItem.setChecked(true);
 			
 		}

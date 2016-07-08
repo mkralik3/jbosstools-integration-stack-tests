@@ -27,6 +27,7 @@ public class FlatImportWizard extends TeiidImportWizard {
 
 	public FlatImportWizard() {
 		super("File Source (Flat) >> Source and View Model");
+		log.info("Flat file import Wizard is opened");
 	}
 
 	static class TexttableFunctionOptions {
