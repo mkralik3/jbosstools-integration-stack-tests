@@ -39,15 +39,11 @@ import org.jboss.reddeer.swt.impl.menu.ShellMenu;
 import org.jboss.reddeer.swt.impl.table.DefaultTable;
 import org.jboss.tools.teiid.reddeer.Procedure;
 import org.jboss.tools.teiid.reddeer.connection.ConnectionProfileConstants;
-//import org.jboss.tools.teiid.reddeer.VDB;
 import org.jboss.tools.teiid.reddeer.connection.TeiidJDBCHelper;
 import org.jboss.tools.teiid.reddeer.editor.DataRolesEditor;
 import org.jboss.tools.teiid.reddeer.editor.DataRolesEditor.PermissionType;
 import org.jboss.tools.teiid.reddeer.editor.ModelEditor;
 import org.jboss.tools.teiid.reddeer.editor.VDBEditor;
-//import org.jboss.tools.teiid.reddeer.manager.ImportManager;
-//import org.jboss.tools.teiid.reddeer.manager.ModelExplorerManager;
-//import org.jboss.tools.teiid.reddeer.manager.VDBManager;
 import org.jboss.tools.teiid.reddeer.matcher.TableItemMatcher;
 import org.jboss.tools.teiid.reddeer.modeling.ModelColumn;
 import org.jboss.tools.teiid.reddeer.modeling.ModelProcedure;
@@ -61,6 +57,7 @@ import org.jboss.tools.teiid.reddeer.wizard.GenerateDynamicVdbWizard;
 import org.jboss.tools.teiid.reddeer.wizard.GenerateVdbArchiveWizard;
 import org.jboss.tools.teiid.reddeer.wizard.ModelProjectWizard;
 import org.jboss.tools.teiid.reddeer.wizard.VdbWizard;
+import org.jboss.tools.teiid.reddeer.wizard.imports.ImportFromFileSystemWizard;
 import org.jboss.tools.teiid.reddeer.wizard.imports.ImportProjectWizard;
 import org.junit.After;
 import org.junit.Before;
@@ -99,7 +96,6 @@ public class DynamicVdbTest {
 
 	@Before
 	public void before() {
-		//new ImportManager().importProject(teiidBot.toAbsolutePath("resources/projects/" + PROJECT_NAME));
 		
 		ImportProjectWizard importWizard = new ImportProjectWizard();
 		importWizard.open();
@@ -166,132 +162,85 @@ public class DynamicVdbTest {
 
 	}
 
-//	@Test
-//	public void exportWithForeignKeys() {
-//		String staticVdbName = "FkVdb";
-//		String dynamicVdbName = staticVdbName + "Dynamic";
-//		String modelName = "FkModel";
-//
-//		// create static vdb
-//		createVdb(PROJECT_NAME, staticVdbName, modelName + ".xmi");
-//
-//		// create dynamic vdb from static
-//		String dynamicVdbContent = createDynamicVdb(PROJECT_NAME, staticVdbName, dynamicVdbName);
-//
-//		collector.checkThat("wrong foreign key in ddl",
-//				getXPath(dynamicVdbContent, "/vdb/model[@name='FkModel']/metadata[1]"), new StringContains(
-//						"CONSTRAINT FKI_SECOND_THIRD_ID FOREIGN KEY(CatalogSecondID, CatalogThirdID) REFERENCES Catalog(SecondID, ThirdID)"));
-//	}
-//
-//	@Test
-//	public void exportWithRestProcedure() {
-//		String staticVdbName = "RestProcedureVdb";
-//		String dynamicVdbName = staticVdbName + "Dynamic";
-//
-//		// create static vdb
-//		createVdb(PROJECT_NAME, staticVdbName, PROCEDURE_MODEL + ".xmi");
-//		VDBEditor vdbEditor = new VDBManager().getVDBEditor(PROJECT_NAME, staticVdbName);
-//		vdbEditor.setGenerateRestWar(true);
-//		vdbEditor.save();
-//
-//		// create dynamic vdb from static
-//		String dynamicVdbContent = createDynamicVdb(PROJECT_NAME, staticVdbName, dynamicVdbName);
-//
-//		// check auto-generate rest war property, this looks like this:
-//		// <property name="{http://teiid.org/rest}auto-generate" value="true"/>
-//		collector.checkThat("wrong value for Auto generate REST WAR property",
-//				getXPath(dynamicVdbContent, "/vdb/property[@name='{http://teiid.org/rest}auto-generate']/@value"),
-//				is("true"));
-//
-//		// check procedure metadata
-//		String procViewMetadata2 = getXPath(dynamicVdbContent, "/vdb/model[@name='ProcedureModel']/metadata[1]")
-//				.replace('\n', ' ');
-//
-//		collector.checkThat("rest options not in ddl", procViewMetadata2,
-//				new RegexMatcher(".*OPTIONS\\(.*\"REST:URI\" 'test/\\{p1\\}', \"REST:METHOD\" 'GET'\\).*"));
-//		collector.checkThat("RETURNS clause not in ddl", procViewMetadata2, new RegexMatcher(".*RETURNS TABLE.*"));
-//		collector.checkThat("wrong procedure body", procViewMetadata2, new RegexMatcher(".*XMLELEMENT.*"));
-//		collector.checkThat("REST namespace not set in ddl", procViewMetadata2,
-//				new RegexMatcher(".*SET NAMESPACE 'http://teiid.org/rest' AS REST;.*"));
-//
-//		// check deployment
-//		checkDeployOk(staticVdbName, dynamicVdbName);
-//		checkPreview(dynamicVdbName, "EXEC testProc('param1')");
-//
-//		checkContentsSame(staticVdbName, dynamicVdbContent);
-//
-//	}
-//
-//	@Test
-//	public void exportWithCustomProperties() {
-//		String staticVdbName = "CustomPropertiesVdb";
-//		String dynamicVdbName = staticVdbName + "Dynamic";
-//
-//		// create static vdb
-//		createVdb(PROJECT_NAME, staticVdbName, PROCEDURE_MODEL + ".xmi");
-//		VDBEditor vdbEditor = new VDBManager().getVDBEditor(PROJECT_NAME, staticVdbName);
-//		vdbEditor.addUserDefinedProperty("customVdbProperty", "someValue");
-//		vdbEditor.save();
-//
-//		// create dynamic vdb from static
-//		String dynamicVdbContent = createDynamicVdb(PROJECT_NAME, staticVdbName, dynamicVdbName);
-//
-//		collector.checkThat("user defined property not in vdb",
-//				getXPath(dynamicVdbContent, "/vdb/property[@name=customVdbProperty]/@value"), is("someValue"));
-//
-//		checkContentsSame(staticVdbName, dynamicVdbContent);
-//	}
-//
-//	@Test
-//	public void exportWithUdf() {
-//		String staticVdbName = "UdfProcedureVdb";
-//		String dynamicVdbName = staticVdbName + "Dynamic";
-//
-//		// import udf jar
-//		Properties props = new Properties();
-//		props.setProperty("dirName", teiidBot.toAbsolutePath(UDF_LIB_PATH));
-//		props.setProperty("intoFolder", PROJECT_NAME);
-//		props.setProperty("file", UDF_LIB);
-//		props.setProperty("createTopLevel", "true");
-//		new ImportManager().importGeneralItem(ImportGeneralItemWizard.Type.FILE_SYSTEM, props);
-//
-//		// create UDF
-//		String proc = "udfConcatNull";
-//		props = new Properties();
-//		props.setProperty("type", Procedure.Type.RELVIEW_USER_DEFINED_FUNCTION);
-//		props.setProperty("params", "stringLeft,stringRight");
-//		props.setProperty("returnParam", "concatenatedResult");
-//		props.setProperty("functionCategory", "MY_TESTING_FUNCTION_CATEGORY");
-//		props.setProperty("javaClass", "userdefinedfunctions.MyConcatNull");// see decompiled jar
-//		props.setProperty("javaMethod", "myConcatNull");
-//		props.setProperty("udfJarPath", "lib/" + UDF_LIB);
-//
-//		new ModelExplorerManager().getModelExplorerView().newProcedure(PROJECT_NAME, PROCEDURE_MODEL + ".xmi", proc,
-//				props);
-//
-//		// create static vdb
-//		createVdb(PROJECT_NAME, staticVdbName, PROCEDURE_MODEL + ".xmi");
-//
-//		// create dynamic vdb from static
-//		String dynamicVdbContent = createDynamicVdb(PROJECT_NAME, staticVdbName, dynamicVdbName);
-//		
-//		// check ddl
-//		String metadata = getXPath(dynamicVdbContent, "vdb/model[@name='ProcedureModel']/metadata[1]").replace('\n',
-//				' ');
-//		collector.checkThat("Wrong metadata for UDF", metadata,
-//				new RegexMatcher(".*CREATE VIRTUAL FUNCTION udfConcatNull "
-//						+ "\\(stringLeft string\\(4000\\), stringRight string\\(4000\\)\\) RETURNS string\\(4000\\) "
-//						+ " OPTIONS\\(\"FUNCTION-CATEGORY\" 'MY_TESTING_FUNCTION_CATEGORY', "
-//						+ "JAVA_CLASS 'userdefinedfunctions.MyConcatNull', JAVA_METHOD 'myConcatNull'\\).*"));
-//
-//		// check lib property
-//		collector.checkThat("UDF lib property not set",
-//				getXPath(dynamicVdbContent, "/vdb/property[@name='lib']/@value"), is("MyTestUdf-1.0-SNAPSHOT"));
-//
-//		// check deployment
-//		checkDeployOk(staticVdbName, dynamicVdbName);
-//	}
-//
+	@Test
+	public void exportWithForeignKeys() {
+		String staticVdbName = "FkVdb";
+		String dynamicVdbName = staticVdbName + "Dynamic";
+		String modelName = "FkModel";
+
+		// create static vdb
+		createVdb(PROJECT_NAME, staticVdbName, modelName + ".xmi");
+
+		// create dynamic vdb from static
+		String dynamicVdbContent = createDynamicVdb(PROJECT_NAME, staticVdbName, dynamicVdbName);
+
+		collector.checkThat("wrong foreign key in ddl",
+				getXPath(dynamicVdbContent, "/vdb/model[@name='FkModel']/metadata[1]"), new StringContains(
+						"CONSTRAINT FKI_SECOND_THIRD_ID FOREIGN KEY(CatalogSecondID, CatalogThirdID) REFERENCES Catalog(SecondID, ThirdID)"));
+	}
+
+	@Test
+	public void exportWithRestProcedure() {
+		String staticVdbName = "RestProcedureVdb";
+		String dynamicVdbName = staticVdbName + "Dynamic";
+
+		// create static vdb
+		createVdb(PROJECT_NAME, staticVdbName, PROCEDURE_MODEL + ".xmi");
+		new ModelExplorer().getModelProject(PROJECT_NAME).open(staticVdbName + ".vdb");
+		VDBEditor vdbEditor = VDBEditor.getInstance(staticVdbName + ".vdb");
+		vdbEditor.setGenerateRestWar(true);
+		vdbEditor.save();
+
+		// create dynamic vdb from static
+		String dynamicVdbContent = createDynamicVdb(PROJECT_NAME, staticVdbName, dynamicVdbName);
+
+		// check auto-generate rest war property, this looks like this:
+		// <property name="{http://teiid.org/rest}auto-generate" value="true"/>
+		collector.checkThat("wrong value for Auto generate REST WAR property",
+				getXPath(dynamicVdbContent, "/vdb/property[@name='{http://teiid.org/rest}auto-generate']/@value"),
+				is("true"));
+
+		// check procedure metadata
+		String procViewMetadata2 = getXPath(dynamicVdbContent, "/vdb/model[@name='ProcedureModel']/metadata[1]")
+				.replace('\n', ' ');
+
+		collector.checkThat("rest options not in ddl", procViewMetadata2,
+				new RegexMatcher(".*OPTIONS\\(.*\"REST:URI\" 'test/\\{p1\\}', \"REST:METHOD\" 'GET'\\).*"));
+		collector.checkThat("RETURNS clause not in ddl", procViewMetadata2, new RegexMatcher(".*RETURNS TABLE.*"));
+		collector.checkThat("wrong procedure body", procViewMetadata2, new RegexMatcher(".*XMLELEMENT.*"));
+		collector.checkThat("REST namespace not set in ddl", procViewMetadata2,
+				new RegexMatcher(".*SET NAMESPACE 'http://teiid.org/rest' AS REST;.*"));
+
+		// check deployment
+		checkDeployOk(staticVdbName, dynamicVdbName);
+		checkPreview(dynamicVdbName, "EXEC testProc('param1')");
+
+		checkContentsSame(staticVdbName, dynamicVdbContent);
+
+	}
+
+	@Test
+	public void exportWithCustomProperties() {
+		String staticVdbName = "CustomPropertiesVdb";
+		String dynamicVdbName = staticVdbName + "Dynamic";
+
+		// create static vdb
+		createVdb(PROJECT_NAME, staticVdbName, PROCEDURE_MODEL + ".xmi");
+		new ModelExplorer().getModelProject(PROJECT_NAME).open(staticVdbName + ".vdb");
+		VDBEditor vdbEditor = VDBEditor.getInstance(staticVdbName + ".vdb");
+		vdbEditor.addUserDefinedProperty("customVdbProperty", "someValue");
+		vdbEditor.save();
+
+		// create dynamic vdb from static
+		String dynamicVdbContent = createDynamicVdb(PROJECT_NAME, staticVdbName, dynamicVdbName);
+
+		collector.checkThat("user defined property not in vdb",
+				getXPath(dynamicVdbContent, "/vdb/property[@name=\"customVdbProperty\"]/@value"), is("someValue"));
+
+		checkContentsSame(staticVdbName, dynamicVdbContent);
+	}
+
+	
 //	@Test
 //	public void exportWithDataRoles() {
 //		String staticVdbName = "DataRolesVdb";
@@ -939,9 +888,6 @@ public class DynamicVdbTest {
 //	}
 //
 	private void createVdb(String projectName, String vdbName, String... models) {
-		//VDBManager vdbManager = new VDBManager();
-		//vdbManager.createVDB(projectName, vdbName);
-		//vdbManager.addModelsToVDB(projectName, vdbName, models);
 		
 		VdbWizard wizard = new VdbWizard();
 		wizard.open();
@@ -990,8 +936,6 @@ public class DynamicVdbTest {
 	}
 
 	private void checkDeployOk(String fileName, String dynamicVdbName) {
-		//VDB vdbItem = new ModelExplorer().getModelProject(PROJECT_NAME).getVDB(fileName + "-vdb.xml");
-		//vdbItem.deployVDB();
 		new ModelExplorer().deployVdb(PROJECT_NAME, fileName + "-vdb.xml");
 		new ServersViewExt().refreshServer(teiidServer.getName());
 		String vdbStatusTooltip = new ServersViewExt().getVdbStatus(teiidServer.getName(), dynamicVdbName);
