@@ -94,7 +94,7 @@ public class TeiidConnectionImportTest extends SWTBotTestCase {
 		String absPath = teiidBot.toAbsolutePath(dsProps.getProperty("* Parent Directory"));
 		dsProps.setProperty("* Parent Directory", absPath);
 
-		new ImportMetadataManager().importFromTeiidConnection(PROJECT_NAME, FILE_MODEL, iProps, dsProps);
+		new ImportMetadataManager().importFromTeiidConnection(PROJECT_NAME, FILE_MODEL, iProps, dsProps, null);
 
 		teiidBot.assertResource(PROJECT_NAME, FILE_MODEL + ".xmi", "getTextFiles");
 	}
@@ -151,7 +151,7 @@ public class TeiidConnectionImportTest extends SWTBotTestCase {
 
 		String model = "sfImp";
 
-		new ImportMetadataManager().importFromTeiidConnection(PROJECT_NAME, model, iProps, dsProps);
+		new ImportMetadataManager().importFromTeiidConnection(PROJECT_NAME, model, iProps, dsProps, null);
 
 		checkImportedModel(model, "Account", "Vote", "Profile");
 	}
@@ -360,7 +360,7 @@ public class TeiidConnectionImportTest extends SWTBotTestCase {
 		dsProps.put(TeiidConnectionImportWizard.DATASOURCE_PROPERTY_URL,
 				"http://services.odata.org/Northwind/Northwind.svc");
 
-		new ImportMetadataManager().importFromTeiidConnection(PROJECT_NAME, modelName, iProps, dsProps);
+		new ImportMetadataManager().importFromTeiidConnection(PROJECT_NAME, modelName, iProps, dsProps, null);
 
 		teiidBot.assertResource(PROJECT_NAME, modelName + ".xmi", "Customers");
 		teiidBot.assertResource(PROJECT_NAME, modelName + ".xmi", "Customers", "CustomerID : string(5)");
