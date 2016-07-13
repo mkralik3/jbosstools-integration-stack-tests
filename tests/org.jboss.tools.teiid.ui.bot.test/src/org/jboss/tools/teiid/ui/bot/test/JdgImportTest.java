@@ -35,7 +35,7 @@ public class JdgImportTest {
 		iProps.setProperty(TeiidConnectionImportWizard.DATA_SOURCE_NAME, "infinispan-remote-cache-ds");
 		iProps.setProperty(TeiidConnectionImportWizard.TRANSLATOR, "infinispan-cache-dsl");
 
-		new ImportMetadataManager().importFromTeiidConnection(PROJECT_NAME, modelName, iProps, null);
+		new ImportMetadataManager().importFromTeiidConnection(PROJECT_NAME, modelName, iProps, null, null);
 
 		teiidBot.assertResource(PROJECT_NAME, modelName + ".xmi", "SmallA");
 		teiidBot.assertResource(PROJECT_NAME, modelName + ".xmi", "SmallA", "SmallAObject : object");

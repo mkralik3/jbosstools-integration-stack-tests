@@ -16,7 +16,7 @@ import org.jboss.tools.common.reddeer.condition.IssueIsClosed.Jira;
 import org.jboss.tools.teiid.reddeer.Procedure;
 import org.jboss.tools.teiid.reddeer.Table;
 import org.jboss.tools.teiid.reddeer.connection.ConnectionProfileConstants;
-import org.jboss.tools.teiid.reddeer.manager.PerspectiveAndViewManager;
+import org.jboss.tools.teiid.reddeer.perspective.TeiidPerspective;
 import org.jboss.tools.teiid.reddeer.requirement.TeiidServerRequirement.TeiidServer;
 import org.jboss.tools.teiid.reddeer.view.ModelExplorer;
 import org.jboss.tools.teiid.reddeer.wizard.imports.ImportFromFileSystemWizard;
@@ -41,7 +41,7 @@ public class ProcedurePreviewTest {
 
 	@BeforeClass
 	public static void createModelProject() {
-		new PerspectiveAndViewManager().openTeiidDesignerPerspective();		
+		TeiidPerspective.getInstance().open();	
 		ModelExplorer explorer = new ModelExplorer();
 		
 		explorer.importProject(PROJECT_NAME);

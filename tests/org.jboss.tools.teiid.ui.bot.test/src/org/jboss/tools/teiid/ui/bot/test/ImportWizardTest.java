@@ -10,7 +10,7 @@ import org.jboss.reddeer.requirements.server.ServerReqState;
 import org.jboss.reddeer.workbench.impl.shell.WorkbenchShell;
 import org.jboss.tools.common.reddeer.condition.IssueIsClosed;
 import org.jboss.tools.common.reddeer.condition.IssueIsClosed.Jira;
-import org.jboss.tools.teiid.reddeer.manager.ConnectionProfileManager;
+import org.jboss.tools.teiid.reddeer.connection.ConnectionProfileHelper;
 import org.jboss.tools.teiid.reddeer.manager.ImportMetadataManager;
 import org.jboss.tools.teiid.reddeer.perspective.TeiidPerspective;
 import org.jboss.tools.teiid.reddeer.requirement.TeiidServerRequirement.TeiidServer;
@@ -104,7 +104,7 @@ public class ImportWizardTest {
 	public void flatImportTest() {
 
 		String flatProfile = "Flat Profile";
-		new ConnectionProfileManager().createCPFlatFile(flatProfile, "resources/flat");
+		new ConnectionProfileHelper().createCpFlatFile(flatProfile, "resources/flat");
 
 		FlatImportWizard importWizard = new FlatImportWizard();
 		importWizard.open();
@@ -131,7 +131,7 @@ public class ImportWizardTest {
 	public void xmlImportTest() {
 
 		String xmlProfile = "XML Local Profile";
-		new ConnectionProfileManager().createCPXml(xmlProfile, "resources/flat/accounts.xml");
+		new ConnectionProfileHelper().createCpXml(xmlProfile, "resources/flat/accounts.xml");
 
 		Properties props = new Properties();
 		props.setProperty("local", "true");
@@ -156,7 +156,7 @@ public class ImportWizardTest {
 		wsdlCP.setProperty("wsdl", "resources/wsdl/Hello.wsdl");
 		wsdlCP.setProperty("endPoint", "HelloPort");
 
-		new ConnectionProfileManager().createCPWSDL(profile, wsdlCP);
+		new ConnectionProfileHelper().createCpWsdl(profile, wsdlCP);
 
 		WsdlImportWizard wsdlWizard = new WsdlImportWizard();
 
@@ -197,11 +197,10 @@ public class ImportWizardTest {
 		iProps.setProperty("modelName", "WsdlToWS");
 		iProps.setProperty("project", MODEL_PROJECT);
 		iProps.setProperty("wsdlName", "Hello.wsdl");
-		new ImportMetadataManager().importFromWSDLToWebService(iProps, WsdlWebImportWizard.IMPORT_WSDL_FROM_WORKSPACE); // generates
-																														// Hello.xsd
-																														// WsdlToWS.xmi
-																														// -
-																														// Hello
+
+		WsdlWebImportWizard importWizard = new WsdlWebImportWizard();
+		importWizard.importWsdl(iProps, WsdlWebImportWizard.IMPORT_WSDL_FROM_WORKSPACE);
+		
 		new WorkbenchShell();
 
 		// import from URL
@@ -210,7 +209,9 @@ public class ImportWizardTest {
 		iProps.setProperty("project", MODEL_PROJECT);
 		iProps.setProperty("wsdlUrl", "http://www.webservicex.com/globalweather.asmx?WSDL");
 		iProps.setProperty("securityType", "None");
-		new ImportMetadataManager().importFromWSDLToWebService(iProps, WsdlWebImportWizard.IMPORT_WSDL_FROM_URL);
+		
+		importWizard = new WsdlWebImportWizard();
+		importWizard.importWsdl(iProps, WsdlWebImportWizard.IMPORT_WSDL_FROM_URL);
 
 		teiidBot.assertResource(MODEL_PROJECT, "WsdlToWS.xmi");
 		teiidBot.assertResource(MODEL_PROJECT, "WsdlToWS2Responses.xmi");

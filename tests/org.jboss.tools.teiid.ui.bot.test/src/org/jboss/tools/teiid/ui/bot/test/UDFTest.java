@@ -12,7 +12,7 @@ import org.jboss.tools.teiid.reddeer.Procedure;
 import org.jboss.tools.teiid.reddeer.Table;
 import org.jboss.tools.teiid.reddeer.connection.ConnectionProfileConstants;
 import org.jboss.tools.teiid.reddeer.connection.TeiidJDBCHelper;
-import org.jboss.tools.teiid.reddeer.manager.PerspectiveAndViewManager;
+import org.jboss.tools.teiid.reddeer.perspective.TeiidPerspective;
 import org.jboss.tools.teiid.reddeer.requirement.TeiidServerRequirement;
 import org.jboss.tools.teiid.reddeer.requirement.TeiidServerRequirement.TeiidServer;
 import org.jboss.tools.teiid.reddeer.view.ModelExplorer;
@@ -42,7 +42,7 @@ public class UDFTest {
 	
 	@BeforeClass
 	public static void createModelProject() {
-		new PerspectiveAndViewManager().openTeiidDesignerPerspective();
+		TeiidPerspective.getInstance().open();
 		new ModelExplorer().importProject(PROJECT_NAME);
 		new ModelExplorer().changeConnectionProfile(PROFILE_NAME, PROJECT_NAME, MODEL_SRC_NAME);
 	}

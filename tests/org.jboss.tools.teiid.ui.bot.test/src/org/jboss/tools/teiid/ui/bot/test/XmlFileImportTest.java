@@ -10,8 +10,8 @@ import org.jboss.reddeer.junit.runner.RedDeerSuite;
 import org.jboss.reddeer.requirements.openperspective.OpenPerspectiveRequirement.OpenPerspective;
 import org.jboss.reddeer.requirements.server.ServerReqState;
 import org.jboss.reddeer.workbench.impl.shell.WorkbenchShell;
+import org.jboss.tools.teiid.reddeer.connection.ConnectionProfileHelper;
 import org.jboss.tools.teiid.reddeer.connection.TeiidJDBCHelper;
-import org.jboss.tools.teiid.reddeer.manager.ConnectionProfileManager;
 import org.jboss.tools.teiid.reddeer.manager.ImportMetadataManager;
 import org.jboss.tools.teiid.reddeer.perspective.TeiidPerspective;
 import org.jboss.tools.teiid.reddeer.requirement.TeiidServerRequirement;
@@ -49,7 +49,7 @@ public class XmlFileImportTest {
 	@Test
 	public void test() {
 		// Import from local XML file
-		new ConnectionProfileManager().createCPXml(LOCAL_CP_NAME, "resources/flat/cd_catalog.xml");
+		new ConnectionProfileHelper().createCpXml(LOCAL_CP_NAME, "resources/flat/cd_catalog.xml");
 		Properties props = new Properties();
 		props.setProperty("local", "true");
 		props.setProperty("rootPath", "/CATALOG/CD");
@@ -60,7 +60,7 @@ public class XmlFileImportTest {
 		new ImportMetadataManager().importFromXML(PROJECT_NAME, LOCAL_MODEL_PREFIX, LOCAL_CP_NAME, props);		
 		
 		// Import from remote XML file
-		new ConnectionProfileManager().createCPXml(REMOTE_CP_NAME, "https://raw.githubusercontent.com/mmakovy/import-files/master/cd_catalog.xml");
+		new ConnectionProfileHelper().createCpXml(REMOTE_CP_NAME, "https://raw.githubusercontent.com/mmakovy/import-files/master/cd_catalog.xml");
 		props = new Properties();
 		props.setProperty("local", "false");
 		props.setProperty("rootPath", "/CATALOG/CD");
