@@ -43,7 +43,6 @@ import org.jboss.tools.teiid.reddeer.connection.ResourceFileHelper;
 import org.jboss.tools.teiid.reddeer.connection.SimpleHttpClient;
 import org.jboss.tools.teiid.reddeer.dialog.CreateWarDialog;
 import org.jboss.tools.teiid.reddeer.editor.ModelEditor;
-import org.jboss.tools.teiid.reddeer.manager.ImportMetadataManager;
 import org.jboss.tools.teiid.reddeer.perspective.DatabaseDevelopmentPerspective;
 import org.jboss.tools.teiid.reddeer.perspective.TeiidPerspective;
 import org.jboss.tools.teiid.reddeer.requirement.TeiidServerRequirement;
@@ -55,6 +54,7 @@ import org.jboss.tools.teiid.reddeer.wizard.MetadataModelWizard;
 import org.jboss.tools.teiid.reddeer.wizard.imports.FlatImportWizard;
 import org.jboss.tools.teiid.reddeer.wizard.imports.ImportJDBCDatabaseWizard;
 import org.jboss.tools.teiid.reddeer.wizard.imports.WsdlImportWizard;
+import org.jboss.tools.teiid.reddeer.wizard.imports.XMLImportWizard;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -261,13 +261,18 @@ public class GuidesTest {
 		guides.chooseAction(actionSet, "Create source model from XML file source");
 		new DefaultShell("Import From XML File Source");
 		new PushButton("Cancel").click();
-		Properties props = new Properties();
-		props.setProperty("local", "true");
-		props.setProperty("JNDI Name", xmlLocalName);
-		props.setProperty("rootPath", "/SUPPLIERS/SUPPLIER");
-		props.setProperty("destination", xmlLocalprofile);
-		props.setProperty("elements", "SUPPLIERS/SUPPLIER/SUPPLIER_ID,SUPPLIERS/SUPPLIER/SUPPLIER_NAME,SUPPLIERS/SUPPLIER/SUPPLIER_STATUS,SUPPLIERS/SUPPLIER/SUPPLIER_CITY,SUPPLIERS/SUPPLIER/SUPPLIER_STATE");
-		new ImportMetadataManager().importFromXML(xmlLocalprofile , xmlLocalName, xmlLocalprofile, props);
+
+		XMLImportWizard importWizard = new XMLImportWizard();
+		importWizard.setName(xmlLocalName);
+		importWizard.setLocal(true);
+		importWizard.setRootPath("/SUPPLIERS/SUPPLIER");
+		importWizard.addElement("SUPPLIERS/SUPPLIER/SUPPLIER_ID");
+		importWizard.addElement("SUPPLIERS/SUPPLIER/SUPPLIER_NAME");
+		importWizard.addElement("SUPPLIERS/SUPPLIER/SUPPLIER_STATUS");
+		importWizard.addElement("SUPPLIERS/SUPPLIER/SUPPLIER_CITY");
+		importWizard.addElement("SUPPLIERS/SUPPLIER/SUPPLIER_STATE");
+		importWizard.setJndiName(xmlLocalName);
+		importWizard.execute();
 		
 		guides.previewDataViaActionSet(actionSet,xmlLocalprofile, xmlLocalName+"View.xmi",xmlLocalName+"Table");
 		assertTrue(testLastPreview());
@@ -298,19 +303,21 @@ public class GuidesTest {
 		guides.chooseAction(actionSet, "Create source model from remote XML");
 		new DefaultShell("Import From XML File Source");
 		new PushButton("Cancel").click();
-		Properties props = new Properties();
-		props.setProperty("local", "false");
-		props.setProperty("JNDI Name", xmlRemoteName);
-		props.setProperty("rootPath", "/CATALOG/CD");
-		props.setProperty("destination", xmlRemoteprofile);
-		
+
+		XMLImportWizard importWizard = new XMLImportWizard();
+		importWizard.setName(xmlRemoteName);
+		importWizard.setLocal(false);
+		importWizard.setRootPath("/CATALOG/CD");
+		importWizard.addElement("CATALOG/CD/TITLE");
+		importWizard.addElement("CATALOG/CD/ARTIST");
+		importWizard.addElement("CATALOG/CD/COUNTRY");
+		importWizard.addElement("CATALOG/CD/COMPANY");
+		importWizard.addElement("CATALOG/CD/PRICE");
 		if(new JiraClient().isIssueClosed("TEIIDDES-2858")){
-			props.setProperty("elements", "CATALOG/CD/TITLE,CATALOG/CD/ARTIST,CATALOG/CD/COUNTRY,CATALOG/CD/COMPANY,CATALOG/CD/PRICE,CATALOG/CD/YEAR");
-		}else{
-			props.setProperty("elements", "CATALOG/CD/TITLE,CATALOG/CD/ARTIST,CATALOG/CD/COUNTRY,CATALOG/CD/COMPANY,CATALOG/CD/PRICE");
+			importWizard.addElement("CATALOG/CD/YEAR");
 		}
-		
-		new ImportMetadataManager().importFromXML(xmlRemoteprofile , xmlRemoteName, xmlRemoteprofile, props);
+		importWizard.setJndiName(xmlRemoteName);
+		importWizard.execute();
 		
 		guides.previewDataViaActionSet(actionSet,xmlRemoteprofile, xmlRemoteName+"View.xmi",xmlRemoteName+"Table");
 		assertTrue(testLastPreview());
