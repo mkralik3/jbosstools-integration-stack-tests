@@ -97,8 +97,8 @@ public class XmlRecursiveTest {
 		
 		editor.openDocument("SimpleEmployeesDocument");
 		
-		assertTrue(editor.ListAttributesNames(EMPLOYEE_MC).size() == 8);
-		assertTrue(editor.ListAttributesNames(SUPERVISOR_MC).size() == 0);
+		assertTrue(editor.listAttributesNames(EMPLOYEE_MC).size() == 8);
+		assertTrue(editor.listAttributesNames(SUPERVISOR_MC).size() == 0);
 
 		editor.addAttribute(EMPLOYEE_MC, "mgrID : positiveInteger");
 		
@@ -115,8 +115,8 @@ public class XmlRecursiveTest {
 		AbstractWait.sleep(TimePeriod.SHORT);
 		editor.save();
 		
-		List<String> supAttrs = editor.ListAttributesNames(SUPERVISOR_MC);	
-		List<String> empAttrs = editor.ListAttributesNames(EMPLOYEE_MC);
+		List<String> supAttrs = editor.listAttributesNames(SUPERVISOR_MC);	
+		List<String> empAttrs = editor.listAttributesNames(EMPLOYEE_MC);
 		assertTrue(supAttrs.size() == 9);
 		assertTrue(empAttrs.size() == 9);
 		for(String empAttr : empAttrs){

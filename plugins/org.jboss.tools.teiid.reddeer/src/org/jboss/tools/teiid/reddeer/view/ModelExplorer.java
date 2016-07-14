@@ -97,19 +97,6 @@ public class ModelExplorer extends AbstractExplorer {
 		new ModelEditor(pathToModelXmi[pathToModelXmi.length - 1]).save();// the last member is modelXmi
 	}
 
-	@Deprecated // use ModelExplorer.addChildToModelItem/addSiblingToModelItem + ProcedureWizard
-	public void newProcedure(String project, String modelXmi, String procedure, Properties props) {
-
-		open();
-
-		new DefaultTreeItem(project, modelXmi).select();
-		new ContextMenu("New Child", "Procedure...").select();
-		new DefaultShell("Select Procedure Type");
-
-		new Procedure().create(procedure, props);
-		new ModelEditor(modelXmi).save();
-	}
-
 	@Override
 	public void open() {
 		super.open();
@@ -568,16 +555,13 @@ public class ModelExplorer extends AbstractExplorer {
 	}
 	
 	/**
-	 * set JNDI name for source model
+	 * Sets JNDI name for source model
 	 */
 	public void setJndiName(String jndiName, String... pathToSourceModel) {
-		open();
-		if (!pathToSourceModel[pathToSourceModel.length - 1].contains(".")) {
-			pathToSourceModel[pathToSourceModel.length - 1] = pathToSourceModel[pathToSourceModel.length - 1]
-					.concat(".xmi");
-		}
 		new WorkbenchShell();
-		new DefaultTreeItem(pathToSourceModel).select();
+		int iModel = pathToSourceModel.length -1;
+		pathToSourceModel[iModel] = (pathToSourceModel[iModel].contains(".")) ? pathToSourceModel[iModel] : pathToSourceModel[iModel] + ".xmi";
+		this.selectItem(pathToSourceModel);
 		new ContextMenu(MODELING_MENU_ITEM, SET_JNDI_NAME).select();
 		new DefaultShell("Set JBoss Data Source JNDI Name");
 		new DefaultText(0).setText(jndiName);
