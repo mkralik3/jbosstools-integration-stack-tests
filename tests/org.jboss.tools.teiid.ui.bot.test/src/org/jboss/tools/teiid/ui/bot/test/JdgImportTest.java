@@ -1,5 +1,7 @@
 package org.jboss.tools.teiid.ui.bot.test;
 
+import static org.junit.Assert.assertTrue;
+
 import java.util.Properties;
 
 import org.jboss.reddeer.junit.runner.RedDeerSuite;
@@ -18,7 +20,6 @@ import org.junit.runner.RunWith;
 public class JdgImportTest {
 
 	private static final String PROJECT_NAME = "JdgImportProject";
-	private static TeiidBot teiidBot = new TeiidBot();
 
 	@BeforeClass
 	public static void createProject() {
@@ -37,10 +38,10 @@ public class JdgImportTest {
 
 		new ImportMetadataManager().importFromTeiidConnection(PROJECT_NAME, modelName, iProps, null, null);
 
-		teiidBot.assertResource(PROJECT_NAME, modelName + ".xmi", "SmallA");
-		teiidBot.assertResource(PROJECT_NAME, modelName + ".xmi", "SmallA", "SmallAObject : object");
-		teiidBot.assertResource(PROJECT_NAME, modelName + ".xmi", "SmallA", "intKey : int");
-		teiidBot.assertResource(PROJECT_NAME, modelName + ".xmi", "SmallA", "PK_INTKEY");
+		assertTrue(new ModelExplorer().getProject(PROJECT_NAME).containsItem(modelName + ".xmi", "SmallA"));
+		assertTrue(new ModelExplorer().getProject(PROJECT_NAME).containsItem(modelName + ".xmi", "SmallA", "SmallAObject : object"));
+		assertTrue(new ModelExplorer().getProject(PROJECT_NAME).containsItem(modelName + ".xmi", "SmallA", "intKey : int"));
+		assertTrue(new ModelExplorer().getProject(PROJECT_NAME).containsItem(modelName + ".xmi", "SmallA", "PK_INTKEY"));
 	}
 
 }
