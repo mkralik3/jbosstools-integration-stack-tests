@@ -1,5 +1,9 @@
 package org.jboss.tools.teiid.ui.bot.test;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import java.io.File;
 import java.util.Properties;
 
 import org.jboss.reddeer.core.handler.ShellHandler;
@@ -11,6 +15,7 @@ import org.jboss.reddeer.workbench.impl.shell.WorkbenchShell;
 import org.jboss.tools.common.reddeer.condition.IssueIsClosed;
 import org.jboss.tools.common.reddeer.condition.IssueIsClosed.Jira;
 import org.jboss.tools.teiid.reddeer.connection.ConnectionProfileHelper;
+import org.jboss.tools.teiid.reddeer.editor.ModelEditor;
 import org.jboss.tools.teiid.reddeer.manager.ImportMetadataManager;
 import org.jboss.tools.teiid.reddeer.perspective.TeiidPerspective;
 import org.jboss.tools.teiid.reddeer.requirement.TeiidServerRequirement.TeiidServer;
@@ -39,8 +44,6 @@ public class ImportWizardTest {
 
 	public static final String MODEL_PROJECT = "importTest";
 
-	private static TeiidBot teiidBot = new TeiidBot();
-
 	@BeforeClass
 	public static void createModelProject() {
 		new ModelExplorer().createProject(MODEL_PROJECT);
@@ -60,7 +63,7 @@ public class ImportWizardTest {
 	@Test
 	public void ddlImportTest() {
 
-		String ddl = teiidBot.toAbsolutePath("resources/ddl/hsqldb.ddl");
+		String ddl = new File("resources/ddl/hsqldb.ddl").getAbsolutePath();
 		
 		DDLCustomImportWizard wizard = new DDLCustomImportWizard();
 		wizard.open();
@@ -72,15 +75,15 @@ public class ImportWizardTest {
 			  .next();
 		wizard.finish();
 		
-		teiidBot.assertResource(MODEL_PROJECT, "CustomerHsqldb.xmi");
-		teiidBot.checkDiagram(MODEL_PROJECT, "CustomerHsqldb.xmi", "USER");
-		teiidBot.checkDiagram(MODEL_PROJECT, "CustomerHsqldb.xmi", "ADDRESS");
+		assertTrue(new ModelExplorer().getProject(MODEL_PROJECT).containsItem("CustomerHsqldb.xmi"));
+		assertTrue(new ModelExplorer().getProject(MODEL_PROJECT).containsItem("CustomerHsqldb.xmi", "USER"));
+		assertTrue(new ModelExplorer().getProject(MODEL_PROJECT).containsItem("CustomerHsqldb.xmi", "ADDRESS"));
 	}
 
 	@Test
 	public void dtfImportTest() {
 
-		String source = teiidBot.toAbsolutePath("resources/dtf/relationalModel.xml");
+		String source = new File("resources/dtf/relationalModel.xml").getAbsolutePath();
 		String target = "RelationalModel.xmi";
 
 		MetadataImportWizard wizard = new MetadataImportWizard();
@@ -92,12 +95,13 @@ public class ImportWizardTest {
 			  .setProject(MODEL_PROJECT)
 			  .finish();
 		
-
-		teiidBot.assertResource(MODEL_PROJECT, target);
-		teiidBot.checkDiagram(MODEL_PROJECT, target, "ProductSymbols");
-		teiidBot.checkDiagram(MODEL_PROJECT, target, "ProductData");
-		teiidBot.checkDiagram(MODEL_PROJECT, target, "getProductInfo");
-		teiidBot.checkDiagram(MODEL_PROJECT, target, "ProductIDIndex");
+		assertTrue(new ModelExplorer().getProject(MODEL_PROJECT).containsItem(target));
+		new ModelExplorer().openModelEditor(MODEL_PROJECT, target);
+		ModelEditor modelEditor = new ModelEditor(target);
+		assertNotNull(modelEditor.getModeDiagram("ProductSymbols"));
+		assertNotNull(modelEditor.getModeDiagram("ProductData"));
+		assertNotNull(modelEditor.getModeDiagram("getProductInfo"));
+		assertNotNull(modelEditor.getModeDiagram("ProductIDIndex"));
 	}
 
 	@Test
@@ -120,11 +124,16 @@ public class ImportWizardTest {
 		importWizard.finish();
 		new WorkbenchShell();
 
-		teiidBot.assertResource(MODEL_PROJECT, "Item.xmi");
-		teiidBot.assertResource(MODEL_PROJECT, "ViewModel.xmi");
-		teiidBot.checkDiagram(MODEL_PROJECT, "Item.xmi", "getTextFiles");
-		teiidBot.checkDiagram(MODEL_PROJECT, "Item.xmi", "Result");
-		teiidBot.checkDiagram(MODEL_PROJECT, "ViewModel.xmi", "new_table");
+		assertTrue(new ModelExplorer().getProject(MODEL_PROJECT).containsItem("Item.xmi"));
+		assertTrue(new ModelExplorer().getProject(MODEL_PROJECT).containsItem("ViewModel.xmi"));
+		new ModelExplorer().openModelEditor(MODEL_PROJECT, "Item.xmi");
+		ModelEditor modelEditor = new ModelEditor("Item.xmi");
+		assertNotNull(modelEditor.getModeDiagram("getTextFiles"));
+		assertNotNull(modelEditor.getModeDiagram("Result"));
+		assertNotNull(modelEditor.getModeDiagram("getProductInfo"));
+		new ModelExplorer().openModelEditor(MODEL_PROJECT, "ViewModel.xmi");
+		modelEditor = new ModelEditor("ViewModel.xmi");
+		assertNotNull(modelEditor.getModeDiagram("new_table"));
 	}
 
 	@Test
@@ -140,11 +149,15 @@ public class ImportWizardTest {
 
 		new ImportMetadataManager().importFromXML(MODEL_PROJECT, "Account", xmlProfile, props);
 
-		teiidBot.assertResource(MODEL_PROJECT, "AccountSource.xmi");
-		teiidBot.assertResource(MODEL_PROJECT, "AccountView.xmi");
-		teiidBot.checkDiagram(MODEL_PROJECT, "AccountSource.xmi", "getTextFiles");
-		teiidBot.checkDiagram(MODEL_PROJECT, "AccountSource.xmi", "Result");
-		teiidBot.checkDiagram(MODEL_PROJECT, "AccountView.xmi", "AccountTable");
+		assertTrue(new ModelExplorer().getProject(MODEL_PROJECT).containsItem("AccountSource.xmi"));
+		assertTrue(new ModelExplorer().getProject(MODEL_PROJECT).containsItem("AccountView.xmi"));
+		new ModelExplorer().openModelEditor(MODEL_PROJECT, "AccountSource.xmi");
+		ModelEditor modelEditor = new ModelEditor("AccountSource.xmi");
+		assertNotNull(modelEditor.getModeDiagram("getTextFiles"));
+		assertNotNull(modelEditor.getModeDiagram("Result"));
+		new ModelExplorer().openModelEditor(MODEL_PROJECT, "AccountView.xmi");
+		modelEditor = new ModelEditor("AccountView.xmi");
+		assertNotNull(modelEditor.getModeDiagram("AccountTable"));
 	}
 
 	@Test
@@ -171,12 +184,16 @@ public class ImportWizardTest {
 
 		wsdlWizard.execute();
 
-		teiidBot.assertResource(MODEL_PROJECT, "HelloService.xmi");
-		teiidBot.assertResource(MODEL_PROJECT, "HelloServiceView.xmi");
-		teiidBot.checkDiagram(MODEL_PROJECT, "HelloService.xmi", "invoke");
-		teiidBot.checkDiagram(MODEL_PROJECT, "HelloServiceView.xmi", "sayHello");
-		teiidBot.checkDiagram(MODEL_PROJECT, "HelloServiceView.xmi", "sayHello_request");
-		teiidBot.checkDiagram(MODEL_PROJECT, "HelloServiceView.xmi", "sayHello_response");
+		assertTrue(new ModelExplorer().getProject(MODEL_PROJECT).containsItem("HelloService.xmi"));
+		assertTrue(new ModelExplorer().getProject(MODEL_PROJECT).containsItem("HelloServiceView.xmi"));
+		new ModelExplorer().openModelEditor(MODEL_PROJECT, "HelloService.xmi");
+		ModelEditor modelEditor = new ModelEditor("HelloService.xmi");
+		assertNotNull(modelEditor.getModeDiagram("invoke"));
+		new ModelExplorer().openModelEditor(MODEL_PROJECT, "HelloServiceView.xmi");
+		 modelEditor = new ModelEditor("HelloServiceView.xmi");
+		assertNotNull(modelEditor.getModeDiagram("sayHello"));
+		assertNotNull(modelEditor.getModeDiagram("sayHello_request"));
+		assertNotNull(modelEditor.getModeDiagram("sayHello_response"));
 	}
 
 	@Test
@@ -213,8 +230,8 @@ public class ImportWizardTest {
 		importWizard = new WsdlWebImportWizard();
 		importWizard.importWsdl(iProps, WsdlWebImportWizard.IMPORT_WSDL_FROM_URL);
 
-		teiidBot.assertResource(MODEL_PROJECT, "WsdlToWS.xmi");
-		teiidBot.assertResource(MODEL_PROJECT, "WsdlToWS2Responses.xmi");
+		assertTrue(new ModelExplorer().getProject(MODEL_PROJECT).containsItem("WsdlToWS.xmi"));
+		assertTrue(new ModelExplorer().getProject(MODEL_PROJECT).containsItem("WsdlToWS2Responses.xmi"));
 	}
 
 	@Test
@@ -223,11 +240,12 @@ public class ImportWizardTest {
 		// local xsd
 		Properties iProps = new Properties();
 		iProps.setProperty("local", "true");
-		iProps.setProperty("rootPath", teiidBot.toAbsolutePath("resources/xsd"));
+		iProps.setProperty("rootPath", new File("resources/xsd").getAbsolutePath());
 		iProps.setProperty("schemas", "EmployeesSchema.xsd,BookDatatypes.xsd");
 		new ImportMetadataManager().importXMLSchema(MODEL_PROJECT, iProps);
-		teiidBot.assertResource(MODEL_PROJECT, "EmployeesSchema.xsd");
-		teiidBot.assertResource(MODEL_PROJECT, "BookDatatypes.xsd");
+		
+		assertTrue(new ModelExplorer().getProject(MODEL_PROJECT).containsItem("EmployeesSchema.xsd"));
+		assertTrue(new ModelExplorer().getProject(MODEL_PROJECT).containsItem("BookDatatypes.xsd"));
 
 		// remote URI
 		iProps = new Properties();
@@ -236,6 +254,6 @@ public class ImportWizardTest {
 		iProps.setProperty("verifyHostname", "false");
 		iProps.setProperty("addDependentSchemas", "false");
 		new ImportMetadataManager().importXMLSchema(MODEL_PROJECT, iProps);
-		teiidBot.assertResource(MODEL_PROJECT, "jboss-common_6_0.xsd");
+		assertTrue(new ModelExplorer().getProject(MODEL_PROJECT).containsItem("jboss-common_6_0.xsd"));
 	}
 }

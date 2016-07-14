@@ -1,5 +1,6 @@
 package org.jboss.tools.teiid.ui.bot.test;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Properties;
 
@@ -9,6 +10,7 @@ import org.jboss.reddeer.junit.runner.RedDeerSuite;
 import org.jboss.reddeer.requirements.server.ServerReqState;
 import org.jboss.reddeer.swt.impl.shell.DefaultShell;
 import org.jboss.tools.teiid.reddeer.connection.ConnectionProfileConstants;
+import org.jboss.tools.teiid.reddeer.connection.ResourceFileHelper;
 import org.jboss.tools.teiid.reddeer.connection.SimpleHttpClient;
 import org.jboss.tools.teiid.reddeer.manager.ImportMetadataManager;
 import org.jboss.tools.teiid.reddeer.preference.TeiidDesignerPreferencePage;
@@ -66,8 +68,6 @@ public class TeiidConnectionImportTest extends SWTBotTestCase {
 	private static final String hsqlCPName = ConnectionProfileConstants.HSQLDB;
 	private static final String hsqlModel = "HsqldbImported";
 
-	private static TeiidBot teiidBot = new TeiidBot();
-
 	/**
 	 * Create new Teiid Model Project
 	 */
@@ -90,13 +90,13 @@ public class TeiidConnectionImportTest extends SWTBotTestCase {
 		new ServersViewExt().deleteDatasource(teiidServer.getName(), "fileDS");
 
 		Properties dsProps = new Properties();
-		dsProps = teiidBot.getProperties("resources/teiidImporter/file_items_ds.properties");
-		String absPath = teiidBot.toAbsolutePath(dsProps.getProperty("* Parent Directory"));
+		dsProps = new ResourceFileHelper().getProperties("resources/teiidImporter/file_items_ds.properties");
+		String absPath = new File(dsProps.getProperty("* Parent Directory")).getAbsolutePath();
 		dsProps.setProperty("* Parent Directory", absPath);
 
 		new ImportMetadataManager().importFromTeiidConnection(PROJECT_NAME, FILE_MODEL, iProps, dsProps, null);
 
-		teiidBot.assertResource(PROJECT_NAME, FILE_MODEL + ".xmi", "getTextFiles");
+		assertTrue(new ModelExplorer().getProject(PROJECT_NAME).containsItem(FILE_MODEL + ".xmi", "getTextFiles"));
 	}
 
 	@Test
@@ -114,7 +114,7 @@ public class TeiidConnectionImportTest extends SWTBotTestCase {
 		new ImportMetadataManager().importFromTeiidConnection(PROJECT_NAME, hsqlModel, iProps, null,
 				teiidImporterProperties);
 
-		teiidBot.assertResource(PROJECT_NAME, hsqlModel + ".xmi", "CUSTOMER");
+		assertTrue(new ModelExplorer().getProject(PROJECT_NAME).containsItem(hsqlModel + ".xmi", "CUSTOMER"));
 	}
 
 	@Test
@@ -130,8 +130,7 @@ public class TeiidConnectionImportTest extends SWTBotTestCase {
 		teiidImporterProperties.setProperty(TeiidConnectionImportWizard.IMPORT_PROPERTY_TABLE_TYPES, "SYSTEM TABLE");
 
 		new ImportMetadataManager().importFromTeiidConnection(PROJECT_NAME, model, iProps, null, teiidImporterProperties);
-		teiidBot.assertResource(PROJECT_NAME, model + ".xmi", "CONSTANTS");
-
+		assertTrue(new ModelExplorer().getProject(PROJECT_NAME).containsItem(model + ".xmi", "CONSTANTS"));
 	}
 
 	@Test
@@ -179,7 +178,7 @@ public class TeiidConnectionImportTest extends SWTBotTestCase {
 
 		new ImportMetadataManager().importFromTeiidConnection(PROJECT_NAME, model, iProps, null,
 				teiidImporterProperties);
-		teiidBot.assertResource(PROJECT_NAME, model + ".xmi", "AUTHORS");
+		assertTrue(new ModelExplorer().getProject(PROJECT_NAME).containsItem(model + ".xmi", "AUTHORS"));
 	}
 
 	@Test
@@ -341,9 +340,9 @@ public class TeiidConnectionImportTest extends SWTBotTestCase {
 		new ImportMetadataManager().importFromTeiidConnection(PROJECT_NAME, modelName, iProps, dsProps,
 				teiidImporterProps);
 
-		teiidBot.assertResource(PROJECT_NAME, modelName + ".xmi", "Sheet1");
-		teiidBot.assertResource(PROJECT_NAME, modelName + ".xmi", "Sheet1", "ROW_ID : int");
-		teiidBot.assertResource(PROJECT_NAME, modelName + ".xmi", "Sheet1", "StringNum : string");
+		assertTrue(new ModelExplorer().getProject(PROJECT_NAME).containsItem(modelName + ".xmi", "Sheet1"));
+		assertTrue(new ModelExplorer().getProject(PROJECT_NAME).containsItem(modelName + ".xmi", "Sheet1", "ROW_ID : int"));
+		assertTrue(new ModelExplorer().getProject(PROJECT_NAME).containsItem(modelName + ".xmi", "Sheet1", "StringNum : string"));
 	}
 
 	@Test
@@ -362,9 +361,9 @@ public class TeiidConnectionImportTest extends SWTBotTestCase {
 
 		new ImportMetadataManager().importFromTeiidConnection(PROJECT_NAME, modelName, iProps, dsProps, null);
 
-		teiidBot.assertResource(PROJECT_NAME, modelName + ".xmi", "Customers");
-		teiidBot.assertResource(PROJECT_NAME, modelName + ".xmi", "Customers", "CustomerID : string(5)");
-		teiidBot.assertResource(PROJECT_NAME, modelName + ".xmi", "Employees", "EmployeeID : int");
+		assertTrue(new ModelExplorer().getProject(PROJECT_NAME).containsItem(modelName + ".xmi", "Customers"));
+		assertTrue(new ModelExplorer().getProject(PROJECT_NAME).containsItem(modelName + ".xmi", "Customers", "CustomerID : string(5)"));
+		assertTrue(new ModelExplorer().getProject(PROJECT_NAME).containsItem(modelName + ".xmi", "Employees", "EmployeeID : int"));
 	}
 	
 	@Test
@@ -390,7 +389,7 @@ public class TeiidConnectionImportTest extends SWTBotTestCase {
 
 	private void checkImportedModel(String modelName, String... tables) {
 		for (String table : tables) {
-			teiidBot.assertResource(PROJECT_NAME, modelName + ".xmi", table);
+			assertTrue(new ModelExplorer().getProject(PROJECT_NAME).containsItem(modelName + ".xmi", table));
 		}
 	}
 
