@@ -1,5 +1,7 @@
 package org.jboss.tools.teiid.reddeer.view;
 
+import static org.junit.Assert.assertTrue;
+
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.util.List;
@@ -42,6 +44,7 @@ import org.jboss.tools.teiid.reddeer.Table;
 import org.jboss.tools.teiid.reddeer.condition.IsInProgress;
 import org.jboss.tools.teiid.reddeer.condition.RadioButtonEnabled;
 import org.jboss.tools.teiid.reddeer.condition.WarIsDeployed;
+import org.jboss.tools.teiid.reddeer.connection.TeiidJDBCHelper;
 import org.jboss.tools.teiid.reddeer.dialog.CreateWarDialog;
 import org.jboss.tools.teiid.reddeer.dialog.CreateWebServiceDialog;
 import org.jboss.tools.teiid.reddeer.dialog.GenerateRestProcedureDialog;
@@ -53,6 +56,7 @@ import org.jboss.tools.teiid.reddeer.wizard.GenerateDynamicVdbWizard;
 import org.jboss.tools.teiid.reddeer.wizard.GenerateVdbArchiveWizard;
 import org.jboss.tools.teiid.reddeer.wizard.MetadataModelWizard;
 import org.jboss.tools.teiid.reddeer.wizard.ModelProjectWizard;
+import org.jboss.tools.teiid.reddeer.wizard.VdbWizard;
 import org.jboss.tools.teiid.reddeer.wizard.imports.ImportProjectWizard;
 
 /**
@@ -172,6 +176,26 @@ public class ModelExplorer extends AbstractExplorer {
 			new WaitUntil(new ShellWithTextIsAvailable(CONNECTION_PROFILE_CHANGE));
 			new PushButton("OK").click();
 		} catch (Exception e) {}
+	}
+	
+	/**
+	 * Simple check if model is correct. Creates VDB with model and query.
+	 */
+	public void simulateTablesPreview(TeiidServerRequirement teiidServer, String project, String model, String[] tables) {
+		String vdb_name = "Check_" + model;	
+		VdbWizard.openVdbWizard()
+				.setLocation(project)
+				.setName(vdb_name)
+				.addModel(project, model + ".xmi")
+				.finish();
+		this.deployVdb(project, vdb_name);
+
+		TeiidJDBCHelper jdbcHelper = new TeiidJDBCHelper(teiidServer, vdb_name);
+		// try simple select for every table
+		for (int i = 0; i < tables.length; i++) {
+			String previewSQL = "select * from \"" + model + "\".\"" + tables[i] + "\"";
+			assertTrue(jdbcHelper.isQuerySuccessful(previewSQL,true));
+		}
 	}
 	
 	/**
