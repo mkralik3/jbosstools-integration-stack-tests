@@ -16,7 +16,6 @@ import org.jboss.tools.common.reddeer.condition.IssueIsClosed;
 import org.jboss.tools.common.reddeer.condition.IssueIsClosed.Jira;
 import org.jboss.tools.teiid.reddeer.connection.ConnectionProfileHelper;
 import org.jboss.tools.teiid.reddeer.editor.ModelEditor;
-import org.jboss.tools.teiid.reddeer.manager.ImportMetadataManager;
 import org.jboss.tools.teiid.reddeer.perspective.TeiidPerspective;
 import org.jboss.tools.teiid.reddeer.requirement.TeiidServerRequirement.TeiidServer;
 import org.jboss.tools.teiid.reddeer.view.ModelExplorer;
@@ -26,6 +25,8 @@ import org.jboss.tools.teiid.reddeer.wizard.imports.ImportFromFileSystemWizard;
 import org.jboss.tools.teiid.reddeer.wizard.imports.MetadataImportWizard;
 import org.jboss.tools.teiid.reddeer.wizard.imports.WsdlImportWizard;
 import org.jboss.tools.teiid.reddeer.wizard.imports.WsdlWebImportWizard;
+import org.jboss.tools.teiid.reddeer.wizard.imports.XMLImportWizard;
+import org.jboss.tools.teiid.reddeer.wizard.imports.XMLSchemaImportWizard;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -141,13 +142,14 @@ public class ImportWizardTest {
 
 		String xmlProfile = "XML Local Profile";
 		new ConnectionProfileHelper().createCpXml(xmlProfile, "resources/flat/accounts.xml");
-
-		Properties props = new Properties();
-		props.setProperty("local", "true");
-		props.setProperty("rootPath", "/accounts/account");
-		props.setProperty("elements", "accounts/account/nick,accounts/account/balance");
-
-		new ImportMetadataManager().importFromXML(MODEL_PROJECT, "Account", xmlProfile, props);
+		
+		XMLImportWizard importWizard = new XMLImportWizard();
+		importWizard.setName("Account");
+		importWizard.setLocal(true);
+		importWizard.setRootPath("/accounts/account");
+		importWizard.addElement("accounts/account/nick");
+		importWizard.addElement("accounts/account/balance");
+		importWizard.execute();
 
 		assertTrue(new ModelExplorer().getProject(MODEL_PROJECT).containsItem("AccountSource.xmi"));
 		assertTrue(new ModelExplorer().getProject(MODEL_PROJECT).containsItem("AccountView.xmi"));
@@ -237,23 +239,24 @@ public class ImportWizardTest {
 	@Test
 	public void xmlSchemaImportTest() {
 
-		// local xsd
-		Properties iProps = new Properties();
-		iProps.setProperty("local", "true");
-		iProps.setProperty("rootPath", new File("resources/xsd").getAbsolutePath());
-		iProps.setProperty("schemas", "EmployeesSchema.xsd,BookDatatypes.xsd");
-		new ImportMetadataManager().importXMLSchema(MODEL_PROJECT, iProps);
+		// local xsd		
+		XMLSchemaImportWizard wizard = new XMLSchemaImportWizard();
+		wizard.setLocal(true);
+		wizard.setRootPath(new File("resources/xsd").getAbsolutePath());
+		wizard.setSchemas(new String[] { "EmployeesSchema.xsd", "BookDatatypes.xsd" });
+		wizard.execute();
 		
 		assertTrue(new ModelExplorer().getProject(MODEL_PROJECT).containsItem("EmployeesSchema.xsd"));
 		assertTrue(new ModelExplorer().getProject(MODEL_PROJECT).containsItem("BookDatatypes.xsd"));
 
-		// remote URI
-		iProps = new Properties();
-		iProps.setProperty("local", "false");
-		iProps.setProperty("xmlSchemaURL", "http://www.jboss.org/schema/jbosscommon/jboss-common_6_0.xsd");
-		iProps.setProperty("verifyHostname", "false");
-		iProps.setProperty("addDependentSchemas", "false");
-		new ImportMetadataManager().importXMLSchema(MODEL_PROJECT, iProps);
+		// remote URI		
+		wizard = new XMLSchemaImportWizard();
+		wizard.setLocal(false);
+		wizard.setXmlSchemaURL("http://www.jboss.org/schema/jbosscommon/jboss-common_6_0.xsd");
+		wizard.setVerifyHostname(false);
+		wizard.setAddDependentSchemas(false);
+		wizard.execute();
+		
 		assertTrue(new ModelExplorer().getProject(MODEL_PROJECT).containsItem("jboss-common_6_0.xsd"));
 	}
 }
