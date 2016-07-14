@@ -3,6 +3,8 @@ package org.jboss.tools.teiid.ui.bot.test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
+import java.io.File;
+
 import org.jboss.reddeer.common.wait.WaitWhile;
 import org.jboss.reddeer.core.condition.ShellWithTextIsActive;
 import org.jboss.reddeer.eclipse.datatools.ui.wizard.ConnectionProfileSelectPage;
@@ -155,7 +157,7 @@ public class FlatFileTest {
 		selectPage.setConnectionProfile("Flat File Data Source");
 		selectPage.setName("emptySpace");
 		connWizard.next();
-		new DefaultText(0).setText(new TeiidBot().toAbsolutePath(EMPTY_SPACE_PATH));
+		new DefaultText(0).setText(new File(EMPTY_SPACE_PATH).getAbsolutePath());
 		assertEquals(" The folder path cannot contain spaces.", new DefaultText(2).getText());
 		assertFalse(new PushButton("Next >").isEnabled());
 

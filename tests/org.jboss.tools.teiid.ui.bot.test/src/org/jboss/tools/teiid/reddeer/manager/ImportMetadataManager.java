@@ -3,10 +3,10 @@ package org.jboss.tools.teiid.reddeer.manager;
 import java.util.Properties;
 
 import org.jboss.tools.teiid.reddeer.ModelProject;
+import org.jboss.tools.teiid.reddeer.view.ModelExplorer;
 import org.jboss.tools.teiid.reddeer.wizard.imports.TeiidConnectionImportWizard;
 import org.jboss.tools.teiid.reddeer.wizard.imports.XMLImportWizard;
 import org.jboss.tools.teiid.reddeer.wizard.imports.XMLSchemaImportWizard;
-import org.jboss.tools.teiid.ui.bot.test.TeiidBot;
 
 public class ImportMetadataManager {
 	// TODO ask Matej how to refactor this methods - used in his tests.
@@ -36,7 +36,7 @@ public class ImportMetadataManager {
 			importWizard.setJndiName(props.getProperty("JNDI Name"));
 		}
 
-		ModelProject modelProject = new TeiidBot().modelExplorer().getModelProject(projectName);
+		ModelProject modelProject = new ModelExplorer().getModelProject(projectName);
 		modelProject.importModel(importWizard);
 	}
 
@@ -125,7 +125,7 @@ public class ImportMetadataManager {
 			wizard.setAddDependentSchemas(Boolean.valueOf(loadedProperty));
 		}
 
-		ModelProject modelProject = new TeiidBot().modelExplorer().getModelProject(projectName);
+		ModelProject modelProject = new ModelExplorer().getModelProject(projectName);
 		modelProject.importModel(wizard);
 	}
 

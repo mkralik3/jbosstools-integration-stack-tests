@@ -23,6 +23,7 @@ import org.jboss.reddeer.swt.api.TreeItem;
 import org.jboss.reddeer.swt.impl.button.CheckBox;
 import org.jboss.reddeer.swt.impl.button.PushButton;
 import org.jboss.reddeer.swt.impl.combo.DefaultCombo;
+import org.jboss.reddeer.swt.impl.menu.ShellMenu;
 import org.jboss.reddeer.swt.impl.shell.DefaultShell;
 import org.jboss.reddeer.swt.impl.text.LabeledText;
 import org.jboss.reddeer.swt.impl.tree.DefaultTree;
@@ -351,7 +352,7 @@ public class GuidesTest {
 		
 		new WaitWhile(new IsPreviewInProgress(), TimePeriod.NORMAL);
 		new WaitWhile(new IsInProgress(), TimePeriod.NORMAL);
-		new TeiidBot().saveAll();
+		new ShellMenu("File", "Save All").select();
 
 		guides.previewDataViaActionSet(actionSet, projectName, modelName+".xmi","STATUS"); 	
 		assertTrue(testLastPreview());

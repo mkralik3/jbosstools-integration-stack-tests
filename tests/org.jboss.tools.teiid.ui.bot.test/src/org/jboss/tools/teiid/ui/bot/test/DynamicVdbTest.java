@@ -1,10 +1,5 @@
 package org.jboss.tools.teiid.ui.bot.test;
 
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.empty;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.hamcrest.Matchers.nullValue;
-import static org.hamcrest.Matchers.startsWith;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.StringContains.containsString;
 import static org.hamcrest.text.IsEqualIgnoringWhiteSpace.equalToIgnoringWhiteSpace;
@@ -13,51 +8,32 @@ import java.io.File;
 import java.io.StringReader;
 import java.sql.ResultSet;
 import java.util.List;
-import java.util.Properties;
 import java.util.concurrent.Callable;
 
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathFactory;
 
-import org.hamcrest.core.IsNot;
 import org.hamcrest.core.StringContains;
-import org.hamcrest.text.IsEmptyString;
 import org.jboss.reddeer.common.matcher.RegexMatcher;
 import org.jboss.reddeer.core.condition.ShellWithTextIsAvailable;
-import org.jboss.reddeer.core.exception.CoreLayerException;
-import org.jboss.reddeer.eclipse.ui.problems.ProblemsView;
-import org.jboss.reddeer.eclipse.ui.problems.ProblemsView.ProblemType;
-import org.jboss.reddeer.eclipse.ui.problems.matcher.ProblemsResourceMatcher;
-import org.jboss.reddeer.eclipse.ui.views.properties.PropertiesView;
 import org.jboss.reddeer.junit.requirement.inject.InjectRequirement;
 import org.jboss.reddeer.junit.runner.RedDeerSuite;
 import org.jboss.reddeer.requirements.server.ServerReqState;
-import org.jboss.reddeer.swt.api.TableItem;
 import org.jboss.reddeer.swt.impl.button.PushButton;
-import org.jboss.reddeer.swt.impl.ctab.DefaultCTabItem;
-import org.jboss.reddeer.swt.impl.menu.ShellMenu;
-import org.jboss.reddeer.swt.impl.table.DefaultTable;
-import org.jboss.tools.teiid.reddeer.Procedure;
 import org.jboss.tools.teiid.reddeer.connection.ConnectionProfileConstants;
+import org.jboss.tools.teiid.reddeer.connection.ResourceFileHelper;
 import org.jboss.tools.teiid.reddeer.connection.TeiidJDBCHelper;
-import org.jboss.tools.teiid.reddeer.editor.DataRolesEditor;
-import org.jboss.tools.teiid.reddeer.editor.DataRolesEditor.PermissionType;
 import org.jboss.tools.teiid.reddeer.editor.ModelEditor;
 import org.jboss.tools.teiid.reddeer.editor.VDBEditor;
-import org.jboss.tools.teiid.reddeer.matcher.TableItemMatcher;
 import org.jboss.tools.teiid.reddeer.modeling.ModelColumn;
-import org.jboss.tools.teiid.reddeer.modeling.ModelProcedure;
-import org.jboss.tools.teiid.reddeer.modeling.ModelProcedureParameter;
 import org.jboss.tools.teiid.reddeer.modeling.ModelTable;
 import org.jboss.tools.teiid.reddeer.requirement.TeiidServerRequirement;
 import org.jboss.tools.teiid.reddeer.requirement.TeiidServerRequirement.TeiidServer;
 import org.jboss.tools.teiid.reddeer.view.ModelExplorer;
 import org.jboss.tools.teiid.reddeer.view.ServersViewExt;
 import org.jboss.tools.teiid.reddeer.wizard.GenerateDynamicVdbWizard;
-import org.jboss.tools.teiid.reddeer.wizard.GenerateVdbArchiveWizard;
 import org.jboss.tools.teiid.reddeer.wizard.ModelProjectWizard;
 import org.jboss.tools.teiid.reddeer.wizard.VdbWizard;
-import org.jboss.tools.teiid.reddeer.wizard.imports.ImportFromFileSystemWizard;
 import org.jboss.tools.teiid.reddeer.wizard.imports.ImportProjectWizard;
 import org.junit.After;
 import org.junit.Before;
@@ -92,14 +68,12 @@ public class DynamicVdbTest {
 	private static final String UDF_LIB_PATH = "target/proc-udf/MyTestUdf/lib/";
 	private static final String UDF_LIB = "MyTestUdf-1.0-SNAPSHOT.jar";
 
-	private static TeiidBot teiidBot = new TeiidBot();
-
 	@Before
 	public void before() {
 		
 		ImportProjectWizard importWizard = new ImportProjectWizard();
 		importWizard.open();
-		importWizard.setPath(teiidBot.toAbsolutePath("resources/projects/" + PROJECT_NAME))
+		importWizard.setPath(new File("resources/projects/" + PROJECT_NAME).getAbsolutePath())
 					.finish();
 		
 		new ModelProjectWizard().create(IMPORT_PROJECT_NAME);
@@ -107,8 +81,7 @@ public class DynamicVdbTest {
 
 	@After
 	public void after() {
-		teiidBot.deleteProjectSafely(PROJECT_NAME);
-		teiidBot.deleteProjectSafely(IMPORT_PROJECT_NAME);
+		new ModelExplorer().deleteAllProjectsSafely();
 	}
 
 	@Test
@@ -959,13 +932,14 @@ public class DynamicVdbTest {
 	private void checkContentsSame(String staticVdbName, String dynamicVdbContent) {
 		File projectFile = new ModelExplorer().getModelProject(PROJECT_NAME).getFile();
 		String vdbPath = new File(projectFile, staticVdbName + "-vdb.xml").getAbsolutePath();
-		String fileContents = teiidBot.loadFileAsString(vdbPath);
+		String fileContents = new ResourceFileHelper().loadFileAsString(vdbPath);
 		collector.checkThat("Created VDB different from VDB contents in wizard", fileContents,
 				equalToIgnoringWhiteSpace(dynamicVdbContent.replace("\n", "")));
 	}
 
 	private List<ModelTable> getTables(String projectName, String modelName) {
-		ModelEditor ed = teiidBot.openModelEditor(projectName, modelName);
+		new ModelExplorer().openModelEditor(projectName, modelName + ".xmi");
+		ModelEditor ed = new ModelEditor(modelName + ".xmi");
 
 		List<ModelTable> tables = ed.getTables();
 		for (ModelTable t : tables) {

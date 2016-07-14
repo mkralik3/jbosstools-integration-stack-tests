@@ -11,6 +11,7 @@ import org.jboss.reddeer.core.condition.JobIsRunning;
 import org.jboss.reddeer.junit.execution.annotation.RunIf;
 import org.jboss.reddeer.junit.runner.RedDeerSuite;
 import org.jboss.reddeer.requirements.server.ServerReqState;
+import org.jboss.reddeer.swt.impl.menu.ShellMenu;
 import org.jboss.tools.common.reddeer.condition.IssueIsClosed;
 import org.jboss.tools.common.reddeer.condition.IssueIsClosed.Jira;
 import org.jboss.tools.teiid.reddeer.Procedure;
@@ -37,8 +38,6 @@ public class ProcedurePreviewTest {
 	private static final String UDF_LIB_PATH = "target/proc-udf/MyTestUdf/lib/";
 	private static final String UDF_LIB = "MyTestUdf-1.0-SNAPSHOT.jar";
 
-	private static TeiidBot teiidBot = new TeiidBot();
-
 	@BeforeClass
 	public static void createModelProject() {
 		TeiidPerspective.getInstance().open();	
@@ -48,7 +47,7 @@ public class ProcedurePreviewTest {
 		explorer.changeConnectionProfile(PROFILE_NAME, PROJECT_NAME, MODEL_SRC_NAME);
 		explorer.createDataSource(ModelExplorer.ConnectionSourceType.USE_CONNECTION_PROFILE_INFO, PROFILE_NAME, PROJECT_NAME, MODEL_SRC_NAME);
 		explorer.setJndiName(MODEL_SRC_NAME,PROJECT_NAME, MODEL_SRC_NAME);
-		teiidBot.saveAll();
+		new ShellMenu("File", "Save All").select();
 	}
 
 	@Before
@@ -113,7 +112,7 @@ public class ProcedurePreviewTest {
 		new ModelExplorer().newTable(table, Table.Type.VIEW, props, PROJECT_NAME, MODEL_VIEW_NAME + ".xmi");
 
 		new ModelExplorer().previewModelItem(null, PROJECT_NAME, MODEL_VIEW_NAME + ".xmi", table);
-		String previewQuery = teiidBot.generateTablePreviewQuery(MODEL_VIEW_NAME, table);
+		String previewQuery = "select * from \"" + MODEL_VIEW_NAME + "\".\"" + table + "\"";
 		assertTrue(new ModelExplorer().checkPreviewOfModelObject(previewQuery));
 
 	}
