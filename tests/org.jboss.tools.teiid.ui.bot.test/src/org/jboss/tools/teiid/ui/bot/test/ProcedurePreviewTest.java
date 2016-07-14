@@ -14,9 +14,11 @@ import org.jboss.reddeer.requirements.server.ServerReqState;
 import org.jboss.reddeer.swt.impl.menu.ShellMenu;
 import org.jboss.tools.common.reddeer.condition.IssueIsClosed;
 import org.jboss.tools.common.reddeer.condition.IssueIsClosed.Jira;
+import org.jboss.tools.teiid.reddeer.ChildType;
 import org.jboss.tools.teiid.reddeer.Procedure;
 import org.jboss.tools.teiid.reddeer.Table;
 import org.jboss.tools.teiid.reddeer.connection.ConnectionProfileConstants;
+import org.jboss.tools.teiid.reddeer.editor.RelationalModelEditor;
 import org.jboss.tools.teiid.reddeer.perspective.TeiidPerspective;
 import org.jboss.tools.teiid.reddeer.requirement.TeiidServerRequirement.TeiidServer;
 import org.jboss.tools.teiid.reddeer.view.ModelExplorer;
@@ -66,8 +68,10 @@ public class ProcedurePreviewTest {
 		props.setProperty("params", "id");
 		props.setProperty("sql",
 				"CREATE VIRTUAL PROCEDURE BEGIN select hsqldbParts.PARTS.PART_COLOR AS color from hsqldbParts.PARTS where hsqldbParts.PARTS.PART_ID=view.proc.id; END");
-
-		new ModelExplorer().newProcedure(PROJECT_NAME, MODEL_VIEW_NAME + ".xmi", proc, props);
+		
+		new ModelExplorer().addChildToModelItem(ChildType.PROCEDURE, PROJECT_NAME, MODEL_VIEW_NAME + ".xmi");
+		new Procedure().create(proc, props);
+		new RelationalModelEditor(MODEL_VIEW_NAME + ".xmi").save();
 
 		new WaitWhile(new JobIsRunning(), TimePeriod.LONG);
 		ArrayList<String> params = new ArrayList<String>();
@@ -101,8 +105,10 @@ public class ProcedurePreviewTest {
 		props.setProperty("javaClass", "userdefinedfunctions.MyConcatNull");
 		props.setProperty("javaMethod", "myConcatNull");
 		props.setProperty("udfJarPath", "lib/" + UDF_LIB);
-
-		new ModelExplorer().newProcedure(PROJECT_NAME, MODEL_VIEW_NAME + ".xmi", proc, props);
+		
+		new ModelExplorer().addChildToModelItem(ChildType.PROCEDURE, PROJECT_NAME, MODEL_VIEW_NAME + ".xmi");
+		new Procedure().create(proc, props);
+		new RelationalModelEditor(MODEL_VIEW_NAME + ".xmi").save();
 
 		// create table to test -> use UDF in transformation
 		String table = "tab";
