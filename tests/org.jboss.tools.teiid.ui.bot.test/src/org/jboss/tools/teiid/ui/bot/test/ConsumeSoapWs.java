@@ -35,8 +35,8 @@ import org.junit.runner.RunWith;
 @TeiidServer(state = ServerReqState.RUNNING)
 public class ConsumeSoapWs {
 	private static final String PROJECT_NAME = "SOAP";
-	private static final String SOURCE_MODEL_NAME = "Soap_Source.xmi";
-	private static final String VIEW_MODEL_NAME = "Soap_View.xmi";
+	private static final String SOURCE_MODEL_NAME = "Soap_Source";
+	private static final String VIEW_MODEL_NAME = "Soap_View";
 	private static final String VDB_NAME = "SOAP_VDB";
 	private static final String TESTSQL = "exec FullCountryInfo('US')";
 	private static final String TESTSQL1 = "exec FullCountryInfoAllCountries()";
@@ -45,7 +45,7 @@ public class ConsumeSoapWs {
 	private static TeiidServerRequirement teiidServer;
 
 	@Before
-	public static void before() {
+	public void before() {
 		new ModelExplorer().createProject(PROJECT_NAME);
 	}
 	
@@ -63,31 +63,32 @@ public class ConsumeSoapWs {
 		new ConnectionProfileHelper().createCpWsdl("SOAP", wsdlCP);
 
 		WsdlImportWizard wsdlWizard = new WsdlImportWizard();
+		wsdlWizard.open();
+		wsdlWizard.setConnectionProfile("SOAP")
+			      .selectOperations("FullCountryInfo","FullCountryInfoAllCountries")
+			      .next();
+		wsdlWizard.setProject(PROJECT_NAME)
+			      .setSourceModelName(SOURCE_MODEL_NAME)
+				  .setViewModelName(VIEW_MODEL_NAME)
+				  .next();
+		wsdlWizard.setJndiName(SOURCE_MODEL_NAME)
+			      .next();
+		wsdlWizard.next();
+		wsdlWizard.addRequestElement("FullCountryInfo/sequence/arg0")
+				  .addResponseElement("FullCountryInfo","FullCountryInfoResponse/sequence/return/sequence/capitalCity")
+				  .addResponseElement("FullCountryInfo","FullCountryInfoResponse/sequence/return/sequence/continentCode")
+				  .addResponseElement("FullCountryInfo","FullCountryInfoResponse/sequence/return/sequence/currencyIsoCode")
+				  .addResponseElement("FullCountryInfo","FullCountryInfoResponse/sequence/return/sequence/isoCode")
+				  .addResponseElement("FullCountryInfo","FullCountryInfoResponse/sequence/return/sequence/name")
+				  .addResponseElement("FullCountryInfo","FullCountryInfoResponse/sequence/return/sequence/phoneCode")
 
-		wsdlWizard.setProfile("SOAP");
-		wsdlWizard.setSourceModelName(SOURCE_MODEL_NAME);
-		wsdlWizard.setViewModelName(VIEW_MODEL_NAME);
-
-		wsdlWizard.addOperation("FullCountryInfo");
-		wsdlWizard.addOperation("FullCountryInfoAllCountries");
-		wsdlWizard.addRequestElement("FullCountryInfo/sequence/arg0");
-
-		wsdlWizard.addResponseElement("FullCountryInfoResponse/sequence/return/sequence/capitalCity");
-		wsdlWizard.addResponseElement("FullCountryInfoResponse/sequence/return/sequence/continentCode");
-		wsdlWizard.addResponseElement("FullCountryInfoResponse/sequence/return/sequence/currencyIsoCode");
-		wsdlWizard.addResponseElement("FullCountryInfoResponse/sequence/return/sequence/isoCode");
-		wsdlWizard.addResponseElement("FullCountryInfoResponse/sequence/return/sequence/name");
-		wsdlWizard.addResponseElement("FullCountryInfoResponse/sequence/return/sequence/phoneCode");
-
-		wsdlWizard.addResponseElement("FullCountryInfoAllCountriesResponse/sequence/return/sequence/capitalCity");
-		wsdlWizard.addResponseElement("FullCountryInfoAllCountriesResponse/sequence/return/sequence/continentCode");
-		wsdlWizard.addResponseElement("FullCountryInfoAllCountriesResponse/sequence/return/sequence/currencyIsoCode");
-		wsdlWizard.addResponseElement("FullCountryInfoAllCountriesResponse/sequence/return/sequence/isoCode");
-		wsdlWizard.addResponseElement("FullCountryInfoAllCountriesResponse/sequence/return/sequence/name");
-		wsdlWizard.addResponseElement("FullCountryInfoAllCountriesResponse/sequence/return/sequence/phoneCode");
-		
-		wsdlWizard.setJndiName("SOAPSource");
-		wsdlWizard.execute();
+				  .addResponseElement("FullCountryInfoAllCountries","FullCountryInfoAllCountriesResponse/sequence/return/sequence/capitalCity")
+		  		  .addResponseElement("FullCountryInfoAllCountries","FullCountryInfoAllCountriesResponse/sequence/return/sequence/continentCode")
+				  .addResponseElement("FullCountryInfoAllCountries","FullCountryInfoAllCountriesResponse/sequence/return/sequence/currencyIsoCode")
+				  .addResponseElement("FullCountryInfoAllCountries","FullCountryInfoAllCountriesResponse/sequence/return/sequence/isoCode")
+				  .addResponseElement("FullCountryInfoAllCountries","FullCountryInfoAllCountriesResponse/sequence/return/sequence/name")
+				  .addResponseElement("FullCountryInfoAllCountries","FullCountryInfoAllCountriesResponse/sequence/return/sequence/phoneCode")
+				  .finish();
 
 		VdbWizard.openVdbWizard()
 				.setLocation(PROJECT_NAME)

@@ -174,18 +174,21 @@ public class ImportWizardTest {
 		new ConnectionProfileHelper().createCpWsdl(profile, wsdlCP);
 
 		WsdlImportWizard wsdlWizard = new WsdlImportWizard();
-
-		wsdlWizard.setProfile(profile);
-
-		wsdlWizard.setSourceModelName("HelloService.xmi");
-		wsdlWizard.setViewModelName("HelloServiceView.xmi");
-
-		wsdlWizard.addOperation("sayHello");
-		wsdlWizard.addRequestElement("sayHello/sequence/arg0");
-		wsdlWizard.addResponseElement("sayHelloResponse/sequence/return");
-
-		wsdlWizard.execute();
-
+		wsdlWizard.open();
+		wsdlWizard.setConnectionProfile(profile)
+			      .selectOperations("sayHello")
+			      .next();
+		wsdlWizard.setProject(MODEL_PROJECT)
+			      .setSourceModelName("HelloService")
+				  .setViewModelName("HelloServiceView")
+				  .next();
+		wsdlWizard.setJndiName("HelloService")
+			      .next();
+		wsdlWizard.next();
+		wsdlWizard.addRequestElement("sayHello/sequence/arg0")
+				  .addResponseElement("sayHello","sayHelloResponse/sequence/return")
+				  .finish();
+		
 		assertTrue(new ModelExplorer().getProject(MODEL_PROJECT).containsItem("HelloService.xmi"));
 		assertTrue(new ModelExplorer().getProject(MODEL_PROJECT).containsItem("HelloServiceView.xmi"));
 		new ModelExplorer().openModelEditor(MODEL_PROJECT, "HelloService.xmi");

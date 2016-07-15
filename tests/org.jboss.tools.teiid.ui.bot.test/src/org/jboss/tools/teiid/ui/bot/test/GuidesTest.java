@@ -416,29 +416,31 @@ public class GuidesTest {
     }
     private void wsdlImportWizard(String soapProfile, String model_SOAP_name, String view_SOAP_name){
     	WsdlImportWizard wsdlWizard = new WsdlImportWizard();
-		wsdlWizard.setProfile(soapProfile);
-		wsdlWizard.setSourceModelName(model_SOAP_name);
-		wsdlWizard.setJndiName(model_SOAP_name);
-		wsdlWizard.setViewModelName(view_SOAP_name);
-		
-		wsdlWizard.addOperation("FullCountryInfo");
-		wsdlWizard.addOperation("FullCountryInfoAllCountries");
-		wsdlWizard.addRequestElement("FullCountryInfo/sequence/arg0");
-		
-		wsdlWizard.addResponseElement("FullCountryInfoResponse/sequence/return/sequence/capitalCity");
-		wsdlWizard.addResponseElement("FullCountryInfoResponse/sequence/return/sequence/continentCode");
-		wsdlWizard.addResponseElement("FullCountryInfoResponse/sequence/return/sequence/currencyIsoCode");
-		wsdlWizard.addResponseElement("FullCountryInfoResponse/sequence/return/sequence/isoCode");
-		wsdlWizard.addResponseElement("FullCountryInfoResponse/sequence/return/sequence/name");
-		wsdlWizard.addResponseElement("FullCountryInfoResponse/sequence/return/sequence/phoneCode");
-		
-		wsdlWizard.addResponseElement("FullCountryInfoAllCountriesResponse/sequence/return/sequence/capitalCity");
-		wsdlWizard.addResponseElement("FullCountryInfoAllCountriesResponse/sequence/return/sequence/continentCode");
-		wsdlWizard.addResponseElement("FullCountryInfoAllCountriesResponse/sequence/return/sequence/currencyIsoCode");
-		wsdlWizard.addResponseElement("FullCountryInfoAllCountriesResponse/sequence/return/sequence/isoCode");
-		wsdlWizard.addResponseElement("FullCountryInfoAllCountriesResponse/sequence/return/sequence/name");
-		wsdlWizard.addResponseElement("FullCountryInfoAllCountriesResponse/sequence/return/sequence/phoneCode");
-		wsdlWizard.execute();
+		wsdlWizard.open();
+		wsdlWizard.setConnectionProfile(soapProfile)
+			      .selectOperations("FullCountryInfo","FullCountryInfoAllCountries")
+			      .next();
+		wsdlWizard.setSourceModelName(model_SOAP_name)
+				  .setViewModelName(view_SOAP_name)
+				  .next();
+		wsdlWizard.setJndiName(model_SOAP_name)
+			      .next();
+		wsdlWizard.next();
+		wsdlWizard.addRequestElement("FullCountryInfo/sequence/arg0")
+				  .addResponseElement("FullCountryInfo","FullCountryInfoResponse/sequence/return/sequence/capitalCity")
+				  .addResponseElement("FullCountryInfo","FullCountryInfoResponse/sequence/return/sequence/continentCode")
+				  .addResponseElement("FullCountryInfo","FullCountryInfoResponse/sequence/return/sequence/currencyIsoCode")
+				  .addResponseElement("FullCountryInfo","FullCountryInfoResponse/sequence/return/sequence/isoCode")
+				  .addResponseElement("FullCountryInfo","FullCountryInfoResponse/sequence/return/sequence/name")
+				  .addResponseElement("FullCountryInfo","FullCountryInfoResponse/sequence/return/sequence/phoneCode")
+
+				  .addResponseElement("FullCountryInfoAllCountries","FullCountryInfoAllCountriesResponse/sequence/return/sequence/capitalCity")
+		  		  .addResponseElement("FullCountryInfoAllCountries","FullCountryInfoAllCountriesResponse/sequence/return/sequence/continentCode")
+				  .addResponseElement("FullCountryInfoAllCountries","FullCountryInfoAllCountriesResponse/sequence/return/sequence/currencyIsoCode")
+				  .addResponseElement("FullCountryInfoAllCountries","FullCountryInfoAllCountriesResponse/sequence/return/sequence/isoCode")
+				  .addResponseElement("FullCountryInfoAllCountries","FullCountryInfoAllCountriesResponse/sequence/return/sequence/name")
+				  .addResponseElement("FullCountryInfoAllCountries","FullCountryInfoAllCountriesResponse/sequence/return/sequence/phoneCode")
+				  .finish();
     }
     private void defineViewTable(String projectName, String viewName, String query, String tableName){
 		Matcher<String> matcher = new WithMnemonicTextMatcher("New...");
