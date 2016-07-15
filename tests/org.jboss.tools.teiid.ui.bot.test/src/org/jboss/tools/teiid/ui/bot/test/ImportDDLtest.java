@@ -75,15 +75,14 @@ public class ImportDDLtest {
 	@Test
 	public void importDDL(){
 		//ddl importer 
-		DDLTeiidImportWizard importWizard = new DDLTeiidImportWizard();
-		importWizard.open();
-		importWizard.setPath(PATH_TO_DDL)
+		DDLTeiidImportWizard.openWizard()
+					.setPath(PATH_TO_DDL)
 					.setFolder(PROJECT_NAME)
 					.setName(NAME_VIEW_MODEL)
 					.setModelType(DDLTeiidImportWizard.View_Type)
 					.generateValidDefaultSQL(true)
-					.next();
-		importWizard.finish();
+					.nextPage()
+					.finish();
 		
 		new ModelExplorer().getModelProject(PROJECT_NAME).open();
 		new DefaultTreeItem(PROJECT_NAME,NAME_VIEW_MODEL + ".xmi","tempTable").doubleClick();

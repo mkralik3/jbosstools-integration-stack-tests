@@ -44,13 +44,23 @@ public abstract class TeiidImportWizard extends ImportWizardDialog {
 			log.info("There is nothing to save.");
 		}
 	}
-
+	
+	/**
+	 * use nextPage()
+	 */
+	@Deprecated
+	@Override
+	public void next(){
+		super.next();
+	}
+	
+	public abstract TeiidImportWizard nextPage();
+	
 	// The are some problems on Win7_32. We need to wait due to possible WSDL
 	// reading (not sure).
 	private void stupidWait() {
 		log.info("Stupid waiting for " + TimePeriod.NORMAL.getSeconds() + " s");
 		AbstractWait.sleep(TimePeriod.NORMAL);
 	}
-	@Deprecated
-	public abstract void execute();
+	
 }

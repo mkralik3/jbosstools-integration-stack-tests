@@ -4,6 +4,7 @@ import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTable;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTableItem;
 import org.jboss.reddeer.swt.impl.button.CheckBox;
+import org.jboss.reddeer.swt.impl.button.NextButton;
 import org.jboss.reddeer.swt.impl.button.PushButton;
 import org.jboss.reddeer.swt.impl.button.RadioButton;
 import org.jboss.reddeer.swt.impl.combo.DefaultCombo;
@@ -21,15 +22,30 @@ import org.jboss.reddeer.swt.impl.tree.DefaultTreeItem;
  */
 public class FlatImportWizard extends TeiidImportWizard {
 
+	private static FlatImportWizard INSTANCE;
+	
 	public static final String LABEL_FORMAT_OPRIONS = "Format Options";
 	public static final String LOCAL_FILE_MODE = "Flat file on local file system";
 	public static final String REMOTE_URL_MODE = "Flat file via remote URL";
 
-	public FlatImportWizard() {
+	private FlatImportWizard() {
 		super("File Source (Flat) >> Source and View Model");
 		log.info("Flat file import Wizard is opened");
 	}
 
+	public static FlatImportWizard getInstance(){
+		if(INSTANCE==null){
+			INSTANCE=new FlatImportWizard();
+		}
+		return INSTANCE;
+	}
+	
+	public static FlatImportWizard openWizard(){
+		FlatImportWizard wizard = getInstance();
+		wizard.open();
+		return wizard;
+	}
+	
 	static class TexttableFunctionOptions {
 		String INCLUDE_HEADER = "Include HEADER";
 		String INCLUDE_SKIP = "Include SKIP";
@@ -72,11 +88,6 @@ public class FlatImportWizard extends TeiidImportWizard {
 			other.delimiterCharacter = delimiterCharacter;
 			return other;
 		}
-	}
-
-	public static class FlatFileImportMode {
-		public static final String FLAT_FILE_ON_LOCAL_FILE_SYSTEM = "Flat file on local file system";
-		public static final String FLAT_FILE_VIA_REMOTE_URL = "Flat file via remote URL";
 	}
 
 	public FlatImportWizard selectImportMode(String importMode) {
@@ -177,8 +188,10 @@ public class FlatImportWizard extends TeiidImportWizard {
 		new LabeledText("New view table name:").setText(viewTableName);
 		return this;
 	}
-	@Deprecated
-	public void execute(){
-		//delete after refactor all importers
+	
+	public FlatImportWizard nextPage(){
+		log.info("Go to next wizard page");
+		new NextButton().click();
+		return this;
 	}
 }

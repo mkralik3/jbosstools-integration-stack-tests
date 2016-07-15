@@ -68,17 +68,16 @@ public class GeometryTypeTest {
 	
 	@Test
 	public void importFromJDBC(){
-		ImportJDBCDatabaseWizard jdbcWizard = new ImportJDBCDatabaseWizard();
-		jdbcWizard.open();
-		jdbcWizard.setConnectionProfile(ConnectionProfileConstants.ORACLE_11G_BQT2)
-		          .next();
-		jdbcWizard.setTableTypes(false, true, false)
-		      	  .next();
-		jdbcWizard.setTables("BQT2/TABLE/BUILDINGS")
-		          .next();
-		jdbcWizard.setFolder(PROJECT_NAME)
-		   	  	  .setModelName(SOURCE_MODEL_NAME)
-				  .finish();
+		ImportJDBCDatabaseWizard.openWizard()
+								.setConnectionProfile(ConnectionProfileConstants.ORACLE_11G_BQT2)
+								.nextPage()
+								.setTableTypes(false, true, false)
+								.nextPage()
+								.setTables("BQT2/TABLE/BUILDINGS")
+								.nextPage()
+								.setFolder(PROJECT_NAME)
+								.setModelName(SOURCE_MODEL_NAME)
+								.finish();
 		//TEIIDDES-2799
 		setGeometryDatatype(PROJECT_NAME,SOURCE_MODEL_NAME+".xmi","BUILDINGS","POSITION : object(1)");
 		setGeometryDatatype(PROJECT_NAME,SOURCE_MODEL_NAME+".xmi","BUILDINGS","FOOTPRINT : object(1)");

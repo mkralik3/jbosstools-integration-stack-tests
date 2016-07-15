@@ -1,6 +1,7 @@
 package org.jboss.tools.teiid.reddeer.wizard.imports;
 
 import org.jboss.reddeer.swt.impl.button.CheckBox;
+import org.jboss.reddeer.swt.impl.button.NextButton;
 import org.jboss.reddeer.swt.impl.button.PushButton;
 import org.jboss.reddeer.swt.impl.button.RadioButton;
 import org.jboss.reddeer.swt.impl.combo.DefaultCombo;
@@ -18,17 +19,33 @@ import org.jboss.reddeer.swt.impl.tree.DefaultTreeItem;
  */
 public class XMLImportWizard extends TeiidImportWizard {
 
+	private static XMLImportWizard INSTANCE;
+
+	
 	public static final String DIALOG_TITLE = "Import From XML File Source";
 
 	public static final String LOCAL = "XML file on local file system";
 	public static final String REMOTE = "XML file via remote URL";
 
 	
-	public XMLImportWizard() {
+	private XMLImportWizard() {
 		super("File Source (XML) >> Source and View Model");
 		log.info("Wsdl import wizard is opened");
 	}
 
+	public static XMLImportWizard getInstance(){
+		if(INSTANCE==null){
+			INSTANCE=new XMLImportWizard();
+		}
+		return INSTANCE;
+	}
+	
+	public static XMLImportWizard openWizard(){
+		XMLImportWizard wizard = getInstance();
+		wizard.open();
+		return wizard;
+	}
+	
 	public XMLImportWizard activate() {
 		new DefaultShell(DIALOG_TITLE);
 		return this;
@@ -109,8 +126,9 @@ public class XMLImportWizard extends TeiidImportWizard {
 		return this;
 	}
 	
-	@Deprecated
-	public void execute(){
-		//delete after refactor all importers
+	public XMLImportWizard nextPage(){
+		log.info("Go to next wizard page");
+		new NextButton().click();
+		return this;
 	}
 }

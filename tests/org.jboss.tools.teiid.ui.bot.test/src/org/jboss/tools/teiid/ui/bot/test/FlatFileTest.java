@@ -78,22 +78,21 @@ public class FlatFileTest {
 	public void localFileTest() {
 		new ConnectionProfileHelper().createCpFlatFile(LOCAL_PROFILE_NAME, LOCAL_FILE_PATH);
 
-		FlatImportWizard importWizard = new FlatImportWizard();
-		importWizard.open();
-		importWizard.selectLocalFileImportMode();
-		importWizard.next();
-		importWizard.selectProfile(LOCAL_PROFILE_NAME)
-					.selectFile(LOCAL_FILE_NAME)
-					.setSourceModel(LOCAL_SOURCE_MODEL)
-					.setProject(PROJECT_NAME)
-					.next();
-		importWizard.setJndiName(JNDI_NAME_LOCAL);
-		importWizard.next();
-		importWizard.next();
-		importWizard.next();
-		importWizard.setViewModel(LOCAL_VIEW_MODEL)
-					.setViewTable(LOCAL_VIEW_TABLE)
-					.finish();
+		FlatImportWizard.openWizard()
+						.selectLocalFileImportMode()
+						.nextPage()
+						.selectProfile(LOCAL_PROFILE_NAME)
+						.selectFile(LOCAL_FILE_NAME)
+						.setSourceModel(LOCAL_SOURCE_MODEL)
+						.setProject(PROJECT_NAME)
+						.nextPage()
+						.setJndiName(JNDI_NAME_LOCAL)
+						.nextPage()
+						.nextPage()
+						.nextPage()
+						.setViewModel(LOCAL_VIEW_MODEL)
+						.setViewTable(LOCAL_VIEW_TABLE)
+						.finish();
 		
 		// Deploying the VDB
 		VdbWizard.openVdbWizard()
@@ -117,22 +116,20 @@ public class FlatFileTest {
 	public void remoteFileTest() {
 		new TeiidConnectionProfileWizard().createFlatFileURLProfile(REMOTE_PROFILE_NAME, REMOTE_URL);
 
-		
-		FlatImportWizard importWizard = new FlatImportWizard();
-		importWizard.open();
-		importWizard.selectRemoteUrlImportMode();
-		importWizard.next();
-		importWizard.selectProfile(REMOTE_PROFILE_NAME)
-					.setSourceModel(REMOTE_SOURCE_MODEL)
-					.setProject(PROJECT_NAME)
-					.next();
-		importWizard.setJndiName(JNDI_NAME_REMOTE);
-		importWizard.next();
-		importWizard.next();
-		importWizard.next();
-		importWizard.setViewModel(REMOTE_VIEW_MODEL)
-					.setViewTable(REMOTE_VIEW_TABLE)
-					.finish();
+		FlatImportWizard.openWizard()
+						.selectRemoteUrlImportMode()
+						.nextPage()
+						.selectProfile(REMOTE_PROFILE_NAME)
+						.setSourceModel(REMOTE_SOURCE_MODEL)
+						.setProject(PROJECT_NAME)
+						.nextPage()
+						.setJndiName(JNDI_NAME_REMOTE)
+						.nextPage()
+						.nextPage()
+						.nextPage()
+						.setViewModel(REMOTE_VIEW_MODEL)
+						.setViewTable(REMOTE_VIEW_TABLE)
+						.finish();
 
 		VdbWizard.openVdbWizard()
 				.setLocation(PROJECT_NAME)

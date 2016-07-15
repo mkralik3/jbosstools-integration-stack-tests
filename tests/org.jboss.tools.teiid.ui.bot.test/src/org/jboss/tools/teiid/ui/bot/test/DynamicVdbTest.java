@@ -74,10 +74,9 @@ public class DynamicVdbTest {
 	@Before
 	public void before() {
 		
-		ImportProjectWizard importWizard = new ImportProjectWizard();
-		importWizard.open();
-		importWizard.setPath(new File("resources/projects/" + PROJECT_NAME).getAbsolutePath())
-					.finish();
+		ImportProjectWizard.openWizard()
+						   .setPath(new File("resources/projects/" + PROJECT_NAME).getAbsolutePath())
+					       .finish();
 		
 		new ModelProjectWizard().create(IMPORT_PROJECT_NAME);
 	}

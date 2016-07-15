@@ -23,6 +23,8 @@ import org.jboss.tools.teiid.reddeer.wizard.SelectTargetFolder;
 
 public class LdapImportWizard extends ImportWizardDialog {
 	
+	private static LdapImportWizard INSTANCE;
+	
 	public static final String DIALOG_TITLE = "Create Relational Model from LDAP Service";
 	
 	private static final String TABLE_NAME = "Table Name";
@@ -32,9 +34,22 @@ public class LdapImportWizard extends ImportWizardDialog {
 	
 	private String principalDnSuffix;
 	
-	public LdapImportWizard() {
+	private LdapImportWizard() {
 		super("Teiid Designer", "LDAP Service >> Source Model");
 		log.info("Import ldap wizard is opened");
+	}
+	
+	public static LdapImportWizard getInstance(){
+		if(INSTANCE==null){
+			INSTANCE=new LdapImportWizard();
+		}
+		return INSTANCE;
+	}
+	
+	public static LdapImportWizard openWizard(){
+		LdapImportWizard wizard = getInstance();
+		wizard.open();
+		return wizard;
 	}
 	
 	public LdapImportWizard activate() {
@@ -113,12 +128,6 @@ public class LdapImportWizard extends ImportWizardDialog {
 		return this;
 	}
 	
-	@Override
-	public void finish(){
-		super.finish();
-		new WaitWhile(new IsInProgress(), TimePeriod.SHORT);
-	}
-	
 	private void selectColumnEntry(String tableName, String entryName, String entryAlias) {
 		new DefaultTreeItem(tableName).expand();
 
@@ -171,6 +180,26 @@ public class LdapImportWizard extends ImportWizardDialog {
 		}
 
 	}
+	
+	@Override
+	public void finish(){
+		super.finish();
+		new WaitWhile(new IsInProgress(), TimePeriod.SHORT);
+	}
 
+	public LdapImportWizard nextPage(){
+		log.info("Go to next wizard page");
+		super.next();
+		return this;
+	}
+	
+	/**
+	 * use nextPage()
+	 */
+	@Deprecated
+	@Override
+	public void next(){
+		super.next();
+	}
 
 }

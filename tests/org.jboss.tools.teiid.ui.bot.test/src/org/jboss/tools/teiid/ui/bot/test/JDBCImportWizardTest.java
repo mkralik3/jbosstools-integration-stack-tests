@@ -213,19 +213,18 @@ public class JDBCImportWizardTest {
 	
 
 	private void importModel(String modelName, String connectionProfile, String itemList, boolean importProcedures) {
-		ImportJDBCDatabaseWizard jdbcWizard = new ImportJDBCDatabaseWizard();
-		jdbcWizard.open();
-		jdbcWizard.setConnectionProfile(connectionProfile)
-		          .next();
-		jdbcWizard.setTableTypes(false, true, false)
-				  .procedures(importProcedures)
-		      	  .next();
 		String[] splitList = itemList.split(",");
-		jdbcWizard.setTables(splitList)
-		          .next();
-		jdbcWizard.setFolder(MODEL_PROJECT)
-		   	  	  .setModelName(modelName)
-				  .finish();
+		ImportJDBCDatabaseWizard.openWizard()
+								.setConnectionProfile(connectionProfile)
+								.nextPage()
+								.setTableTypes(false, true, false)
+								.procedures(importProcedures)
+								.nextPage()
+								.setTables(splitList)
+								.nextPage()
+								.setFolder(MODEL_PROJECT)
+								.setModelName(modelName)
+								.finish();
 	}
 
 	private void checkImportedTablesInModel(String model, String tableA, String tableB) {

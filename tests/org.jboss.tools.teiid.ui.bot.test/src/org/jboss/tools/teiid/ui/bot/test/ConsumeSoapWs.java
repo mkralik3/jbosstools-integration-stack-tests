@@ -62,33 +62,32 @@ public class ConsumeSoapWs {
 
 		new ConnectionProfileHelper().createCpWsdl("SOAP", wsdlCP);
 
-		WsdlImportWizard wsdlWizard = new WsdlImportWizard();
-		wsdlWizard.open();
-		wsdlWizard.setConnectionProfile("SOAP")
-			      .selectOperations("FullCountryInfo","FullCountryInfoAllCountries")
-			      .next();
-		wsdlWizard.setProject(PROJECT_NAME)
-			      .setSourceModelName(SOURCE_MODEL_NAME)
-				  .setViewModelName(VIEW_MODEL_NAME)
-				  .next();
-		wsdlWizard.setJndiName(SOURCE_MODEL_NAME)
-			      .next();
-		wsdlWizard.next();
-		wsdlWizard.addRequestElement("FullCountryInfo/sequence/arg0")
-				  .addResponseElement("FullCountryInfo","FullCountryInfoResponse/sequence/return/sequence/capitalCity")
-				  .addResponseElement("FullCountryInfo","FullCountryInfoResponse/sequence/return/sequence/continentCode")
-				  .addResponseElement("FullCountryInfo","FullCountryInfoResponse/sequence/return/sequence/currencyIsoCode")
-				  .addResponseElement("FullCountryInfo","FullCountryInfoResponse/sequence/return/sequence/isoCode")
-				  .addResponseElement("FullCountryInfo","FullCountryInfoResponse/sequence/return/sequence/name")
-				  .addResponseElement("FullCountryInfo","FullCountryInfoResponse/sequence/return/sequence/phoneCode")
-
-				  .addResponseElement("FullCountryInfoAllCountries","FullCountryInfoAllCountriesResponse/sequence/return/sequence/capitalCity")
-		  		  .addResponseElement("FullCountryInfoAllCountries","FullCountryInfoAllCountriesResponse/sequence/return/sequence/continentCode")
-				  .addResponseElement("FullCountryInfoAllCountries","FullCountryInfoAllCountriesResponse/sequence/return/sequence/currencyIsoCode")
-				  .addResponseElement("FullCountryInfoAllCountries","FullCountryInfoAllCountriesResponse/sequence/return/sequence/isoCode")
-				  .addResponseElement("FullCountryInfoAllCountries","FullCountryInfoAllCountriesResponse/sequence/return/sequence/name")
-				  .addResponseElement("FullCountryInfoAllCountries","FullCountryInfoAllCountriesResponse/sequence/return/sequence/phoneCode")
-				  .finish();
+		WsdlImportWizard.openWizard()
+						.setConnectionProfile("SOAP")
+		.selectOperations("FullCountryInfo","FullCountryInfoAllCountries")
+		.nextPage()
+		.setProject(PROJECT_NAME)
+		.setSourceModelName(SOURCE_MODEL_NAME)
+		.setViewModelName(VIEW_MODEL_NAME)
+		.nextPage()
+		.setJndiName(SOURCE_MODEL_NAME)
+		.nextPage()
+		.nextPage()
+		.addRequestElement("FullCountryInfo/sequence/arg0")
+		.addResponseElement("FullCountryInfo","FullCountryInfoResponse/sequence/return/sequence/capitalCity")
+		.addResponseElement("FullCountryInfo","FullCountryInfoResponse/sequence/return/sequence/continentCode")
+		.addResponseElement("FullCountryInfo","FullCountryInfoResponse/sequence/return/sequence/currencyIsoCode")
+		.addResponseElement("FullCountryInfo","FullCountryInfoResponse/sequence/return/sequence/isoCode")
+		.addResponseElement("FullCountryInfo","FullCountryInfoResponse/sequence/return/sequence/name")
+		.addResponseElement("FullCountryInfo","FullCountryInfoResponse/sequence/return/sequence/phoneCode")
+	
+		.addResponseElement("FullCountryInfoAllCountries","FullCountryInfoAllCountriesResponse/sequence/return/sequence/capitalCity")
+		.addResponseElement("FullCountryInfoAllCountries","FullCountryInfoAllCountriesResponse/sequence/return/sequence/continentCode")
+		.addResponseElement("FullCountryInfoAllCountries","FullCountryInfoAllCountriesResponse/sequence/return/sequence/currencyIsoCode")
+		.addResponseElement("FullCountryInfoAllCountries","FullCountryInfoAllCountriesResponse/sequence/return/sequence/isoCode")
+		.addResponseElement("FullCountryInfoAllCountries","FullCountryInfoAllCountriesResponse/sequence/return/sequence/name")
+		.addResponseElement("FullCountryInfoAllCountries","FullCountryInfoAllCountriesResponse/sequence/return/sequence/phoneCode")
+		.finish();
 
 		VdbWizard.openVdbWizard()
 				.setLocation(PROJECT_NAME)

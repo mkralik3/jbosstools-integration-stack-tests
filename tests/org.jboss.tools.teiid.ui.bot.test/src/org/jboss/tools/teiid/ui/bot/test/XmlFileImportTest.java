@@ -51,54 +51,56 @@ public class XmlFileImportTest {
 		// Import from local XML file
 		new ConnectionProfileHelper().createCpXml(LOCAL_CP_NAME, "resources/flat/cd_catalog.xml");
 
-		XMLImportWizard importWizard = new XMLImportWizard();
-		importWizard.open();
-		importWizard.setImportMode(XMLImportWizard.LOCAL)
-					.next();
-		importWizard.setDataFileSource(LOCAL_CP_NAME)
-					.setSourceModelName(LOCAL_MODEL_PREFIX + "Source")
-					.next();
-		importWizard.setJndiName(LOCAL_MODEL_PREFIX + "Source")
-					.next();
-		importWizard.setRootPath("/CATALOG/CD")
-					.addElement("CATALOG/CD/TITLE")
-					.addElement("CATALOG/CD/ARTIST")
-					.addElement("CATALOG/CD/COUNTRY")
-					.addElement("CATALOG/CD/COMPANY")
-					.addElement("CATALOG/CD/PRICE");
+		XMLImportWizard.openWizard()
+					   .setImportMode(XMLImportWizard.LOCAL)
+					   .nextPage()
+					   .setDataFileSource(LOCAL_CP_NAME)
+					   .setSourceModelName(LOCAL_MODEL_PREFIX + "Source")
+					   .nextPage()
+					   .setJndiName(LOCAL_MODEL_PREFIX + "Source")
+					   .nextPage()
+					   .setRootPath("/CATALOG/CD")
+					   .addElement("CATALOG/CD/TITLE")
+					   .addElement("CATALOG/CD/ARTIST")
+					   .addElement("CATALOG/CD/COUNTRY")
+					   .addElement("CATALOG/CD/COMPANY")
+					   .addElement("CATALOG/CD/PRICE");
 		if(new JiraClient().isIssueClosed("TEIIDDES-2858")){
-			importWizard.addElement("CATALOG/CD/YEAR");
+			XMLImportWizard.getInstance()
+						   .addElement("CATALOG/CD/YEAR");
 		}
-		importWizard.next();
-		importWizard.setViewModelName(LOCAL_MODEL_PREFIX + "View")
-				  	.setViewTableName(LOCAL_MODEL_PREFIX + "Table")
-				  	.finish();
+		XMLImportWizard.getInstance()
+					   .nextPage()
+					   .setViewModelName(LOCAL_MODEL_PREFIX + "View")
+					   .setViewTableName(LOCAL_MODEL_PREFIX + "Table")
+					   .finish();
 		
 		// Import from remote XML file
 		new ConnectionProfileHelper().createCpXml(REMOTE_CP_NAME, "https://raw.githubusercontent.com/mmakovy/import-files/master/cd_catalog.xml");
-
-		importWizard = new XMLImportWizard();		
-		importWizard.open();
-		importWizard.setImportMode(XMLImportWizard.REMOTE)
-					.next();
-		importWizard.setDataFileSource(REMOTE_CP_NAME)
-					.setSourceModelName(REMOTE_MODEL_PREFIX + "Source")
-					.next();
-		importWizard.setJndiName(REMOTE_MODEL_PREFIX + "Source")
-					.next();
-		importWizard.setRootPath("/CATALOG/CD")
-					.addElement("CATALOG/CD/TITLE")
-					.addElement("CATALOG/CD/ARTIST")
-					.addElement("CATALOG/CD/COUNTRY")
-					.addElement("CATALOG/CD/COMPANY")
-					.addElement("CATALOG/CD/PRICE");
-		if(new JiraClient().isIssueClosed("TEIIDDES-2858")){
-			importWizard.addElement("CATALOG/CD/YEAR");
-		}
-		importWizard.next();
-		importWizard.setViewModelName(REMOTE_MODEL_PREFIX + "View")
-				  	.setViewTableName(REMOTE_MODEL_PREFIX + "Table")
-				  	.finish();
+		
+		XMLImportWizard.openWizard()
+		   .setImportMode(XMLImportWizard.REMOTE)
+		   .nextPage()
+		   .setDataFileSource(REMOTE_CP_NAME)
+		   .setSourceModelName(REMOTE_MODEL_PREFIX + "Source")
+		   .nextPage()
+		   .setJndiName(REMOTE_MODEL_PREFIX + "Source")
+		   .nextPage()
+		   .setRootPath("/CATALOG/CD")
+		   .addElement("CATALOG/CD/TITLE")
+		   .addElement("CATALOG/CD/ARTIST")
+		   .addElement("CATALOG/CD/COUNTRY")
+		   .addElement("CATALOG/CD/COMPANY")
+		   .addElement("CATALOG/CD/PRICE");
+			if(new JiraClient().isIssueClosed("TEIIDDES-2858")){
+			XMLImportWizard.getInstance()
+						   .addElement("CATALOG/CD/YEAR");
+			}
+			XMLImportWizard.getInstance()
+					   .nextPage()
+					   .setViewModelName(REMOTE_MODEL_PREFIX + "View")
+					   .setViewTableName(REMOTE_MODEL_PREFIX + "Table")
+					   .finish();
 		
 		// Create VDB and test it.
 		new ModelExplorer().getProject(PROJECT_NAME).refresh();

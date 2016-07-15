@@ -38,15 +38,14 @@ public class SalesforceImportTest {
 	public void salesforceTest() {
 		String model = "SFModel";
 
-		SalesforceImportWizard sfWizard = new SalesforceImportWizard();
-		sfWizard.open();
-		sfWizard.setConnectionProfile(ConnectionProfileConstants.SALESFORCE)
-				.next();
-		sfWizard.deselectObjects("Account","Apex Class")
-				.next();
-		sfWizard.setModelName(model)
-				.setProject(MODEL_PROJECT)
-				.finish();
+		SalesforceImportWizard.openWizard()
+							  .setConnectionProfile(ConnectionProfileConstants.SALESFORCE)
+							  .nextPage()
+							  .deselectObjects("Account","Apex Class")
+							  .nextPage()
+							  .setModelName(model)
+							  .setProject(MODEL_PROJECT)
+							  .finish();
 
 		assertTrue(new ModelExplorer().getProject(MODEL_PROJECT).containsItem(model + ".xmi", "AccountFeed"));
 		assertFalse(new ModelExplorer().getProject(MODEL_PROJECT).containsItem(model + ".xmi", "Account"));
