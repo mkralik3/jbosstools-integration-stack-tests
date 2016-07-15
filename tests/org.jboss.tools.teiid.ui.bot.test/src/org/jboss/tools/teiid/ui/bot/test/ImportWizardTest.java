@@ -144,13 +144,22 @@ public class ImportWizardTest {
 		new ConnectionProfileHelper().createCpXml(xmlProfile, "resources/flat/accounts.xml");
 		
 		XMLImportWizard importWizard = new XMLImportWizard();
-		importWizard.setName("Account");
-		importWizard.setLocal(true);
-		importWizard.setRootPath("/accounts/account");
-		importWizard.addElement("accounts/account/nick");
-		importWizard.addElement("accounts/account/balance");
-		importWizard.execute();
-
+		importWizard.open();
+		importWizard.setImportMode(XMLImportWizard.LOCAL)
+					.next();
+		importWizard.setDataFileSource(xmlProfile)
+					.setSourceModelName("AccountSource")
+					.next();
+		importWizard.setJndiName("AccountSource")
+					.next();
+		importWizard.setRootPath("/accounts/account")
+					.addElement("accounts/account/nick")
+					.addElement("accounts/account/balance")
+					.next();
+		importWizard.setViewModelName("AccountView")
+				  	.setViewTableName("AccountTable")
+				  	.finish();
+		
 		assertTrue(new ModelExplorer().getProject(MODEL_PROJECT).containsItem("AccountSource.xmi"));
 		assertTrue(new ModelExplorer().getProject(MODEL_PROJECT).containsItem("AccountView.xmi"));
 		new ModelExplorer().openModelEditor(MODEL_PROJECT, "AccountSource.xmi");

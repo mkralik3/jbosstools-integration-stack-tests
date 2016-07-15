@@ -92,7 +92,6 @@ public class GuidesTest {
 		String vdb_JDBC_name = "JDBC_VDB";
 		String test_SQL = "SELECT * FROM JDBC_VDB.SQLtestSource.STATUS";
 
-		
 		guides.createProjectViaGuides(actionSet, project_JDBC_name);
 		
 		guides.chooseAction(actionSet, "Create JDBC "); 
@@ -136,7 +135,6 @@ public class GuidesTest {
 
 		guides.chooseAction(actionSet, "Generate "); 
 		new DefaultShell("Create Relational Model from Web Service");
-		new PushButton("Cancel").click();		
 		wsdlImportWizard(soapProfile, model_SOAP_name, view_SOAP_name);
 		
 		guides.previewDataViaActionSet(actionSet, project_SOAP_name, view_SOAP_name+".xmi","FullCountryInfoAllCountries");
@@ -259,20 +257,25 @@ public class GuidesTest {
 		new ConnectionProfileHelper().createCpXml(xmlLocalprofile, "resources/guides/supplier.xml");
 
 		guides.chooseAction(actionSet, "Create source model from XML file source");
-		new DefaultShell("Import From XML File Source");
-		new PushButton("Cancel").click();
-
+		new DefaultShell("Import From XML File Source");	
 		XMLImportWizard importWizard = new XMLImportWizard();
-		importWizard.setName(xmlLocalName);
-		importWizard.setLocal(true);
-		importWizard.setRootPath("/SUPPLIERS/SUPPLIER");
-		importWizard.addElement("SUPPLIERS/SUPPLIER/SUPPLIER_ID");
-		importWizard.addElement("SUPPLIERS/SUPPLIER/SUPPLIER_NAME");
-		importWizard.addElement("SUPPLIERS/SUPPLIER/SUPPLIER_STATUS");
-		importWizard.addElement("SUPPLIERS/SUPPLIER/SUPPLIER_CITY");
-		importWizard.addElement("SUPPLIERS/SUPPLIER/SUPPLIER_STATE");
-		importWizard.setJndiName(xmlLocalName);
-		importWizard.execute();
+		importWizard.setImportMode(XMLImportWizard.LOCAL)
+					.next();
+		importWizard.setDataFileSource(xmlLocalprofile)
+					.setSourceModelName(xmlLocalName + "Source")
+					.next();
+		importWizard.setJndiName(xmlLocalName + "Source")
+					.next();
+		importWizard.setRootPath("/SUPPLIERS/SUPPLIER")
+					.addElement("SUPPLIERS/SUPPLIER/SUPPLIER_ID")
+					.addElement("SUPPLIERS/SUPPLIER/SUPPLIER_NAME")
+					.addElement("SUPPLIERS/SUPPLIER/SUPPLIER_STATUS")
+					.addElement("SUPPLIERS/SUPPLIER/SUPPLIER_CITY")
+					.addElement("SUPPLIERS/SUPPLIER/SUPPLIER_STATE")
+					.next();
+		importWizard.setViewModelName(xmlLocalName + "View")
+				  	.setViewTableName(xmlLocalName + "Table")
+				  	.finish();
 		
 		guides.previewDataViaActionSet(actionSet,xmlLocalprofile, xmlLocalName+"View.xmi",xmlLocalName+"Table");
 		assertTrue(testLastPreview());
@@ -302,22 +305,28 @@ public class GuidesTest {
 		
 		guides.chooseAction(actionSet, "Create source model from remote XML");
 		new DefaultShell("Import From XML File Source");
-		new PushButton("Cancel").click();
-
 		XMLImportWizard importWizard = new XMLImportWizard();
-		importWizard.setName(xmlRemoteName);
-		importWizard.setLocal(false);
-		importWizard.setRootPath("/CATALOG/CD");
-		importWizard.addElement("CATALOG/CD/TITLE");
-		importWizard.addElement("CATALOG/CD/ARTIST");
-		importWizard.addElement("CATALOG/CD/COUNTRY");
-		importWizard.addElement("CATALOG/CD/COMPANY");
-		importWizard.addElement("CATALOG/CD/PRICE");
+		importWizard.setImportMode(XMLImportWizard.REMOTE)
+					.next();
+		importWizard.setDataFileSource(xmlRemoteprofile)
+					.setSourceModelName(xmlRemoteName + "Source")
+					.next();
+		importWizard.setJndiName(xmlRemoteName + "Source")
+					.next();
+		importWizard.setRootPath("/CATALOG/CD")
+					.addElement("CATALOG/CD/TITLE")
+					.addElement("CATALOG/CD/ARTIST")
+					.addElement("CATALOG/CD/COUNTRY")
+					.addElement("CATALOG/CD/COMPANY")
+					.addElement("CATALOG/CD/PRICE");
 		if(new JiraClient().isIssueClosed("TEIIDDES-2858")){
 			importWizard.addElement("CATALOG/CD/YEAR");
 		}
-		importWizard.setJndiName(xmlRemoteName);
-		importWizard.execute();
+		importWizard.next();
+		importWizard.setViewModelName(xmlRemoteName + "View")
+				  	.setViewTableName(xmlRemoteName + "Table")
+				  	.finish();
+		
 		
 		guides.previewDataViaActionSet(actionSet,xmlRemoteprofile, xmlRemoteName+"View.xmi",xmlRemoteName+"Table");
 		assertTrue(testLastPreview());
@@ -416,7 +425,6 @@ public class GuidesTest {
     }
     private void wsdlImportWizard(String soapProfile, String model_SOAP_name, String view_SOAP_name){
     	WsdlImportWizard wsdlWizard = new WsdlImportWizard();
-		wsdlWizard.open();
 		wsdlWizard.setConnectionProfile(soapProfile)
 			      .selectOperations("FullCountryInfo","FullCountryInfoAllCountries")
 			      .next();

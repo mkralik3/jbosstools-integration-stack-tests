@@ -9,6 +9,7 @@ import org.jboss.reddeer.junit.runner.RedDeerSuite;
 import org.jboss.reddeer.requirements.openperspective.OpenPerspectiveRequirement.OpenPerspective;
 import org.jboss.reddeer.requirements.server.ServerReqState;
 import org.jboss.reddeer.workbench.impl.shell.WorkbenchShell;
+import org.jboss.tools.common.reddeer.JiraClient;
 import org.jboss.tools.teiid.reddeer.connection.ConnectionProfileHelper;
 import org.jboss.tools.teiid.reddeer.connection.TeiidJDBCHelper;
 import org.jboss.tools.teiid.reddeer.perspective.TeiidPerspective;
@@ -51,33 +52,53 @@ public class XmlFileImportTest {
 		new ConnectionProfileHelper().createCpXml(LOCAL_CP_NAME, "resources/flat/cd_catalog.xml");
 
 		XMLImportWizard importWizard = new XMLImportWizard();
-		importWizard.setName(LOCAL_MODEL_PREFIX);
-		importWizard.setLocal(true);
-		importWizard.setRootPath("/CATALOG/CD");
-		importWizard.addElement("CATALOG/CD/TITLE");
-		importWizard.addElement("CATALOG/CD/ARTIST");
-		importWizard.addElement("CATALOG/CD/COUNTRY");
-		importWizard.addElement("CATALOG/CD/COMPANY");
-		importWizard.addElement("CATALOG/CD/PRICE");
-		importWizard.addElement("CATALOG/CD/YEAR");
-		importWizard.setJndiName("XmlLocalSource");
-		importWizard.execute();
+		importWizard.open();
+		importWizard.setImportMode(XMLImportWizard.LOCAL)
+					.next();
+		importWizard.setDataFileSource(LOCAL_CP_NAME)
+					.setSourceModelName(LOCAL_MODEL_PREFIX + "Source")
+					.next();
+		importWizard.setJndiName(LOCAL_MODEL_PREFIX + "Source")
+					.next();
+		importWizard.setRootPath("/CATALOG/CD")
+					.addElement("CATALOG/CD/TITLE")
+					.addElement("CATALOG/CD/ARTIST")
+					.addElement("CATALOG/CD/COUNTRY")
+					.addElement("CATALOG/CD/COMPANY")
+					.addElement("CATALOG/CD/PRICE");
+		if(new JiraClient().isIssueClosed("TEIIDDES-2858")){
+			importWizard.addElement("CATALOG/CD/YEAR");
+		}
+		importWizard.next();
+		importWizard.setViewModelName(LOCAL_MODEL_PREFIX + "View")
+				  	.setViewTableName(LOCAL_MODEL_PREFIX + "Table")
+				  	.finish();
 		
 		// Import from remote XML file
 		new ConnectionProfileHelper().createCpXml(REMOTE_CP_NAME, "https://raw.githubusercontent.com/mmakovy/import-files/master/cd_catalog.xml");
 
-		importWizard = new XMLImportWizard();
-		importWizard.setName(REMOTE_MODEL_PREFIX);
-		importWizard.setLocal(false);
-		importWizard.setRootPath("/CATALOG/CD");
-		importWizard.addElement("CATALOG/CD/TITLE");
-		importWizard.addElement("CATALOG/CD/ARTIST");
-		importWizard.addElement("CATALOG/CD/COUNTRY");
-		importWizard.addElement("CATALOG/CD/COMPANY");
-		importWizard.addElement("CATALOG/CD/PRICE");
-		importWizard.addElement("CATALOG/CD/YEAR");
-		importWizard.setJndiName("XmlRemoteSource");
-		importWizard.execute();
+		importWizard = new XMLImportWizard();		
+		importWizard.open();
+		importWizard.setImportMode(XMLImportWizard.REMOTE)
+					.next();
+		importWizard.setDataFileSource(REMOTE_CP_NAME)
+					.setSourceModelName(REMOTE_MODEL_PREFIX + "Source")
+					.next();
+		importWizard.setJndiName(REMOTE_MODEL_PREFIX + "Source")
+					.next();
+		importWizard.setRootPath("/CATALOG/CD")
+					.addElement("CATALOG/CD/TITLE")
+					.addElement("CATALOG/CD/ARTIST")
+					.addElement("CATALOG/CD/COUNTRY")
+					.addElement("CATALOG/CD/COMPANY")
+					.addElement("CATALOG/CD/PRICE");
+		if(new JiraClient().isIssueClosed("TEIIDDES-2858")){
+			importWizard.addElement("CATALOG/CD/YEAR");
+		}
+		importWizard.next();
+		importWizard.setViewModelName(REMOTE_MODEL_PREFIX + "View")
+				  	.setViewTableName(REMOTE_MODEL_PREFIX + "Table")
+				  	.finish();
 		
 		// Create VDB and test it.
 		new ModelExplorer().getProject(PROJECT_NAME).refresh();
