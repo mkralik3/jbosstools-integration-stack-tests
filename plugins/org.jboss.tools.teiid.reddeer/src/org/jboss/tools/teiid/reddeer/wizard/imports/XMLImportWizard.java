@@ -21,7 +21,6 @@ public class XMLImportWizard extends TeiidImportWizard {
 
 	private static XMLImportWizard INSTANCE;
 
-	
 	public static final String DIALOG_TITLE = "Import From XML File Source";
 
 	public static final String LOCAL = "XML file on local file system";

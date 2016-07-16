@@ -245,24 +245,24 @@ public class ImportWizardTest {
 
 	@Test
 	public void xmlSchemaImportTest() {
-
 		// local xsd		
-		XMLSchemaImportWizard wizard = new XMLSchemaImportWizard();
-		wizard.setLocal(true);
-		wizard.setRootPath(new File("resources/xsd").getAbsolutePath());
-		wizard.setSchemas(new String[] { "EmployeesSchema.xsd", "BookDatatypes.xsd" });
-		wizard.execute();
+		XMLSchemaImportWizard.openWizard()
+							 .selectLocalImportMode()
+							 .nextPage()
+							 .setFromDirectory(new File("resources/xsd").getAbsolutePath())
+							 .setToDirectory(MODEL_PROJECT)
+							 .selectSchema("EmployeesSchema.xsd", "BookDatatypes.xsd")
+							 .finish();
 		
 		assertTrue(new ModelExplorer().getProject(MODEL_PROJECT).containsItem("EmployeesSchema.xsd"));
 		assertTrue(new ModelExplorer().getProject(MODEL_PROJECT).containsItem("BookDatatypes.xsd"));
-
 		// remote URI		
-		wizard = new XMLSchemaImportWizard();
-		wizard.setLocal(false);
-		wizard.setXmlSchemaURL("http://www.jboss.org/schema/jbosscommon/jboss-common_6_0.xsd");
-		wizard.setVerifyHostname(false);
-		wizard.setAddDependentSchemas(false);
-		wizard.execute();
+		XMLSchemaImportWizard.openWizard()
+							 .selectRemoteImportMode()
+							 .nextPage()
+							 .setSchemaURL("http://www.jboss.org/schema/jbosscommon/jboss-common_6_0.xsd", null, null, false)
+							 .addDependentSchemas(false)
+							 .finish();
 		
 		assertTrue(new ModelExplorer().getProject(MODEL_PROJECT).containsItem("jboss-common_6_0.xsd"));
 	}

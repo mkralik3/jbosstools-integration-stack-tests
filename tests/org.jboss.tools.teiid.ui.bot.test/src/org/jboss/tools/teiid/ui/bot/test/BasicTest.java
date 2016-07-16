@@ -35,12 +35,13 @@ public class BasicTest {
 		}
 		new ModelExplorer().createProject(PROJECT);
 		
-		XMLSchemaImportWizard wizard = new XMLSchemaImportWizard();
-		wizard.setLocal(true);
-		wizard.setRootPath(new File("resources/xsd").getAbsolutePath());
-		wizard.setSchemas(new String[] { XSD });
-		wizard.setDestination(PROJECT);
-		wizard.execute();
+		XMLSchemaImportWizard.openWizard()
+							 .selectLocalImportMode()
+							 .nextPage()
+							 .setFromDirectory(new File("resources/xsd").getAbsolutePath())
+							 .selectSchema(XSD)
+							 .setToDirectory(PROJECT)
+							 .finish();
 	}
 
 	@AfterClass
