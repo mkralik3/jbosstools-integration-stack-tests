@@ -29,7 +29,7 @@ public class XMLImportWizard extends TeiidImportWizard {
 	
 	private XMLImportWizard() {
 		super("File Source (XML) >> Source and View Model");
-		log.info("Wsdl import wizard is opened");
+		log.info("XML import wizard is opened");
 	}
 
 	public static XMLImportWizard getInstance(){

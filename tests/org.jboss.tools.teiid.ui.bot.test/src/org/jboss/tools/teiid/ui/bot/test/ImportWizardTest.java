@@ -219,25 +219,27 @@ public class ImportWizardTest {
 								  .finish();
 
 		// import from workspace
-		Properties iProps = new Properties();
-		iProps.setProperty("modelName", "WsdlToWS");
-		iProps.setProperty("project", MODEL_PROJECT);
-		iProps.setProperty("wsdlName", "Hello.wsdl");
-
-		WsdlWebImportWizard importWizard = new WsdlWebImportWizard();
-		importWizard.importWsdl(iProps, WsdlWebImportWizard.IMPORT_WSDL_FROM_WORKSPACE);
+		WsdlWebImportWizard.openWizard()
+						   .setModelName("WsdlToWS")
+						   .setProject(MODEL_PROJECT)
+						   .importFromWorkspace(MODEL_PROJECT,"Hello.wsdl")
+						   .nextPage()
+						   .nextPage()
+						   .nextPage()
+						   .nextPage()
+						   .finish();
 		
 		new WorkbenchShell();
-
-		// import from URL
-		iProps = new Properties();
-		iProps.setProperty("modelName", "WsdlToWS2");
-		iProps.setProperty("project", MODEL_PROJECT);
-		iProps.setProperty("wsdlUrl", "http://www.webservicex.com/globalweather.asmx?WSDL");
-		iProps.setProperty("securityType", "None");
-		
-		importWizard = new WsdlWebImportWizard();
-		importWizard.importWsdl(iProps, WsdlWebImportWizard.IMPORT_WSDL_FROM_URL);
+		// import from url
+		WsdlWebImportWizard.openWizard()
+						   .setModelName("WsdlToWS2")
+						   .setProject(MODEL_PROJECT)
+						   .importFromURL("http://www.webservicex.com/globalweather.asmx?WSDL", null, null, false)
+						   .nextPage()
+						   .nextPage()
+						   .nextPage()
+						   .nextPage()
+						   .finish();
 
 		assertTrue(new ModelExplorer().getProject(MODEL_PROJECT).containsItem("WsdlToWS.xmi"));
 		assertTrue(new ModelExplorer().getProject(MODEL_PROJECT).containsItem("WsdlToWS2Responses.xmi"));

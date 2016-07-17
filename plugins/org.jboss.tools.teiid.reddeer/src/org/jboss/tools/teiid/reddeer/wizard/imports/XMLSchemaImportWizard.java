@@ -28,7 +28,7 @@ public class XMLSchemaImportWizard extends TeiidImportWizard {
 
 	private XMLSchemaImportWizard() {
 		super("XML Schemas");
-		log.info("Wsdl import wizard is opened");
+		log.info("XML Schema import wizard is opened");
 	}
 
 	public static XMLSchemaImportWizard getInstance(){

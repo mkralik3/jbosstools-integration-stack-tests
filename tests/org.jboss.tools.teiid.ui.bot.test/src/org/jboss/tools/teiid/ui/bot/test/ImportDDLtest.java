@@ -154,12 +154,13 @@ public class ImportDDLtest {
 		new ModelExplorer().getModelProject(PROJECT_NAME).open();
 		new DefaultTreeItem(PROJECT_NAME,NAME_VIEW_ORIGINAL_MODEL + ".xmi").select();
 
-		DDLTeiidExportWizard exportDDL = new DDLTeiidExportWizard();		
-		exportDDL.open();
-		exportDDL.setLocation(PROJECT_NAME,NAME_VIEW_ORIGINAL_MODEL + ".xmi")
-	     		 .next();
-		exportDDL.exportToWorkspace("originalDDL", PROJECT_NAME)
-			     .finish();
+		DDLTeiidExportWizard.openWizard()
+							.setLocation(PROJECT_NAME,NAME_VIEW_ORIGINAL_MODEL + ".xmi")
+							.setNameInSource(false)
+							.setNativeType(false)
+							.nextPage()
+							.exportToWorkspace("originalDDL", PROJECT_NAME)
+							.finish();
 		
 		new ModelExplorer().getModelProject(PROJECT_NAME).open();
 		new DefaultTreeItem(PROJECT_NAME,"originalDDL").doubleClick();
