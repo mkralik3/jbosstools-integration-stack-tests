@@ -79,20 +79,20 @@ public class FlatFileTest {
 		new ConnectionProfileHelper().createCpFlatFile(LOCAL_PROFILE_NAME, LOCAL_FILE_PATH);
 
 		FlatImportWizard.openWizard()
-						.selectLocalFileImportMode()
-						.nextPage()
-						.selectProfile(LOCAL_PROFILE_NAME)
-						.selectFile(LOCAL_FILE_NAME)
-						.setSourceModel(LOCAL_SOURCE_MODEL)
-						.setProject(PROJECT_NAME)
-						.nextPage()
-						.setJndiName(JNDI_NAME_LOCAL)
-						.nextPage()
-						.nextPage()
-						.nextPage()
-						.setViewModel(LOCAL_VIEW_MODEL)
-						.setViewTable(LOCAL_VIEW_TABLE)
-						.finish();
+				.selectLocalFileImportMode()
+				.nextPage()
+				.selectProfile(LOCAL_PROFILE_NAME)
+				.selectFile(LOCAL_FILE_NAME)
+				.setSourceModel(LOCAL_SOURCE_MODEL)
+				.setProject(PROJECT_NAME)
+				.nextPage()
+				.setJndiName(JNDI_NAME_LOCAL)
+				.nextPage()
+				.nextPage()
+				.nextPage()
+				.setViewModel(LOCAL_VIEW_MODEL)
+				.setViewTable(LOCAL_VIEW_TABLE)
+				.finish();
 		
 		// Deploying the VDB
 		VdbWizard.openVdbWizard()
@@ -117,19 +117,19 @@ public class FlatFileTest {
 		new TeiidConnectionProfileWizard().createFlatFileURLProfile(REMOTE_PROFILE_NAME, REMOTE_URL);
 
 		FlatImportWizard.openWizard()
-						.selectRemoteUrlImportMode()
-						.nextPage()
-						.selectProfile(REMOTE_PROFILE_NAME)
-						.setSourceModel(REMOTE_SOURCE_MODEL)
-						.setProject(PROJECT_NAME)
-						.nextPage()
-						.setJndiName(JNDI_NAME_REMOTE)
-						.nextPage()
-						.nextPage()
-						.nextPage()
-						.setViewModel(REMOTE_VIEW_MODEL)
-						.setViewTable(REMOTE_VIEW_TABLE)
-						.finish();
+				.selectRemoteUrlImportMode()
+				.nextPage()
+				.selectProfile(REMOTE_PROFILE_NAME)
+				.setSourceModel(REMOTE_SOURCE_MODEL)
+				.setProject(PROJECT_NAME)
+				.nextPage()
+				.setJndiName(JNDI_NAME_REMOTE)
+				.nextPage()
+				.nextPage()
+				.nextPage()
+				.setViewModel(REMOTE_VIEW_MODEL)
+				.setViewTable(REMOTE_VIEW_TABLE)
+				.finish();
 
 		VdbWizard.openVdbWizard()
 				.setLocation(PROJECT_NAME)

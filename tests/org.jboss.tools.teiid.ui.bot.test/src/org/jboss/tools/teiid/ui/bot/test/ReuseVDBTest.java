@@ -81,14 +81,14 @@ public class ReuseVDBTest {
 		
 		modelExplorer.createProject(PROJECT_NAME_REUSE);
 		ImportJDBCDatabaseWizard.openWizard()
-								.setConnectionProfile(SOURCE_VDB + " - localhost - Teiid Connection")
-								.nextPage()
-								.setTableTypes(false, true, false)
-								.nextPage()
-								.setTables(VIEW_SOURCE_MODEL)
-								.nextPage()
-								.setFolder(PROJECT_NAME_REUSE)
-								.finish();
+				.setConnectionProfile(SOURCE_VDB + " - localhost - Teiid Connection")
+				.nextPage()
+				.setTableTypes(false, true, false)
+				.nextPage()
+				.setTables(VIEW_SOURCE_MODEL)
+				.nextPage()
+				.setFolder(PROJECT_NAME_REUSE)
+				.finish();
 		
 		MetadataModelWizard modelWizard = new MetadataModelWizard();
 		modelWizard.open();

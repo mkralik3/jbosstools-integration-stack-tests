@@ -7,7 +7,6 @@ import static org.junit.Assert.fail;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Properties;
 
 import org.jboss.reddeer.common.wait.TimePeriod;
 import org.jboss.reddeer.common.wait.WaitWhile;
@@ -69,15 +68,15 @@ public class GeometryTypeTest {
 	@Test
 	public void importFromJDBC(){
 		ImportJDBCDatabaseWizard.openWizard()
-								.setConnectionProfile(ConnectionProfileConstants.ORACLE_11G_BQT2)
-								.nextPage()
-								.setTableTypes(false, true, false)
-								.nextPage()
-								.setTables("BQT2/TABLE/BUILDINGS")
-								.nextPage()
-								.setFolder(PROJECT_NAME)
-								.setModelName(SOURCE_MODEL_NAME)
-								.finish();
+				.setConnectionProfile(ConnectionProfileConstants.ORACLE_11G_BQT2)
+				.nextPage()
+				.setTableTypes(false, true, false)
+				.nextPage()
+				.setTables("BQT2/TABLE/BUILDINGS")
+				.nextPage()
+				.setFolder(PROJECT_NAME)
+				.setModelName(SOURCE_MODEL_NAME)
+				.finish();
 		//TEIIDDES-2799
 		setGeometryDatatype(PROJECT_NAME,SOURCE_MODEL_NAME+".xmi","BUILDINGS","POSITION : object(1)");
 		setGeometryDatatype(PROJECT_NAME,SOURCE_MODEL_NAME+".xmi","BUILDINGS","FOOTPRINT : object(1)");
@@ -104,15 +103,17 @@ public class GeometryTypeTest {
 	public void importViaTeiid(){		
 		new ServersViewExt().createDatasource(teiidServer.getName(), ConnectionProfileConstants.ORACLE_11G_BQT2);
 
-		Properties teiidImporterProperties = new Properties();
-		teiidImporterProperties.setProperty(TeiidConnectionImportWizard.IMPORT_PROPERTY_TABLE_NAME_PATTERN, "BUILDINGS");
-		teiidImporterProperties.setProperty(TeiidConnectionImportWizard.IMPORT_PROPERTY_SCHEMA_PATTERN, "BQT2");
-		TeiidConnectionImportWizard importWizard = new TeiidConnectionImportWizard();
-		importWizard.setModelName(SOURCE_TEIID_MODEL_NAME);
-		importWizard.setProjectName(PROJECT_NAME);
-		importWizard.setTeiidImporterProperties(teiidImporterProperties);
-		importWizard.setDataSourceName(ConnectionProfileConstants.ORACLE_11G_BQT2);
-		importWizard.execute();
+		TeiidConnectionImportWizard.openWizard()
+				.selectDataSource(ConnectionProfileConstants.ORACLE_11G_BQT2)
+				.nextPage()
+				.setImportPropertie(TeiidConnectionImportWizard.IMPORT_PROPERTY_TABLE_NAME_PATTERN, "BUILDINGS")
+				.setImportPropertie(TeiidConnectionImportWizard.IMPORT_PROPERTY_SCHEMA_PATTERN, "BQT2")
+				.nextPage()
+				.setModelName(SOURCE_TEIID_MODEL_NAME)
+				.setProject(PROJECT_NAME)
+				.nextPageWithWait()
+				.nextPageWithWait()
+				.finish();
 		
 		//TEIIDDES-2799
 		setGeometryDatatype(PROJECT_NAME,SOURCE_TEIID_MODEL_NAME+".xmi","BUILDINGS","POSITION : object(1)");

@@ -98,8 +98,8 @@ public class DynamicVdbTest {
 		new ModelExplorer().deleteAllProjectsSafely();
 		
 		ImportProjectWizard.openWizard()
-						   .setPath(new File("resources/projects/" + PROJECT_NAME).getAbsolutePath())
-					       .finish();
+			   .setPath(new File("resources/projects/" + PROJECT_NAME).getAbsolutePath())
+		       .finish();
 		
 		new ModelProjectWizard().create(IMPORT_PROJECT_NAME);
 	}
@@ -882,11 +882,11 @@ public class DynamicVdbTest {
 
 	private void importDynamicVdb(String projectName, String dynamicVdbName) {	
 		ImportFromFileSystemWizard.openWizard()
-		  						.setPath("resources/dynamic-vdb")
-		  						.setFolder(projectName)
-		  						.selectFile(dynamicVdbName)
-		  						.setCreteTopLevelFolder(false)
-		  						.finish();	
+				.setPath("resources/dynamic-vdb")
+				.setFolder(projectName)
+				.selectFile(dynamicVdbName)
+				.setCreteTopLevelFolder(false)
+				.finish();	
 	}
 
 	private void createArchiveVdb(String projectName, String dynamicVdbName) {

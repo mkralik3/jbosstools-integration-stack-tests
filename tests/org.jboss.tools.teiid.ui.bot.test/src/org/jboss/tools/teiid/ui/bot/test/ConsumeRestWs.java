@@ -79,18 +79,18 @@ public class ConsumeRestWs {
 		new ConnectionProfileHelper().createCpRest(XML_PROFILE_NAME, restCpXml);
 
 		RestImportWizard.openWizard()
-						.setProfileName(XML_PROFILE_NAME)
-						.nextPage()
-						.setProject(PROJECT_NAME)
-						.setSourceModelName(SOURCE_MODEL_XML)
-						.setViewModelName(VIEW_MODEL_XML)
-						.setProcedureName(PROCEDURE_NAME)
-						.nextPage()
-						.setJndiName("restXMLSource")
-						.nextPage()
-						.setRootPath("schedule/day/broadcasts/broadcast")
-						.setColumns("pid","start","end","programme/title")
-						.finish();
+				.setProfileName(XML_PROFILE_NAME)
+				.nextPage()
+				.setProject(PROJECT_NAME)
+				.setSourceModelName(SOURCE_MODEL_XML)
+				.setViewModelName(VIEW_MODEL_XML)
+				.setProcedureName(PROCEDURE_NAME)
+				.nextPage()
+				.setJndiName("restXMLSource")
+				.nextPage()
+				.setRootPath("schedule/day/broadcasts/broadcast")
+				.setColumns("pid","start","end","programme/title")
+				.finish();
 
 		VdbWizard.openVdbWizard()
 				.setLocation(PROJECT_NAME)
@@ -117,18 +117,18 @@ public class ConsumeRestWs {
 		new ConnectionProfileHelper().createCpRest(JSON_PROFILE_NAME, restCpJson);
 
 		RestImportWizard.openWizard()
-						.setProfileName(JSON_PROFILE_NAME)
-						.nextPage()
-						.setProject(PROJECT_NAME)
-						.setSourceModelName(SOURCE_MODEL_JSON)
-						.setViewModelName(VIEW_MODEL_JSON)
-						.setProcedureName(PROCEDURE_NAME)
-						.nextPage()
-						.setJndiName("restJsonSource")
-						.nextPage()
-						.setRootPath("response/schedule/day/broadcasts")
-						.setColumns("pid","start","end","programme/title")
-						.finish();
+				.setProfileName(JSON_PROFILE_NAME)
+				.nextPage()
+				.setProject(PROJECT_NAME)
+				.setSourceModelName(SOURCE_MODEL_JSON)
+				.setViewModelName(VIEW_MODEL_JSON)
+				.setProcedureName(PROCEDURE_NAME)
+				.nextPage()
+				.setJndiName("restJsonSource")
+				.nextPage()
+				.setRootPath("response/schedule/day/broadcasts")
+				.setColumns("pid","start","end","programme/title")
+				.finish();
 		
 		VdbWizard.openVdbWizard()
 				.setLocation(PROJECT_NAME)
@@ -158,19 +158,19 @@ public class ConsumeRestWs {
 		new ConnectionProfileHelper().createCpRest(XML_PROFILE_NAME_DIGEST, restCpXml);
 
 		RestImportWizard.openWizard()
-						.setProfileName(XML_PROFILE_NAME_DIGEST)
-						.nextPage()
-						.setProject(PROJECT_NAME)
-						.setSourceModelName(SOURCE_MODEL_XML_DIGEST)
-						.setViewModelName(VIEW_MODEL_XML_DIGEST)
-						.setProcedureName(PROCEDURE_NAME)
-						.nextPage()
-						.setJndiName("restXMLDigestSource")
-						.nextPage()
-						.setRootPath("schedule/day/broadcasts/broadcast")
-						.setColumns("pid","start","end","programme/title")
-						.finish();
-		
+				.setProfileName(XML_PROFILE_NAME_DIGEST)
+				.nextPage()
+				.setProject(PROJECT_NAME)
+				.setSourceModelName(SOURCE_MODEL_XML_DIGEST)
+				.setViewModelName(VIEW_MODEL_XML_DIGEST)
+				.setProcedureName(PROCEDURE_NAME)
+				.nextPage()
+				.setJndiName("restXMLDigestSource")
+				.nextPage()
+				.setRootPath("schedule/day/broadcasts/broadcast")
+				.setColumns("pid","start","end","programme/title")
+				.finish();
+
 		VdbWizard.openVdbWizard()
 				.setLocation(PROJECT_NAME)
 				.setName(VDBXMLDIGEST)
@@ -199,18 +199,18 @@ public class ConsumeRestWs {
 		new ConnectionProfileHelper().createCpRest(JSON_PROFILE_NAME_DIGEST, restCpJson);
 
 		RestImportWizard.openWizard()
-						.setProfileName(JSON_PROFILE_NAME_DIGEST)
-						.nextPage()
-						.setProject(PROJECT_NAME)
-						.setSourceModelName(SOURCE_MODEL_JSON_DIGEST)
-						.setViewModelName(VIEW_MODEL_JSON_DIGEST)
-						.setProcedureName(PROCEDURE_NAME)
-						.nextPage()
-						.setJndiName("restJsonDigestSource")
-						.nextPage()
-						.setRootPath("response/schedule/day/broadcasts")
-						.setColumns("pid","start","end","programme/title")
-						.finish();
+				.setProfileName(JSON_PROFILE_NAME_DIGEST)
+				.nextPage()
+				.setProject(PROJECT_NAME)
+				.setSourceModelName(SOURCE_MODEL_JSON_DIGEST)
+				.setViewModelName(VIEW_MODEL_JSON_DIGEST)
+				.setProcedureName(PROCEDURE_NAME)
+				.nextPage()
+				.setJndiName("restJsonDigestSource")
+				.nextPage()
+				.setRootPath("response/schedule/day/broadcasts")
+				.setColumns("pid","start","end","programme/title")
+				.finish();
 
 		VdbWizard.openVdbWizard()
 				.setLocation(PROJECT_NAME)

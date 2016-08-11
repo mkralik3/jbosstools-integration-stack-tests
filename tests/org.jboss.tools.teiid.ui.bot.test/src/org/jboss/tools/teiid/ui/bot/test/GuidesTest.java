@@ -259,23 +259,23 @@ public class GuidesTest {
 		guides.chooseAction(actionSet, "Create source model from XML file source");
 		new DefaultShell("Import From XML File Source");	
 		XMLImportWizard.getInstance()
-					   .setImportMode(XMLImportWizard.LOCAL)
-					   .nextPage()
-					   .setDataFileSource(xmlLocalprofile)
-					   .setSourceModelName(xmlLocalName + "Source")
-					   .nextPage()
-					   .setJndiName(xmlLocalName + "Source")
-					   .nextPage()
-					   .setRootPath("/SUPPLIERS/SUPPLIER")
-					   .addElement("SUPPLIERS/SUPPLIER/SUPPLIER_ID")
-					   .addElement("SUPPLIERS/SUPPLIER/SUPPLIER_NAME")
-					   .addElement("SUPPLIERS/SUPPLIER/SUPPLIER_STATUS")
-					   .addElement("SUPPLIERS/SUPPLIER/SUPPLIER_CITY")
-					   .addElement("SUPPLIERS/SUPPLIER/SUPPLIER_STATE")
-					   .nextPage()
-					   .setViewModelName(xmlLocalName + "View")
-					   .setViewTableName(xmlLocalName + "Table")
-					   .finish();
+			   .setImportMode(XMLImportWizard.LOCAL)
+			   .nextPage()
+			   .setDataFileSource(xmlLocalprofile)
+			   .setSourceModelName(xmlLocalName + "Source")
+			   .nextPage()
+			   .setJndiName(xmlLocalName + "Source")
+			   .nextPage()
+			   .setRootPath("/SUPPLIERS/SUPPLIER")
+			   .addElement("SUPPLIERS/SUPPLIER/SUPPLIER_ID")
+			   .addElement("SUPPLIERS/SUPPLIER/SUPPLIER_NAME")
+			   .addElement("SUPPLIERS/SUPPLIER/SUPPLIER_STATUS")
+			   .addElement("SUPPLIERS/SUPPLIER/SUPPLIER_CITY")
+			   .addElement("SUPPLIERS/SUPPLIER/SUPPLIER_STATE")
+			   .nextPage()
+			   .setViewModelName(xmlLocalName + "View")
+			   .setViewTableName(xmlLocalName + "Table")
+			   .finish();
 		
 		guides.previewDataViaActionSet(actionSet,xmlLocalprofile, xmlLocalName+"View.xmi",xmlLocalName+"Table");
 		assertTrue(testLastPreview());
@@ -306,28 +306,28 @@ public class GuidesTest {
 		guides.chooseAction(actionSet, "Create source model from remote XML");
 		new DefaultShell("Import From XML File Source");
 		XMLImportWizard.getInstance()
-					   .setImportMode(XMLImportWizard.REMOTE)
-					   .nextPage()
-					   .setDataFileSource(xmlRemoteprofile)
-					   .setSourceModelName(xmlRemoteName + "Source")
-					   .nextPage()
-					   .setJndiName(xmlRemoteName + "Source")
-					   .nextPage()
-					   .setRootPath("/CATALOG/CD")
-					   .addElement("CATALOG/CD/TITLE")
-					   .addElement("CATALOG/CD/ARTIST")
-					   .addElement("CATALOG/CD/COUNTRY")
-					   .addElement("CATALOG/CD/COMPANY")
-					   .addElement("CATALOG/CD/PRICE");
+			   .setImportMode(XMLImportWizard.REMOTE)
+			   .nextPage()
+			   .setDataFileSource(xmlRemoteprofile)
+			   .setSourceModelName(xmlRemoteName + "Source")
+			   .nextPage()
+			   .setJndiName(xmlRemoteName + "Source")
+			   .nextPage()
+			   .setRootPath("/CATALOG/CD")
+			   .addElement("CATALOG/CD/TITLE")
+			   .addElement("CATALOG/CD/ARTIST")
+			   .addElement("CATALOG/CD/COUNTRY")
+			   .addElement("CATALOG/CD/COMPANY")
+			   .addElement("CATALOG/CD/PRICE");
 		if(new JiraClient().isIssueClosed("TEIIDDES-2858")){
 			XMLImportWizard.getInstance()
-						   .addElement("CATALOG/CD/YEAR");
+					.addElement("CATALOG/CD/YEAR");
 		}
 		XMLImportWizard.getInstance()
-					   .nextPage()
-					   .setViewModelName(xmlRemoteName + "View")
-					   .setViewTableName(xmlRemoteName + "Table")
-					   .finish();
+			   .nextPage()
+			   .setViewModelName(xmlRemoteName + "View")
+			   .setViewTableName(xmlRemoteName + "Table")
+			   .finish();
 		
 		
 		guides.previewDataViaActionSet(actionSet,xmlRemoteprofile, xmlRemoteName+"View.xmi",xmlRemoteName+"Table");
@@ -399,69 +399,69 @@ public class GuidesTest {
 	
     private void createJDBCSource(String modelName,String projectName,String cp_name){
     	ImportJDBCDatabaseWizard.getInstance()
-								.setConnectionProfile(cp_name)
-								.nextPage()
-								.setTableTypes(false, true, false)
-								.nextPage()
-								.nextPage()
-								.setFolder(projectName)
-								.setModelName(modelName)
-								.finish();
+				.setConnectionProfile(cp_name)
+				.nextPage()
+				.setTableTypes(false, true, false)
+				.nextPage()
+				.nextPage()
+				.setFolder(projectName)
+				.setModelName(modelName)
+				.finish();
     }
     private void createFlatLocalSource(String profile, String fileName,String projectName,String modelName, String viewModelName, String viewTableName){
     	FlatImportWizard.getInstance()
-						.selectLocalFileImportMode()
-						.nextPage()
-						.selectProfile(profile)
-						.selectFile(fileName)
-						.setSourceModel(modelName)
-						.setProject(projectName)
-						.nextPage()
-						.setJndiName(modelName)
-						.nextPage()
-						.nextPage()
-						.nextPage()
-						.setViewModel(viewModelName)
-						.setViewTable(viewTableName)
-						.finish();
+				.selectLocalFileImportMode()
+				.nextPage()
+				.selectProfile(profile)
+				.selectFile(fileName)
+				.setSourceModel(modelName)
+				.setProject(projectName)
+				.nextPage()
+				.setJndiName(modelName)
+				.nextPage()
+				.nextPage()
+				.nextPage()
+				.setViewModel(viewModelName)
+				.setViewTable(viewTableName)
+				.finish();
     }
     private void wsdlImportWizard(String soapProfile, String model_SOAP_name, String view_SOAP_name){
     	WsdlImportWizard.getInstance()
-    					.setConnectionProfile(soapProfile)
-						.selectOperations("FullCountryInfo","FullCountryInfoAllCountries")
-						.nextPage()
-						.setSourceModelName(model_SOAP_name)
-						.setViewModelName(view_SOAP_name)
-						.nextPage()
-						.setJndiName(model_SOAP_name)
-						.nextPage()
-						.nextPage()
-						.addRequestElement("FullCountryInfo/sequence/arg0")
-						.addResponseElement("FullCountryInfo","FullCountryInfoResponse/sequence/return/sequence/capitalCity")
-						.addResponseElement("FullCountryInfo","FullCountryInfoResponse/sequence/return/sequence/continentCode")
-						.addResponseElement("FullCountryInfo","FullCountryInfoResponse/sequence/return/sequence/currencyIsoCode")
-						.addResponseElement("FullCountryInfo","FullCountryInfoResponse/sequence/return/sequence/isoCode")
-						.addResponseElement("FullCountryInfo","FullCountryInfoResponse/sequence/return/sequence/name")
-						.addResponseElement("FullCountryInfo","FullCountryInfoResponse/sequence/return/sequence/phoneCode")
-						
-						.addResponseElement("FullCountryInfoAllCountries","FullCountryInfoAllCountriesResponse/sequence/return/sequence/capitalCity")
-						.addResponseElement("FullCountryInfoAllCountries","FullCountryInfoAllCountriesResponse/sequence/return/sequence/continentCode")
-						.addResponseElement("FullCountryInfoAllCountries","FullCountryInfoAllCountriesResponse/sequence/return/sequence/currencyIsoCode")
-						.addResponseElement("FullCountryInfoAllCountries","FullCountryInfoAllCountriesResponse/sequence/return/sequence/isoCode")
-						.addResponseElement("FullCountryInfoAllCountries","FullCountryInfoAllCountriesResponse/sequence/return/sequence/name")
-						.addResponseElement("FullCountryInfoAllCountries","FullCountryInfoAllCountriesResponse/sequence/return/sequence/phoneCode")
-						.finish();
+				.setConnectionProfile(soapProfile)
+				.selectOperations("FullCountryInfo","FullCountryInfoAllCountries")
+				.nextPage()
+				.setSourceModelName(model_SOAP_name)
+				.setViewModelName(view_SOAP_name)
+				.nextPage()
+				.setJndiName(model_SOAP_name)
+				.nextPage()
+				.nextPage()
+				.addRequestElement("FullCountryInfo/sequence/arg0")
+				.addResponseElement("FullCountryInfo","FullCountryInfoResponse/sequence/return/sequence/capitalCity")
+				.addResponseElement("FullCountryInfo","FullCountryInfoResponse/sequence/return/sequence/continentCode")
+				.addResponseElement("FullCountryInfo","FullCountryInfoResponse/sequence/return/sequence/currencyIsoCode")
+				.addResponseElement("FullCountryInfo","FullCountryInfoResponse/sequence/return/sequence/isoCode")
+				.addResponseElement("FullCountryInfo","FullCountryInfoResponse/sequence/return/sequence/name")
+				.addResponseElement("FullCountryInfo","FullCountryInfoResponse/sequence/return/sequence/phoneCode")
+				
+				.addResponseElement("FullCountryInfoAllCountries","FullCountryInfoAllCountriesResponse/sequence/return/sequence/capitalCity")
+				.addResponseElement("FullCountryInfoAllCountries","FullCountryInfoAllCountriesResponse/sequence/return/sequence/continentCode")
+				.addResponseElement("FullCountryInfoAllCountries","FullCountryInfoAllCountriesResponse/sequence/return/sequence/currencyIsoCode")
+				.addResponseElement("FullCountryInfoAllCountries","FullCountryInfoAllCountriesResponse/sequence/return/sequence/isoCode")
+				.addResponseElement("FullCountryInfoAllCountries","FullCountryInfoAllCountriesResponse/sequence/return/sequence/name")
+				.addResponseElement("FullCountryInfoAllCountries","FullCountryInfoAllCountriesResponse/sequence/return/sequence/phoneCode")
+				.finish();
     }
     private void defineViewTable(String projectName, String viewName, String query, String tableName){
 		Matcher<String> matcher = new WithMnemonicTextMatcher("New...");
     	new PushButton(0, matcher).click();	
 		MetadataModelWizard wizard = new MetadataModelWizard();
 		wizard
-			.setLocation(projectName)
-			.setModelName(viewName)
-			.selectModelClass(ModelClass.RELATIONAL)
-			.selectModelType(ModelType.VIEW)
-			.finish();
+				.setLocation(projectName)
+				.setModelName(viewName)
+				.selectModelClass(ModelClass.RELATIONAL)
+				.selectModelType(ModelType.VIEW)
+				.finish();
 		new DefaultShell("Define View Table");
 		//3.2
 		new PushButton(1, matcher).click();	

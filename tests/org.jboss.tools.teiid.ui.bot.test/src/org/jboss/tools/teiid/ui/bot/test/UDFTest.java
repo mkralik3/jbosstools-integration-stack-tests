@@ -58,11 +58,11 @@ public class UDFTest {
 	public void relViewUDF() {
 		// import lib/MyTestUDF.jar
 		ImportFromFileSystemWizard.openWizard()
-								  .setPath(UDF_LIB_PATH)
-								  .setFolder(PROJECT_NAME)
-								  .selectFile(UDF_LIB)
-								  .setCreteTopLevelFolder(true)
-								  .finish();
+				.setPath(UDF_LIB_PATH)
+				.setFolder(PROJECT_NAME)
+				.selectFile(UDF_LIB)
+				.setCreteTopLevelFolder(true)
+				.finish();
 
 		// create UDF
 		String proc = "udfConcatNull";

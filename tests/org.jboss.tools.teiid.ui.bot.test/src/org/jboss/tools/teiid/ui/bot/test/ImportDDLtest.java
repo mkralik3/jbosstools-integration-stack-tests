@@ -76,13 +76,13 @@ public class ImportDDLtest {
 	public void importDDL(){
 		//ddl importer 
 		DDLTeiidImportWizard.openWizard()
-					.setPath(PATH_TO_DDL)
-					.setFolder(PROJECT_NAME)
-					.setName(NAME_VIEW_MODEL)
-					.setModelType(DDLTeiidImportWizard.View_Type)
-					.generateValidDefaultSQL(true)
-					.nextPage()
-					.finish();
+				.setPath(PATH_TO_DDL)
+				.setFolder(PROJECT_NAME)
+				.setName(NAME_VIEW_MODEL)
+				.setModelType(DDLTeiidImportWizard.View_Type)
+				.generateValidDefaultSQL(true)
+				.nextPage()
+				.finish();
 		
 		new ModelExplorer().getModelProject(PROJECT_NAME).open();
 		new DefaultTreeItem(PROJECT_NAME,NAME_VIEW_MODEL + ".xmi","tempTable").doubleClick();
@@ -155,12 +155,12 @@ public class ImportDDLtest {
 		new DefaultTreeItem(PROJECT_NAME,NAME_VIEW_ORIGINAL_MODEL + ".xmi").select();
 
 		DDLTeiidExportWizard.openWizard()
-							.setLocation(PROJECT_NAME,NAME_VIEW_ORIGINAL_MODEL + ".xmi")
-							.setNameInSource(false)
-							.setNativeType(false)
-							.nextPage()
-							.exportToWorkspace("originalDDL", PROJECT_NAME)
-							.finish();
+				.setLocation(PROJECT_NAME,NAME_VIEW_ORIGINAL_MODEL + ".xmi")
+				.setNameInSource(false)
+				.setNativeType(false)
+				.nextPage()
+				.exportToWorkspace("originalDDL", PROJECT_NAME)
+				.finish();
 		
 		new ModelExplorer().getModelProject(PROJECT_NAME).open();
 		new DefaultTreeItem(PROJECT_NAME,"originalDDL").doubleClick();
