@@ -104,6 +104,7 @@ public abstract class ServerBase extends RuntimeBase {
 
 					}
 					server = new ServersView().getServer(name);
+					new DefaultShell("Server Credentials Required").close(); // remote test (JDG test in the teiid tests) have been crashed because this shell was opened 
 					server.start();
 				}
 			}
