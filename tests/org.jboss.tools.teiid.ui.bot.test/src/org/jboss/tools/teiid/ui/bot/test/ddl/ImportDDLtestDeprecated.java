@@ -1,4 +1,4 @@
-package org.jboss.tools.teiid.ui.bot.test;
+package org.jboss.tools.teiid.ui.bot.test.ddl;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -54,7 +54,7 @@ import org.junit.runner.RunWith;
 		ConnectionProfileConstants.ORACLE_11G_PARTS_SUPPLIER,
 })
 
-public class ImportDDLtest {
+public class ImportDDLtestDeprecated {
 	@InjectRequirement
 	private static TeiidServerRequirement teiidServer;
 

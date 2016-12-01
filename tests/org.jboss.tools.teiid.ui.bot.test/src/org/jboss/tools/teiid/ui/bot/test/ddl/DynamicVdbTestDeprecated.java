@@ -1,4 +1,4 @@
-package org.jboss.tools.teiid.ui.bot.test;
+package org.jboss.tools.teiid.ui.bot.test.ddl;
 
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsString;
@@ -72,7 +72,7 @@ import org.xml.sax.InputSource;
 @TeiidServer(state = ServerReqState.RUNNING, connectionProfiles = {
 	ConnectionProfileConstants.ORACLE_11G_PARTS_SUPPLIER,
 	ConnectionProfileConstants.POSTGRESQL_92_DVQE })
-public class DynamicVdbTest {
+public class DynamicVdbTestDeprecated {
 
 	private static final String PROCEDURE_MODEL = "ProcedureModel";
 

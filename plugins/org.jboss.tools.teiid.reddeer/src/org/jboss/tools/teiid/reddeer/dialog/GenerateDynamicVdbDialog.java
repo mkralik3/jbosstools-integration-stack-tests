@@ -31,7 +31,14 @@ public class GenerateDynamicVdbDialog extends AbstractDialog {
 		new LabeledText("Dynamic VDB Name").setText(name);
 		return this;
 	}
-
+	
+	public GenerateDynamicVdbDialog setFileName(String name) {
+		log.info("Set file name to: '" + name + "'");
+		activate();	
+		new LabeledText("Dynamic VDB File Name").setText(name);
+		return this;
+	}
+	
 	public GenerateDynamicVdbDialog setVersion(String version) {
 		log.info("Set version to: '" + version + "'");
 		activate();	
