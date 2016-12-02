@@ -64,9 +64,13 @@ public class DdlHelper {
 	}
 	
 	public String deploy(String project, String dynamicVDB,TeiidServerRequirement teiidServer) {
+		ServersViewExt serversView = new ServersViewExt();
+		if(serversView.isVDBDeployed(teiidServer.getName(), ServersViewExt.ServerType.DV6, dynamicVDB)){
+			serversView.undeployVdb(teiidServer.getName(), dynamicVDB);
+		}
 		new ModelExplorer().deployVdb(project, dynamicVDB);
-		new ServersViewExt().refreshServer(teiidServer.getName());
-		return new ServersViewExt().getVdbStatus(teiidServer.getName(), dynamicVDB);
+		serversView.refreshServer(teiidServer.getName());
+		return serversView.getVdbStatus(teiidServer.getName(), dynamicVDB);
 		
 	}
 	

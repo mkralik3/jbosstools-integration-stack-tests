@@ -104,6 +104,8 @@ public class ViewAccessPattern {
 				.finish();
 		checkImportedModel();
 		
+		/*all models must be opened before synchronize VDB*/
+		new ModelExplorer().openModelEditor(WORK_PROJECT_NAME,NAME_SOURCE_MODEL+".xmi");
 		new ModelExplorer().openModelEditor(WORK_PROJECT_NAME,NAME_VDB+".vdb");
 		VdbEditor staticVdb = VdbEditor.getInstance(NAME_VDB);
 		staticVdb.synchronizeAll();
