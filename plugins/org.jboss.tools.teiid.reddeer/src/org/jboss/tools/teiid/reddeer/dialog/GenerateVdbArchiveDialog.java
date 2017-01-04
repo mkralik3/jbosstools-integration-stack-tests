@@ -112,6 +112,7 @@ public class GenerateVdbArchiveDialog extends AbstractDialog {
 	@Override
 	public void finish() {
 		log.info("Finishing '" + title + "' Dialog");
+		activate();
 		new PushButton("Finish").click();
 		new WaitWhile(new ShellWithTextIsActive(title), TimePeriod.NORMAL);
 		AbstractWait.sleep(TimePeriod.SHORT);

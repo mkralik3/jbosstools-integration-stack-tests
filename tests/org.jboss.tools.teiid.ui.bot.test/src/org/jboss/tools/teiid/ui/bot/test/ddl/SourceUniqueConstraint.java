@@ -1,13 +1,8 @@
 package org.jboss.tools.teiid.ui.bot.test.ddl;
 
 import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.empty;
-import static org.hamcrest.Matchers.is;
 
 import org.hamcrest.core.StringContains;
-import org.jboss.reddeer.eclipse.ui.problems.ProblemsView;
-import org.jboss.reddeer.eclipse.ui.problems.ProblemsView.ProblemType;
-import org.jboss.reddeer.eclipse.ui.problems.matcher.ProblemsResourceMatcher;
 import org.jboss.reddeer.junit.requirement.inject.InjectRequirement;
 import org.jboss.reddeer.junit.runner.RedDeerSuite;
 import org.jboss.reddeer.requirements.openperspective.OpenPerspectiveRequirement.OpenPerspective;
@@ -15,8 +10,6 @@ import org.jboss.reddeer.requirements.server.ServerReqState;
 import org.jboss.tools.teiid.reddeer.DdlHelper;
 import org.jboss.tools.teiid.reddeer.connection.ConnectionProfileConstants;
 import org.jboss.tools.teiid.reddeer.dialog.GenerateVdbArchiveDialog;
-import org.jboss.tools.teiid.reddeer.editor.RelationalModelEditor;
-import org.jboss.tools.teiid.reddeer.editor.TableEditor;
 import org.jboss.tools.teiid.reddeer.editor.VdbEditor;
 import org.jboss.tools.teiid.reddeer.perspective.TeiidPerspective;
 import org.jboss.tools.teiid.reddeer.requirement.TeiidServerRequirement;
@@ -103,6 +96,7 @@ public class SourceUniqueConstraint {
 		/*all models must be opened before synchronize VDB*/
 		new ModelExplorer().openModelEditor(WORK_PROJECT_NAME,NAME_SOURCE_MODEL+".xmi");
 		new ModelExplorer().openModelEditor(WORK_PROJECT_NAME,NAME_VDB+".vdb");
+		new ModelExplorer().changeConnectionProfile(ConnectionProfileConstants.SQL_SERVER_2008_PARTS_SUPPLIER, WORK_PROJECT_NAME, NAME_SOURCE_MODEL);
 		VdbEditor staticVdb = VdbEditor.getInstance(NAME_VDB);
 		staticVdb.synchronizeAll();
 		staticVdb.saveAndClose();

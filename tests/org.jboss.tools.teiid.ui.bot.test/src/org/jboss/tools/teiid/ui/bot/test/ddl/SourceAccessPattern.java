@@ -104,6 +104,7 @@ public class SourceAccessPattern {
 		/*all models must be opened before synchronize VDB*/
 		new ModelExplorer().openModelEditor(WORK_PROJECT_NAME,NAME_SOURCE_MODEL+".xmi");
 		new ModelExplorer().openModelEditor(WORK_PROJECT_NAME,NAME_VDB+".vdb");
+		new ModelExplorer().changeConnectionProfile(ConnectionProfileConstants.SQL_SERVER_2008_PARTS_SUPPLIER, WORK_PROJECT_NAME, NAME_SOURCE_MODEL);
 		VdbEditor staticVdb = VdbEditor.getInstance(NAME_VDB);
 		staticVdb.synchronizeAll();
 		staticVdb.saveAndClose();
