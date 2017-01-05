@@ -13,7 +13,6 @@ import org.jboss.reddeer.junit.runner.RedDeerSuite;
 import org.jboss.reddeer.requirements.openperspective.OpenPerspectiveRequirement.OpenPerspective;
 import org.jboss.reddeer.requirements.server.ServerReqState;
 import org.jboss.tools.teiid.reddeer.DdlHelper;
-import org.jboss.tools.teiid.reddeer.connection.ConnectionProfileConstants;
 import org.jboss.tools.teiid.reddeer.dialog.GenerateVdbArchiveDialog;
 import org.jboss.tools.teiid.reddeer.editor.RelationalModelEditor;
 import org.jboss.tools.teiid.reddeer.editor.TableEditor;
@@ -35,10 +34,8 @@ import org.junit.runner.RunWith;
 @RunWith(RedDeerSuite.class)
 @OpenPerspective(TeiidPerspective.class)
 
-@TeiidServer(state = ServerReqState.RUNNING, connectionProfiles={
-		ConnectionProfileConstants.SQL_SERVER_2008_PARTS_SUPPLIER,
-})
-public class ViewProcedureSettings {
+@TeiidServer(state = ServerReqState.RUNNING)
+public class ViewGlobalTable {
 	@InjectRequirement
 	private static TeiidServerRequirement teiidServer;
 	
@@ -46,13 +43,12 @@ public class ViewProcedureSettings {
 	public ErrorCollector collector = new ErrorCollector();
 	public DdlHelper ddlHelper = null;
 	
-	private static final String PROJECT_NAME = "ViewProcedureSettings";
-	private static final String NAME_SOURCE_MODEL = "sourceM";
-	private static final String NAME_VIEW_MODEL = "ViewProcedureSettings";
-	private static final String NAME_VDB = "ViewProcedureSettingsVDB";
-	private static final String NAME_ORIGINAL_DYNAMIC_VDB = NAME_VDB + "-vdb.xml";
+	private static final String PROJECT_NAME = "ViewGlobalTable";
+	private static final String NAME_VIEW_MODEL = "viewGlobalTableView";
+	private static final String NAME_VDB = "viewGlobalTableVdb";
+	private static final String NAME_ORIGINAL_DYNAMIC_VDB = "viewGlobalTableVdb-vdb.xml";
 	
-	private static final String NAME_GENERATED_DYNAMIC_VDB = "ViewProcedureSettingsVDBgenerated-vdb.xml";
+	private static final String NAME_GENERATED_DYNAMIC_VDB = "viewGlobalTableVdbGenerated-vdb.xml";
 	
 	private static final String WORK_PROJECT_NAME = "workProject" ;
 	
@@ -64,9 +60,6 @@ public class ViewProcedureSettings {
 		ddlHelper = new DdlHelper(collector);
 		
 		explorer.importProject("DDLtests/"+PROJECT_NAME);
-		explorer.changeConnectionProfile(ConnectionProfileConstants.SQL_SERVER_2008_PARTS_SUPPLIER, PROJECT_NAME, NAME_SOURCE_MODEL);
-		/* data source is needed when exported VDB will be tested to deploy on the server */
-		explorer.createDataSource("Use Connection Profile Info",ConnectionProfileConstants.SQL_SERVER_2008_PARTS_SUPPLIER, PROJECT_NAME, NAME_SOURCE_MODEL);
 		explorer.createProject(WORK_PROJECT_NAME);
 	}
 	
@@ -82,6 +75,7 @@ public class ViewProcedureSettings {
 				.setFolder(WORK_PROJECT_NAME)
 				.setName(NAME_VIEW_MODEL)
 				.setModelType(DDLTeiidImportWizard.View_Type)
+				.generateValidDefaultSQL(true)
 				.nextPage()
 				.finish();
 		checkImportedModel();
@@ -102,7 +96,6 @@ public class ViewProcedureSettings {
 		checkImportedModel();
 		
 		/*all models must be opened before synchronize VDB*/
-		new ModelExplorer().openModelEditor(WORK_PROJECT_NAME,NAME_SOURCE_MODEL+".xmi");
 		new ModelExplorer().openModelEditor(WORK_PROJECT_NAME,NAME_VDB+".vdb");
 		VdbEditor staticVdb = VdbEditor.getInstance(NAME_VDB);
 		staticVdb.synchronizeAll();
@@ -117,30 +110,15 @@ public class ViewProcedureSettings {
 		new ModelExplorer().openModelEditor(WORK_PROJECT_NAME, NAME_VIEW_MODEL + ".xmi");
 		RelationalModelEditor editor = new RelationalModelEditor(NAME_VIEW_MODEL + ".xmi");
 	    TableEditor tableEditor = editor.openTableEditor();
-		tableEditor.openTab(TableEditor.Tabs.PROCEDURES);
-	    
-	    collector.checkThat("Procedure name in source is badly set", tableEditor.getCellText(1,"myProcedure", "Name In Source"),
-	    		is("myProcedureSource"));
-	    collector.checkThat("Update count is badly set",tableEditor.getCellText(1,"myProcedure", "Update Count"),
-	    		is("ONE"));
-	    collector.checkThat("Table description is missing", tableEditor.getCellText(1,"myProcedure", "Description"),
-	    		is("Procedure description"));
 
-		tableEditor.openTab(TableEditor.Tabs.PROCEDURE_RESULTS);
-		collector.checkThat("Procedure result is set wrongly", tableEditor.getCellText(0,"myProcedure", "Name"),
-	    		is("NewProcedureResult"));
-	    
-		tableEditor.openTab(TableEditor.Tabs.PROCEDURE_PARAMETERS);
-		collector.checkThat("Procedure parameter direction is set wrongly", tableEditor.getCellText(0,"myProcedure", "Direction"),
-	    		is("IN"));
-		collector.checkThat("Procedure parameter datatype is set wrongly", tableEditor.getCellText(0,"myProcedure", "Datatype"),
-	    		is("string"));
-		collector.checkThat("Procedure parameter length is set wrongly", tableEditor.getCellText(0,"myProcedure", "Length"),
-	    		is("4000"));
+		// check access pattern
+		tableEditor.openTab(TableEditor.Tabs.BASE_TABLES);
+		collector.checkThat("table is not set as global table", tableEditor.getCellText(1,"viewTable", "relational:Global Temp Table"),
+	    		is("true"));
 		
 		ProblemsView problemsView = new ProblemsView();
-		collector.checkThat("Errors in imported source model",
-				problemsView.getProblems(ProblemType.ERROR, new ProblemsResourceMatcher(NAME_SOURCE_MODEL + ".xmi")),
+		collector.checkThat("Errors in imported view model",
+				problemsView.getProblems(ProblemType.ERROR, new ProblemsResourceMatcher(NAME_VIEW_MODEL + ".xmi")),
 				empty());
 		collector.checkThat("Errors in imported VDB",
 				problemsView.getProblems(ProblemType.ERROR, new ProblemsResourceMatcher(NAME_VDB + ".vdb")),
@@ -152,10 +130,10 @@ public class ViewProcedureSettings {
 		VdbWizard.openVdbWizard()
 				.setName(NAME_VDB)
 				.setLocation(PROJECT_NAME)
-				.addModel(PROJECT_NAME, NAME_VIEW_MODEL)				
+				.addModel(PROJECT_NAME, NAME_VIEW_MODEL)
 				.finish();
-		String contentFile = ddlHelper.createDynamicVdb(PROJECT_NAME, NAME_VDB, NAME_GENERATED_DYNAMIC_VDB);
-		checkExportedFile(contentFile);
+		String dynamicVdbContent = ddlHelper.createDynamicVdb(PROJECT_NAME, NAME_VDB, NAME_GENERATED_DYNAMIC_VDB);
+		checkExportedFile(dynamicVdbContent);
 
 		/*test deploy generated dynamic VDB from static VDB*/
 		String status = ddlHelper.deploy(PROJECT_NAME, NAME_GENERATED_DYNAMIC_VDB, teiidServer);
@@ -169,11 +147,7 @@ public class ViewProcedureSettings {
 	}
 	
 	private void checkExportedFile(String contentFile){
-		collector.checkThat("missing CREATE VIRTUAL PROCEDURE", contentFile, new StringContains("CREATE VIRTUAL PROCEDURE"));
-		collector.checkThat("missing (IN Parameter1 string(4000))", contentFile, new StringContains("(IN Parameter1 string(4000))"));
-		collector.checkThat("missing ANNOTATION 'Procedure description'", contentFile, new StringContains("ANNOTATION 'Procedure description'"));
-		collector.checkThat("missing NAMEINSOURCE 'myProcedureSource'", contentFile, new StringContains("NAMEINSOURCE 'myProcedureSource'"));
-		
+		collector.checkThat("access pattern is not in ddl", contentFile, new StringContains(
+				"CREATE GLOBAL TEMPORARY TABLE viewTable"));
 	}
 }
-

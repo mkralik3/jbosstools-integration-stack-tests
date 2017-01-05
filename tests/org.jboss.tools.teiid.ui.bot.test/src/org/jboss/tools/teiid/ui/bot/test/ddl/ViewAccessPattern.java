@@ -2,6 +2,7 @@ package org.jboss.tools.teiid.ui.bot.test.ddl;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.is;
 
 import org.hamcrest.core.StringContains;
 import org.jboss.reddeer.eclipse.ui.problems.ProblemsView;
@@ -11,15 +12,12 @@ import org.jboss.reddeer.junit.requirement.inject.InjectRequirement;
 import org.jboss.reddeer.junit.runner.RedDeerSuite;
 import org.jboss.reddeer.requirements.openperspective.OpenPerspectiveRequirement.OpenPerspective;
 import org.jboss.reddeer.requirements.server.ServerReqState;
-import org.jboss.reddeer.swt.api.TableItem;
-import org.jboss.reddeer.swt.impl.table.DefaultTable;
 import org.jboss.tools.teiid.reddeer.DdlHelper;
 import org.jboss.tools.teiid.reddeer.connection.ConnectionProfileConstants;
 import org.jboss.tools.teiid.reddeer.dialog.GenerateVdbArchiveDialog;
 import org.jboss.tools.teiid.reddeer.editor.RelationalModelEditor;
 import org.jboss.tools.teiid.reddeer.editor.TableEditor;
 import org.jboss.tools.teiid.reddeer.editor.VdbEditor;
-import org.jboss.tools.teiid.reddeer.matcher.TableItemMatcher;
 import org.jboss.tools.teiid.reddeer.perspective.TeiidPerspective;
 import org.jboss.tools.teiid.reddeer.requirement.TeiidServerRequirement;
 import org.jboss.tools.teiid.reddeer.requirement.TeiidServerRequirement.TeiidServer;
@@ -123,13 +121,10 @@ public class ViewAccessPattern {
 
 		// check access pattern
 		tableEditor.openTab(TableEditor.Tabs.ACCESS_PATTERNS);
-		TableItem ap = new DefaultTable(0).getItems(new TableItemMatcher(1, "NAME")).get(0);
-		collector.checkThat("column not referenced in access pattern", ap.getText(0),
-				new StringContains("viewTable"));
-		collector.checkThat("column not referenced in access pattern", ap.getText(1),
-				new StringContains("NAME"));
-		collector.checkThat("column not referenced in access pattern", ap.getText(3),
-				new StringContains("SUPPLIER_NAME : string(30)"));
+	    collector.checkThat("column not referenced in access pattern", tableEditor.getCellText(0,"viewTable", "Name"),
+	    		is("NAME"));
+	    collector.checkThat("column not referenced in access pattern", tableEditor.getCellText(0,"viewTable", "Columns"),
+	    		is("SUPPLIER_NAME : string(30)"));
 		
 		ProblemsView problemsView = new ProblemsView();
 		collector.checkThat("Errors in imported view model",
