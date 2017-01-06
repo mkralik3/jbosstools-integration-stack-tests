@@ -8,11 +8,13 @@ import org.hamcrest.core.StringContains;
 import org.jboss.reddeer.eclipse.ui.problems.ProblemsView;
 import org.jboss.reddeer.eclipse.ui.problems.ProblemsView.ProblemType;
 import org.jboss.reddeer.eclipse.ui.problems.matcher.ProblemsResourceMatcher;
+import org.jboss.reddeer.junit.execution.annotation.RunIf;
 import org.jboss.reddeer.junit.requirement.inject.InjectRequirement;
 import org.jboss.reddeer.junit.runner.RedDeerSuite;
 import org.jboss.reddeer.requirements.openperspective.OpenPerspectiveRequirement.OpenPerspective;
 import org.jboss.reddeer.requirements.server.ServerReqState;
-import org.jboss.tools.common.reddeer.JiraClient;
+import org.jboss.tools.common.reddeer.condition.IssueIsClosed;
+import org.jboss.tools.common.reddeer.condition.IssueIsClosed.Jira;
 import org.jboss.tools.teiid.reddeer.DdlHelper;
 import org.jboss.tools.teiid.reddeer.connection.ConnectionProfileConstants;
 import org.jboss.tools.teiid.reddeer.dialog.GenerateVdbArchiveDialog;
@@ -77,44 +79,44 @@ public class ViewRestProcedure {
 	}
 	
 	@Test
+	@Jira("TEIIDTOOLS-30")
+	@RunIf(conditionClass = IssueIsClosed.class)
 	public void importDdl(){
-		if(new JiraClient().isIssueClosed("TEIIDTOOLS-30")){
-			DDLTeiidImportWizard.openWizard()
-					.setPath("resources/projects/DDLtests/"+PROJECT_NAME+"/"+ NAME_VIEW_MODEL +".ddl")
-					.setFolder(WORK_PROJECT_NAME)
-					.setName(NAME_VIEW_MODEL)
-					.setModelType(DDLTeiidImportWizard.View_Type)
-					.nextPage()
-					.finish();
-			checkImportedModel();
-		}
+		DDLTeiidImportWizard.openWizard()
+				.setPath("resources/projects/DDLtests/"+PROJECT_NAME+"/"+ NAME_VIEW_MODEL +".ddl")
+				.setFolder(WORK_PROJECT_NAME)
+				.setName(NAME_VIEW_MODEL)
+				.setModelType(DDLTeiidImportWizard.View_Type)
+				.nextPage()
+				.finish();
+		checkImportedModel();
 	}
 
 	@Test
+	@Jira("TEIIDTOOLS-30")
+	@RunIf(conditionClass = IssueIsClosed.class)
 	public void importVdb(){
-		if(new JiraClient().isIssueClosed("TEIIDTOOLS-30")){
-			ImportFromFileSystemWizard.openWizard()
-					.setPath("resources/projects/DDLtests/"+PROJECT_NAME)
-					.setFolder(WORK_PROJECT_NAME)
-					.selectFile(NAME_ORIGINAL_DYNAMIC_VDB)
-					.setCreteTopLevelFolder(false)
-					.finish();
-			GenerateVdbArchiveDialog wizard = new ModelExplorer().generateVdbArchive(WORK_PROJECT_NAME, NAME_ORIGINAL_DYNAMIC_VDB);
-			wizard.next()
-					.generate()
-					.finish();
-			checkImportedModel();
-			
-			/*all models must be opened before synchronize VDB*/
-			new ModelExplorer().openModelEditor(WORK_PROJECT_NAME,NAME_SOURCE_MODEL+".xmi");
-			new ModelExplorer().openModelEditor(WORK_PROJECT_NAME,NAME_VDB+".vdb");
-			VdbEditor staticVdb = VdbEditor.getInstance(NAME_VDB);
-			staticVdb.synchronizeAll();
-			staticVdb.saveAndClose();
-			/*test deploy generated VDB from dynamic VDB*/
-			String status = ddlHelper.deploy(WORK_PROJECT_NAME, NAME_VDB, teiidServer);
-			collector.checkThat("vdb is not active", status, containsString("ACTIVE"));
-		}
+		ImportFromFileSystemWizard.openWizard()
+				.setPath("resources/projects/DDLtests/"+PROJECT_NAME)
+				.setFolder(WORK_PROJECT_NAME)
+				.selectFile(NAME_ORIGINAL_DYNAMIC_VDB)
+				.setCreteTopLevelFolder(false)
+				.finish();
+		GenerateVdbArchiveDialog wizard = new ModelExplorer().generateVdbArchive(WORK_PROJECT_NAME, NAME_ORIGINAL_DYNAMIC_VDB);
+		wizard.next()
+				.generate()
+				.finish();
+		checkImportedModel();
+		
+		/*all models must be opened before synchronize VDB*/
+		new ModelExplorer().openModelEditor(WORK_PROJECT_NAME,NAME_SOURCE_MODEL+".xmi");
+		new ModelExplorer().openModelEditor(WORK_PROJECT_NAME,NAME_VDB+".vdb");
+		VdbEditor staticVdb = VdbEditor.getInstance(NAME_VDB);
+		staticVdb.synchronizeAll();
+		staticVdb.saveAndClose();
+		/*test deploy generated VDB from dynamic VDB*/
+		String status = ddlHelper.deploy(WORK_PROJECT_NAME, NAME_VDB, teiidServer);
+		collector.checkThat("vdb is not active", status, containsString("ACTIVE"));
 	}
 	
 	private void checkImportedModel(){
