@@ -12,6 +12,7 @@ import org.jboss.tools.teiid.ui.bot.test.ddl.ViewColumns;
 import org.jboss.tools.teiid.ui.bot.test.ddl.ViewGlobalTable;
 import org.jboss.tools.teiid.ui.bot.test.ddl.ViewPrimaryKey;
 import org.jboss.tools.teiid.ui.bot.test.ddl.ViewProcedureSettings;
+import org.jboss.tools.teiid.ui.bot.test.ddl.ViewRestProcedure;
 import org.jboss.tools.teiid.ui.bot.test.ddl.ViewTableSettings;
 import org.jboss.tools.teiid.ui.bot.test.ddl.ViewUniqueConstraint;
 import org.junit.runner.RunWith;
@@ -29,6 +30,7 @@ import org.junit.runners.Suite.SuiteClasses;
 	ViewGlobalTable.class,
 	ViewPrimaryKey.class,
 	ViewProcedureSettings.class,
+	ViewRestProcedure.class,
 	ViewTableSettings.class/*,
 	ViewUniqueConstraint.class*/
 })
