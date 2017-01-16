@@ -123,8 +123,10 @@ public class ViewTableSettings {
 				propertiesView.getProperty("Misc", "Cardinality").getPropertyValue(), is("120"));
 		collector.checkThat("Materialized is false(should be true)",
 				propertiesView.getProperty("Misc", "Materialized").getPropertyValue(), is("true"));
-		collector.checkThat("Materialized table is not set correctly",
-				propertiesView.getProperty("Misc", "Materialized Table").getPropertyValue(), new StringContains("helpTable"));
+		if (new JiraClient().isIssueClosed("TEIIDDES-3009")){
+			collector.checkThat("Materialized table is not set correctly",
+					propertiesView.getProperty("Misc", "Materialized Table").getPropertyValue(), new StringContains("helpTable"));
+		}
 		collector.checkThat("Table name in source is badly set",
 				propertiesView.getProperty("Misc", "Name In Source").getPropertyValue(), is("myTableSource"));
 		collector.checkThat("Supports Update is badly set",
