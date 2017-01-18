@@ -1,5 +1,7 @@
 package org.jboss.tools.teiid.reddeer;
 
+import static org.hamcrest.core.Is.is;
+
 import java.io.StringReader;
 
 import javax.xml.xpath.XPath;
@@ -73,5 +75,17 @@ public class DdlHelper {
 		return serversView.getVdbStatus(teiidServer.getName(), dynamicVDB);
 		
 	}
+	
+	public void checkXpathPermission(String xml, String role, String resource, String permission, String expected) {
+		try {
+			String path = String.format("/vdb/data-role[@name='%s']/permission[resource-name='%s']/%s", role, resource,
+					permission);
+			String perm = getXPath(xml, path);
+			collector.checkThat("wrong value for " + path, perm, is(expected));
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+	}
+
 	
 }
