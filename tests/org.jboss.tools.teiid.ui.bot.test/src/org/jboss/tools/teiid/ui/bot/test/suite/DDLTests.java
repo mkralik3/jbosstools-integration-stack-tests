@@ -7,6 +7,8 @@ import org.jboss.tools.teiid.ui.bot.test.ddl.SourceColumns;
 import org.jboss.tools.teiid.ui.bot.test.ddl.SourcePrimaryKey;
 import org.jboss.tools.teiid.ui.bot.test.ddl.SourceTableSettings;
 import org.jboss.tools.teiid.ui.bot.test.ddl.SourceUniqueConstraint;
+import org.jboss.tools.teiid.ui.bot.test.ddl.StaticVDBdataRoles;
+import org.jboss.tools.teiid.ui.bot.test.ddl.StaticVDBsettings;
 import org.jboss.tools.teiid.ui.bot.test.ddl.ViewAccessPattern;
 import org.jboss.tools.teiid.ui.bot.test.ddl.ViewColumns;
 import org.jboss.tools.teiid.ui.bot.test.ddl.ViewGlobalTable;
@@ -25,6 +27,8 @@ import org.junit.runners.Suite.SuiteClasses;
 	SourcePrimaryKey.class,
 	SourceTableSettings.class,
 //	SourceUniqueConstraint.class,
+	StaticVDBsettings.class,
+	StaticVDBdataRoles.class,
 	ViewAccessPattern.class,
 	ViewColumns.class,
 	ViewGlobalTable.class,
