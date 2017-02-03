@@ -44,8 +44,8 @@ public class DdlHelper {
 	
 		DDLTeiidExportWizard.openWizard()
 				.setLocation(sourceProject,model + ".xmi")
-				.setNameInSource(false)
-				.setNativeType(false)
+				.setNameInSource(true)
+				.setNativeType(true)
 				.nextPage()
 				.exportToWorkspace(model, targetProject)
 				.finish();
