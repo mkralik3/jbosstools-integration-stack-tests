@@ -13,7 +13,6 @@ import org.jboss.reddeer.junit.requirement.inject.InjectRequirement;
 import org.jboss.reddeer.junit.runner.RedDeerSuite;
 import org.jboss.reddeer.requirements.openperspective.OpenPerspectiveRequirement.OpenPerspective;
 import org.jboss.reddeer.requirements.server.ServerReqState;
-import org.jboss.tools.common.reddeer.JiraClient;
 import org.jboss.tools.teiid.reddeer.DdlHelper;
 import org.jboss.tools.teiid.reddeer.connection.ConnectionProfileConstants;
 import org.jboss.tools.teiid.reddeer.dialog.GenerateVdbArchiveDialog;
@@ -125,19 +124,15 @@ public class SourceTableSettings {
 		collector.checkThat("Materialized is false(should be true)",
 				propertiesView.getProperty("Misc", "Materialized").getPropertyValue(), is("true"));
 		
-		if (new JiraClient().isIssueClosed("TEIIDDES-3009")){
-			collector.checkThat("Materialized table is not set correctly",
-					propertiesView.getProperty("Misc", "Materialized Table").getPropertyValue(), new StringContains("helpTable"));
-		}
+		collector.checkThat("Materialized table is not set correctly",
+				propertiesView.getProperty("Misc", "Materialized Table").getPropertyValue(), new StringContains("helpTable"));
+		
 		collector.checkThat("Table name in source is badly set",
 				propertiesView.getProperty("Misc", "Name In Source").getPropertyValue(), is("myTableSource"));
 		collector.checkThat("Supports Update is badly set",
 				propertiesView.getProperty("Misc", "Supports Update").getPropertyValue(), is("true"));
-		
-		if (new JiraClient().isIssueClosed("TEIIDDES-2982")){
-			collector.checkThat("Is system table is badly set",
+		collector.checkThat("Is system table is badly set",
 					propertiesView.getProperty("Misc", "System").getPropertyValue(), is("true"));
-		}
 		
 		RelationalModelEditor editor = new RelationalModelEditor(NAME_SOURCE_MODEL + ".xmi");
 		editor.close();

@@ -12,7 +12,6 @@ import org.jboss.reddeer.junit.requirement.inject.InjectRequirement;
 import org.jboss.reddeer.junit.runner.RedDeerSuite;
 import org.jboss.reddeer.requirements.openperspective.OpenPerspectiveRequirement.OpenPerspective;
 import org.jboss.reddeer.requirements.server.ServerReqState;
-import org.jboss.tools.common.reddeer.JiraClient;
 import org.jboss.tools.teiid.reddeer.DdlHelper;
 import org.jboss.tools.teiid.reddeer.connection.ConnectionProfileConstants;
 import org.jboss.tools.teiid.reddeer.dialog.GenerateVdbArchiveDialog;
@@ -122,10 +121,8 @@ public class ViewProcedureSettings {
 	    
 	    collector.checkThat("Procedure name in source is badly set", tableEditor.getCellText(1,"myProcedure", "Name In Source"),
 	    		is("myProcedureSource"));
-		if (new JiraClient().isIssueClosed("TEIIDDES-3008")){
-			collector.checkThat("Update count is badly set",tableEditor.getCellText(1,"myProcedure", "Update Count"),
-					is("ONE"));
-		}
+		collector.checkThat("Update count is badly set",tableEditor.getCellText(1,"myProcedure", "Update Count"),
+				is("ONE"));
 	    collector.checkThat("Table description is missing", tableEditor.getCellText(1,"myProcedure", "Description"),
 	    		is("Procedure description"));
 

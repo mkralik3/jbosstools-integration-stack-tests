@@ -12,7 +12,6 @@ import org.jboss.reddeer.junit.requirement.inject.InjectRequirement;
 import org.jboss.reddeer.junit.runner.RedDeerSuite;
 import org.jboss.reddeer.requirements.openperspective.OpenPerspectiveRequirement.OpenPerspective;
 import org.jboss.reddeer.requirements.server.ServerReqState;
-import org.jboss.tools.common.reddeer.JiraClient;
 import org.jboss.tools.teiid.reddeer.DdlHelper;
 import org.jboss.tools.teiid.reddeer.connection.ConnectionProfileConstants;
 import org.jboss.tools.teiid.reddeer.dialog.GenerateVdbArchiveDialog;
@@ -120,17 +119,15 @@ public class ViewPrimaryKey {
 	    		
 		tableEditor.openTab(TableEditor.Tabs.PRIMARY_KEYS);
 
-		if (new JiraClient().isIssueClosed("TEIIDDES-2982")){
-	    	collector.checkThat("Primary key name in source is badly set", tableEditor.getCellText(1,"PrimaryKey", "Name In Source"),
-	    			is("PrimaryKeySource"));
-	    }
+    	collector.checkThat("Primary key name in source is badly set", tableEditor.getCellText(1,"PrimaryKey", "Name In Source"),
+    			is("PrimaryKeySource"));
+	    
 	    collector.checkThat("Columns of Primary key is badly set", tableEditor.getCellText(1,"PrimaryKey", "Columns"),
 	    		is("Column1 : bigdecimal(1)")); 
 	    
-	    if (new JiraClient().isIssueClosed("TEIIDDES-2982")){
-	    	collector.checkThat("Description of Primary key is badly set", tableEditor.getCellText(1,"PrimaryKey", "Description"),
-	    			is("PrimaryKey description")); 
-	    }
+    	collector.checkThat("Description of Primary key is badly set", tableEditor.getCellText(1,"PrimaryKey", "Description"),
+    			is("PrimaryKey description")); 
+	    
 		
 		ProblemsView problemsView = new ProblemsView();
 		collector.checkThat("Errors in imported source model",
