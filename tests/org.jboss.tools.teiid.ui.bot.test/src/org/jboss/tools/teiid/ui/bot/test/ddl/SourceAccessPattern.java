@@ -12,7 +12,6 @@ import org.jboss.reddeer.junit.requirement.inject.InjectRequirement;
 import org.jboss.reddeer.junit.runner.RedDeerSuite;
 import org.jboss.reddeer.requirements.openperspective.OpenPerspectiveRequirement.OpenPerspective;
 import org.jboss.reddeer.requirements.server.ServerReqState;
-import org.jboss.tools.common.reddeer.JiraClient;
 import org.jboss.tools.teiid.reddeer.DdlHelper;
 import org.jboss.tools.teiid.reddeer.connection.ConnectionProfileConstants;
 import org.jboss.tools.teiid.reddeer.dialog.GenerateVdbArchiveDialog;
@@ -125,17 +124,12 @@ public class SourceAccessPattern {
 		// check access pattern
 		tableEditor.openTab(TableEditor.Tabs.ACCESS_PATTERNS);
 		
-		if (new JiraClient().isIssueClosed("TEIIDDES-2982")){
 	    collector.checkThat("Name In Source is not set correctly", tableEditor.getCellText(1,"AccessPattern", "Name In Source"),
 	    		is("AccessPatternSource"));
-		}
 	    collector.checkThat("Columns is not set correctly", tableEditor.getCellText(1,"AccessPattern", "Columns"),
 	    		is("col1 : string(4000)"));
-	    
-	    if (new JiraClient().isIssueClosed("TEIIDDES-2982")){
 	    collector.checkThat("Description is not set correctly", tableEditor.getCellText(1,"AccessPattern", "Description"),
 	    		is("AccessPattern description"));
-	    }
 	    
 		ProblemsView problemsView = new ProblemsView();
 		collector.checkThat("Errors in imported source model",
@@ -168,8 +162,9 @@ public class SourceAccessPattern {
 	}
 	
 	private void checkExportedFile(String contentFile){
-		collector.checkThat("access pattern is not in ddl", contentFile, new StringContains(
-				"CONSTRAINT AccessPattern ACCESSPATTERN(col1)"));
+		collector.checkThat("access pattern is not in ddl", contentFile, new StringContains("CONSTRAINT AccessPattern ACCESSPATTERN(col1)"));
+		collector.checkThat("wrong set description", contentFile, new StringContains("ANNOTATION 'AccessPattern description'"));
+		collector.checkThat("wrong set name in source", contentFile, new StringContains("NAMEINSOURCE 'AccessPatternSource'"));
 	}
 }
 

@@ -131,8 +131,6 @@ public class SourceTableSettings {
 				propertiesView.getProperty("Misc", "Name In Source").getPropertyValue(), is("myTableSource"));
 		collector.checkThat("Supports Update is badly set",
 				propertiesView.getProperty("Misc", "Supports Update").getPropertyValue(), is("true"));
-		collector.checkThat("Is system table is badly set",
-					propertiesView.getProperty("Misc", "System").getPropertyValue(), is("true"));
 		
 		RelationalModelEditor editor = new RelationalModelEditor(NAME_SOURCE_MODEL + ".xmi");
 		editor.close();

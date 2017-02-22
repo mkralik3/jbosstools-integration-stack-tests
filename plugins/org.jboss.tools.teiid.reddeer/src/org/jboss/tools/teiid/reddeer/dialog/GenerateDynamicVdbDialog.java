@@ -91,7 +91,8 @@ public class GenerateDynamicVdbDialog extends AbstractDialog {
 		log.info("Generate dynamic VDB");
 		activate();
 		new PushButton("Generate").click();
-		if (new ShellWithTextIsAvailable("Generate Dynamic VDB Status\", ").test()){
+		AbstractWait.sleep(TimePeriod.SHORT);
+		if (new ShellWithTextIsAvailable("Generate Dynamic VDB Status ").test()){
 			new PushButton("OK").click();
 		}
 		return this;

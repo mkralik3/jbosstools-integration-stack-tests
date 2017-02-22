@@ -129,10 +129,6 @@ public class ViewTableSettings {
 				propertiesView.getProperty("Misc", "Name In Source").getPropertyValue(), is("myTableSource"));
 		collector.checkThat("Supports Update is badly set",
 				propertiesView.getProperty("Misc", "Supports Update").getPropertyValue(), is("true"));	
-		collector.checkThat("Is system table is badly set",
-				propertiesView.getProperty("Misc", "System").getPropertyValue(), is("true"));
-	
-		
 		
 		new ModelExplorer().openModelEditor(WORK_PROJECT_NAME, NAME_VIEW_MODEL + ".xmi");	
 		RelationalModelEditor editor = new RelationalModelEditor(NAME_VIEW_MODEL + ".xmi");

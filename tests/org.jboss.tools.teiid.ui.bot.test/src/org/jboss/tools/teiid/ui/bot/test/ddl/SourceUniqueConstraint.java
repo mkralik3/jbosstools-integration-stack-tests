@@ -1,8 +1,13 @@
 package org.jboss.tools.teiid.ui.bot.test.ddl;
 
 import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.is;
 
 import org.hamcrest.core.StringContains;
+import org.jboss.reddeer.eclipse.ui.problems.ProblemsView;
+import org.jboss.reddeer.eclipse.ui.problems.ProblemsView.ProblemType;
+import org.jboss.reddeer.eclipse.ui.problems.matcher.ProblemsResourceMatcher;
 import org.jboss.reddeer.junit.requirement.inject.InjectRequirement;
 import org.jboss.reddeer.junit.runner.RedDeerSuite;
 import org.jboss.reddeer.requirements.openperspective.OpenPerspectiveRequirement.OpenPerspective;
@@ -10,6 +15,8 @@ import org.jboss.reddeer.requirements.server.ServerReqState;
 import org.jboss.tools.teiid.reddeer.DdlHelper;
 import org.jboss.tools.teiid.reddeer.connection.ConnectionProfileConstants;
 import org.jboss.tools.teiid.reddeer.dialog.GenerateVdbArchiveDialog;
+import org.jboss.tools.teiid.reddeer.editor.RelationalModelEditor;
+import org.jboss.tools.teiid.reddeer.editor.TableEditor;
 import org.jboss.tools.teiid.reddeer.editor.VdbEditor;
 import org.jboss.tools.teiid.reddeer.perspective.TeiidPerspective;
 import org.jboss.tools.teiid.reddeer.requirement.TeiidServerRequirement;
@@ -107,7 +114,7 @@ public class SourceUniqueConstraint {
 	
 	
 	private void checkImportedModel(){
-		/*new ModelExplorer().selectItem(WORK_PROJECT_NAME, NAME_SOURCE_MODEL + ".xmi", "myTable");		
+		new ModelExplorer().selectItem(WORK_PROJECT_NAME, NAME_SOURCE_MODEL + ".xmi", "myTable");		
 		
 		RelationalModelEditor editor = new RelationalModelEditor(NAME_SOURCE_MODEL + ".xmi");
 		editor.close();
@@ -117,9 +124,12 @@ public class SourceUniqueConstraint {
 	    
 		// check table description
 		tableEditor.openTab(TableEditor.Tabs.UNIQUE_CONSTRAINTS);
-		collector.checkThat("Description is not set correctly", tableEditor.getCellText(1,"myTable", "Description"),
-	    		is("This is Table description"));
-
+		collector.checkThat("Columns is not set correctly", tableEditor.getCellText(0,"myTable", "Columns"),
+	    		is("Column1 : string(4000)"));
+		collector.checkThat("Name in source is not set correctly", tableEditor.getCellText(0,"myTable", "Name In Source"),
+	    		is("UniqueConstraintSource"));
+		collector.checkThat("Description is not set correctly", tableEditor.getCellText(0,"myTable", "Description"),
+	    		is("UniqueConstraint description"));
 		
 		ProblemsView problemsView = new ProblemsView();
 		collector.checkThat("Errors in imported source model",
@@ -127,7 +137,7 @@ public class SourceUniqueConstraint {
 				empty());
 		collector.checkThat("Errors in imported VDB",
 				problemsView.getProblems(ProblemType.ERROR, new ProblemsResourceMatcher(NAME_VDB + ".vdb")),
-				empty());		*/
+				empty());
 	}
 	
 	@Test
@@ -153,6 +163,7 @@ public class SourceUniqueConstraint {
 	
 	private void checkExportedFile(String contentFile){
 		collector.checkThat("wrong set unique constraint", contentFile, new StringContains("CONSTRAINT UniqueConstraint UNIQUE(Column1)"));
+		collector.checkThat("wrong set description", contentFile, new StringContains("ANNOTATION 'UniqueConstraint description'"));
+		collector.checkThat("wrong set name in source", contentFile, new StringContains("NAMEINSOURCE 'UniqueConstraintSource'"));
 	}
 }
-

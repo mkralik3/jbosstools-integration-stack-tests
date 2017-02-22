@@ -164,6 +164,8 @@ public class SourcePrimaryKey {
 	private void checkExportedFile(String contentFile){
 		collector.checkThat("Wrong set primary key", contentFile,
 				new StringContains("CONSTRAINT PrimaryKey PRIMARY KEY(Column3, Column2)"));
+		collector.checkThat("wrong set description", contentFile, new StringContains("ANNOTATION 'This is PrimaryKey description'"));
+		collector.checkThat("wrong set name in source", contentFile, new StringContains("NAMEINSOURCE 'PrimaryKeySource'"));
 	}
 }
 

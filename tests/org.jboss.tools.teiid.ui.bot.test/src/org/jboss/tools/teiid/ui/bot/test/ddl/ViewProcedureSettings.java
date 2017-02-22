@@ -170,10 +170,11 @@ public class ViewProcedureSettings {
 	
 	private void checkExportedFile(String contentFile){
 		collector.checkThat("missing CREATE VIRTUAL PROCEDURE", contentFile, new StringContains("CREATE VIRTUAL PROCEDURE"));
-		collector.checkThat("missing (IN Parameter1 string(4000))", contentFile, new StringContains("(IN Parameter1 string(4000))"));
+		collector.checkThat("missing RESULT", contentFile.replaceAll("\\t|\\n", ""), new StringContains("RETURNSTABLE (c1 string(4000))"));
+		collector.checkThat("missing IN Parameter1 string(4000)", contentFile, new StringContains("IN Parameter1 string(4000)"));
+		collector.checkThat("missing UPDATECOUNT 'myProcedureSource'", contentFile, new StringContains("UPDATECOUNT '1'"));
 		collector.checkThat("missing ANNOTATION 'Procedure description'", contentFile, new StringContains("ANNOTATION 'Procedure description'"));
-		collector.checkThat("missing NAMEINSOURCE 'myProcedureSource'", contentFile, new StringContains("NAMEINSOURCE 'myProcedureSource'"));
-		
+		collector.checkThat("missing NAMEINSOURCE 'myProcedureSource'", contentFile, new StringContains("NAMEINSOURCE 'myProcedureSource'"));		
 	}
 }
 

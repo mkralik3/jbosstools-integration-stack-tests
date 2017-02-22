@@ -1,6 +1,5 @@
 package org.jboss.tools.teiid.ui.bot.test.ddl;
 
-import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.is;
 
@@ -8,20 +7,18 @@ import org.hamcrest.core.StringContains;
 import org.jboss.reddeer.eclipse.ui.problems.ProblemsView;
 import org.jboss.reddeer.eclipse.ui.problems.ProblemsView.ProblemType;
 import org.jboss.reddeer.eclipse.ui.problems.matcher.ProblemsResourceMatcher;
+import org.jboss.reddeer.eclipse.ui.views.properties.PropertiesView;
 import org.jboss.reddeer.junit.requirement.inject.InjectRequirement;
 import org.jboss.reddeer.junit.runner.RedDeerSuite;
 import org.jboss.reddeer.requirements.openperspective.OpenPerspectiveRequirement.OpenPerspective;
 import org.jboss.reddeer.requirements.server.ServerReqState;
 import org.jboss.tools.teiid.reddeer.DdlHelper;
-import org.jboss.tools.teiid.reddeer.connection.ConnectionProfileConstants;
 import org.jboss.tools.teiid.reddeer.dialog.GenerateVdbArchiveDialog;
-import org.jboss.tools.teiid.reddeer.editor.RelationalModelEditor;
-import org.jboss.tools.teiid.reddeer.editor.TableEditor;
-import org.jboss.tools.teiid.reddeer.editor.VdbEditor;
 import org.jboss.tools.teiid.reddeer.perspective.TeiidPerspective;
 import org.jboss.tools.teiid.reddeer.requirement.TeiidServerRequirement;
 import org.jboss.tools.teiid.reddeer.requirement.TeiidServerRequirement.TeiidServer;
 import org.jboss.tools.teiid.reddeer.view.ModelExplorer;
+import org.jboss.tools.teiid.reddeer.view.PropertiesViewExt;
 import org.jboss.tools.teiid.reddeer.wizard.imports.DDLTeiidImportWizard;
 import org.jboss.tools.teiid.reddeer.wizard.imports.ImportFromFileSystemWizard;
 import org.jboss.tools.teiid.reddeer.wizard.newWizard.VdbWizard;
@@ -35,10 +32,8 @@ import org.junit.runner.RunWith;
 @RunWith(RedDeerSuite.class)
 @OpenPerspective(TeiidPerspective.class)
 
-@TeiidServer(state = ServerReqState.RUNNING, connectionProfiles={
-		ConnectionProfileConstants.SQL_SERVER_2008_PARTS_SUPPLIER,
-})
-public class ViewPrimaryKey {
+@TeiidServer(state = ServerReqState.RUNNING)
+public class ViewUdf {
 	@InjectRequirement
 	private static TeiidServerRequirement teiidServer;
 	
@@ -46,14 +41,19 @@ public class ViewPrimaryKey {
 	public ErrorCollector collector = new ErrorCollector();
 	public DdlHelper ddlHelper = null;
 	
-	private static final String PROJECT_NAME = "ViewPrimaryKey";
-	private static final String NAME_VIEW_MODEL = "ViewModelPrimaryKey";
-	private static final String NAME_VDB = "ViewModelPrimaryKeyVDB";
-	private static final String NAME_ORIGINAL_DYNAMIC_VDB = NAME_VDB + "-vdb.xml";
+	private static final String PROJECT_NAME = "ViewUdf";
+	private static final String NAME_VIEW_MODEL = "viewUdfModel";
+	private static final String NAME_UDF_FUNCTION = "udfConcatNull";
+
+	private static final String NAME_VDB = "viewUdfVDB";
+	private static final String NAME_ORIGINAL_DYNAMIC_VDB  = NAME_VDB + "-vdb.xml";
 	
-	private static final String NAME_GENERATED_DYNAMIC_VDB = "ViewModelPrimaryKeyVDBgenerated-vdb.xml";
+	private static final String NAME_GENERATED_DYNAMIC_VDB = "viewUdfVDB-vdb.xml";
 	
 	private static final String WORK_PROJECT_NAME = "workProject" ;
+	
+	private static final String UDF_LIB_PATH = "target/proc-udf/MyTestUdf/lib/";
+	private static final String UDF_LIB = "MyTestUdf-1.0-SNAPSHOT.jar";
 	
 	@Before
 	public void before() {
@@ -61,11 +61,9 @@ public class ViewPrimaryKey {
 		explorer.deleteAllProjectsSafely();
 
 		ddlHelper = new DdlHelper(collector);
-		
 		explorer.importProject("DDLtests/"+PROJECT_NAME);
-		//explorer.changeConnectionProfile(ConnectionProfileConstants.SQL_SERVER_2008_PARTS_SUPPLIER, PROJECT_NAME, NAME_SOURCE_MODEL);
-		/* data source is needed when exported VDB will be tested to deploy on the server */
-		//explorer.createDataSource("Use Connection Profile Info",ConnectionProfileConstants.SQL_SERVER_2008_PARTS_SUPPLIER, PROJECT_NAME, NAME_SOURCE_MODEL);
+		PropertiesViewExt.setUdf(PROJECT_NAME, NAME_VIEW_MODEL, NAME_UDF_FUNCTION, UDF_LIB, UDF_LIB_PATH);
+
 		explorer.createProject(WORK_PROJECT_NAME);
 	}
 	
@@ -81,8 +79,10 @@ public class ViewPrimaryKey {
 				.setFolder(WORK_PROJECT_NAME)
 				.setName(NAME_VIEW_MODEL)
 				.setModelType(DDLTeiidImportWizard.View_Type)
+				.generateValidDefaultSQL(true)
 				.nextPage()
 				.finish();
+		PropertiesViewExt.setUdf(WORK_PROJECT_NAME, NAME_VIEW_MODEL, NAME_UDF_FUNCTION, UDF_LIB, UDF_LIB_PATH);
 		checkImportedModel();
 	}
 
@@ -98,36 +98,32 @@ public class ViewPrimaryKey {
 		wizard.next()
 				.generate()
 				.finish();
+		PropertiesViewExt.setUdf(WORK_PROJECT_NAME, NAME_VIEW_MODEL, NAME_UDF_FUNCTION, UDF_LIB, UDF_LIB_PATH);
 		checkImportedModel();
 		
-		/*all models must be opened before synchronize VDB*/
+		/*all models must be opened before synchronize VDB*//* TODO generated static vdb from dynamic vdb is different
 		new ModelExplorer().openModelEditor(WORK_PROJECT_NAME,NAME_VIEW_MODEL+".xmi");
 		new ModelExplorer().openModelEditor(WORK_PROJECT_NAME,NAME_VDB+".vdb");
 		VdbEditor staticVdb = VdbEditor.getInstance(NAME_VDB);
 		staticVdb.synchronizeAll();
 		staticVdb.saveAndClose();
-		/*test deploy generated VDB from dynamic VDB*/
 		String status = ddlHelper.deploy(WORK_PROJECT_NAME, NAME_VDB, teiidServer);
-		collector.checkThat("vdb is not active", status, containsString("ACTIVE"));
+		collector.checkThat("vdb is not active", status, containsString("ACTIVE"));*/
 	}
 	
-	
 	private void checkImportedModel(){
-		new ModelExplorer().openModelEditor(WORK_PROJECT_NAME, NAME_VIEW_MODEL + ".xmi");	
-		RelationalModelEditor editor = new RelationalModelEditor(NAME_VIEW_MODEL + ".xmi");
-	    TableEditor tableEditor = editor.openTableEditor();
-	    		
-		tableEditor.openTab(TableEditor.Tabs.PRIMARY_KEYS);
+		new ModelExplorer().selectItem(WORK_PROJECT_NAME, NAME_VIEW_MODEL + ".xmi", "udfConcatNull");
 
-    	collector.checkThat("Primary key name in source is badly set", tableEditor.getCellText(1,"PrimaryKey", "Name In Source"),
-    			is("PrimaryKeySource"));
-	    
-	    collector.checkThat("Columns of Primary key is badly set", tableEditor.getCellText(1,"PrimaryKey", "Columns"),
-	    		is("Column1 : bigdecimal(1)")); 
-	    
-    	collector.checkThat("Description of Primary key is badly set", tableEditor.getCellText(1,"PrimaryKey", "Description"),
-    			is("PrimaryKey description")); 
-	    
+		PropertiesView propertiesView = new PropertiesView();
+		collector.checkThat("wrong function category",
+				propertiesView.getProperty("Extension", "relational:Function Category").getPropertyValue(),
+				is("MY_TESTING_FUNCTION_CATEGORY"));
+		collector.checkThat("wrong java class",
+				propertiesView.getProperty("Extension", "relational:Java Class").getPropertyValue(),
+				is("userdefinedfunctions.MyConcatNull"));
+		collector.checkThat("wrong java method",
+				propertiesView.getProperty("Extension", "relational:Java Method").getPropertyValue(),
+				is("myConcatNull"));
 		
 		ProblemsView problemsView = new ProblemsView();
 		collector.checkThat("Errors in imported source model",
@@ -139,18 +135,18 @@ public class ViewPrimaryKey {
 	}
 	
 	@Test
-	public void exportVdb(){
+	public void exportVdb(){	
 		VdbWizard.openVdbWizard()
 				.setName(NAME_VDB)
 				.setLocation(PROJECT_NAME)
-				.addModel(PROJECT_NAME, NAME_VIEW_MODEL)				
+				.addModel(PROJECT_NAME, NAME_VIEW_MODEL)
 				.finish();
-		String contentFile = ddlHelper.createDynamicVdb(PROJECT_NAME, NAME_VDB, NAME_GENERATED_DYNAMIC_VDB);
-		checkExportedFile(contentFile);
+		String dynamicVdbContent = ddlHelper.createDynamicVdb(PROJECT_NAME, NAME_VDB, NAME_GENERATED_DYNAMIC_VDB);
+		checkExportedFile(dynamicVdbContent);
 
-		/*test deploy generated dynamic VDB from static VDB*/
+		/*test deploy generated dynamic VDB from static VDB*//*//TODO dynamic VDB doesn't support UDF function
 		String status = ddlHelper.deploy(PROJECT_NAME, NAME_GENERATED_DYNAMIC_VDB, teiidServer);
-		collector.checkThat("vdb is not active", status, containsString("ACTIVE"));
+		collector.checkThat("vdb is not active", status, containsString("ACTIVE"));*/
 	}
 	
 	@Test
@@ -160,10 +156,9 @@ public class ViewPrimaryKey {
 	}
 	
 	private void checkExportedFile(String contentFile){
-		collector.checkThat("Wrong set primary key", contentFile,
-				new StringContains("CONSTRAINT PrimaryKey PRIMARY KEY(Column1)"));
-		collector.checkThat("wrong set description", contentFile, new StringContains("ANNOTATION 'PrimaryKey description'"));
-		collector.checkThat("wrong set name in source", contentFile, new StringContains("NAMEINSOURCE 'PrimaryKeySource'"));
+		collector.checkThat("wrong function category", contentFile , new StringContains("\"FUNCTION-CATEGORY\" 'MY_TESTING_FUNCTION_CATEGORY'"));
+		collector.checkThat("wrong java class", contentFile , new StringContains("JAVA_CLASS 'userdefinedfunctions.MyConcatNull'"));
+		collector.checkThat("wrong function category", contentFile , new StringContains("JAVA_METHOD 'myConcatNull'"));
 	}
 }
 

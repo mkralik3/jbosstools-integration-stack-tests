@@ -113,27 +113,28 @@ public class ViewUniqueConstraint {
 	
 	
 	private void checkImportedModel(){
-		/*new ModelExplorer().selectItem(WORK_PROJECT_NAME, NAME_SOURCE_MODEL + ".xmi", "myTable");		
-		
-		RelationalModelEditor editor = new RelationalModelEditor(NAME_SOURCE_MODEL + ".xmi");
-		editor.close();
-		new ModelExplorer().openModelEditor(WORK_PROJECT_NAME, NAME_SOURCE_MODEL + ".xmi");	
-		editor = new RelationalModelEditor(NAME_SOURCE_MODEL + ".xmi");
+		new ModelExplorer().selectItem(WORK_PROJECT_NAME, NAME_VIEW_MODEL + ".xmi", "myTable");				
+		new ModelExplorer().openModelEditor(WORK_PROJECT_NAME, NAME_VIEW_MODEL + ".xmi");
+		RelationalModelEditor editor = new RelationalModelEditor(NAME_VIEW_MODEL + ".xmi");
+		editor = new RelationalModelEditor(NAME_VIEW_MODEL + ".xmi");
 	    TableEditor tableEditor = editor.openTableEditor();
 	    
 		// check table description
 		tableEditor.openTab(TableEditor.Tabs.UNIQUE_CONSTRAINTS);
-		collector.checkThat("Description is not set correctly", tableEditor.getCellText(1,"myTable", "Description"),
-	    		is("This is Table description"));
-
+		collector.checkThat("Columns is not set correctly", tableEditor.getCellText(0,"myTable", "Columns"),
+	    		is("Column2 : string(4000)"));
+		collector.checkThat("Name in source is not set correctly", tableEditor.getCellText(0,"myTable", "Name In Source"),
+	    		is("UniqueConstraintSource"));
+		collector.checkThat("Description is not set correctly", tableEditor.getCellText(0,"myTable", "Description"),
+	    		is("UniqueConstraint description"));
 		
 		ProblemsView problemsView = new ProblemsView();
 		collector.checkThat("Errors in imported source model",
-				problemsView.getProblems(ProblemType.ERROR, new ProblemsResourceMatcher(NAME_SOURCE_MODEL + ".xmi")),
+				problemsView.getProblems(ProblemType.ERROR, new ProblemsResourceMatcher(NAME_VIEW_MODEL + ".xmi")),
 				empty());
 		collector.checkThat("Errors in imported VDB",
 				problemsView.getProblems(ProblemType.ERROR, new ProblemsResourceMatcher(NAME_VDB + ".vdb")),
-				empty());		*/
+				empty());
 	}
 	
 	@Test
@@ -159,6 +160,8 @@ public class ViewUniqueConstraint {
 	
 	private void checkExportedFile(String contentFile){
 		collector.checkThat("wrong set unique constraint", contentFile, new StringContains("CONSTRAINT UniqueConstraint UNIQUE(Column2)"));
+		collector.checkThat("wrong set description", contentFile, new StringContains("ANNOTATION 'UniqueConstraint description'"));
+		collector.checkThat("wrong set name in source", contentFile, new StringContains("NAMEINSOURCE 'UniqueConstraintSource'"));
 	}
 }
 
