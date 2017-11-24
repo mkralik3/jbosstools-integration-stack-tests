@@ -153,9 +153,9 @@ public class SourceIndexes {
 	
 	private void checkExportedFile(String contentFile){
 		collector.checkThat("Wrong set index 1", contentFile,
-				new StringContains("CONSTRAINT Index1 INDEX(column1) OPTIONS(ANNOTATION 'Index 1 description')"));
+				new StringContains("CONSTRAINT Index1 INDEX(column1) OPTIONS(ANNOTATION 'Index 1 description',"));
 		collector.checkThat("Wrong set Index 2", contentFile,
-				new StringContains("CONSTRAINT Index2 INDEX(column2) OPTIONS(ANNOTATION 'Index 2 description')"));
+				new StringContains("CONSTRAINT Index2 INDEX(column2) OPTIONS(ANNOTATION 'Index 2 description',"));
 		
 	}
 }

@@ -131,9 +131,12 @@ public class ViewUdf {
         DefaultList warning = new DefaultList(0);
         warning.select(0); // on macOS the warning is not selected
         assertEquals(
-            "The vdb contains the udf library named \"MyTestUdf-1.0-SNAPSHOT\" hence a property referencing this has been added\n"
-                    + " to the dynamic VDB. For the dynamic VDB to perform successfully, the udf library must also be\n"
-                    + " deployed to the Teiid instance. ",
+            "This VDB contains 1 or more UDF jar files. A \"lib\" property has been added\n"
+                    + " to the VDB xml which references these jars.\n\n"
+                    + " Note that the actual UDF jars must be deployed for this VDB to be active.\n\n"
+                    + " If you defined UDF as a module in a server, change \"lib\" property according to\n"
+                    + " name of that module. For more information, see \"Support for User-Defined Features\"\n"
+                    + " in the documentation.",
             warning.getSelectedItems()[0]);
         new OkButton().click();
         GenerateDynamicVdbDialog wizard = new GenerateDynamicVdbDialog();

@@ -131,9 +131,9 @@ public class GuidesTest {
 		guides.createProjectViaGuides(actionSet, project_SOAP_name);
 
 		guides.chooseAction(actionSet, "Create Web ");
-		new DefaultShell("New Connection Profile");
+        DefaultShell cp = new DefaultShell("New Connection Profile");
 		new LabeledText("Name:").setText(soapProfile);
-		new PushButton("Next >").click();
+        new PushButton(cp, "Next >").click();
 		WsdlConnectionProfileWizard.getInstance()
 				.setWsdl("http://ws-dvirt.rhcloud.com/dv-test-ws/soap?wsdl")
 				.testConnection()
@@ -372,7 +372,6 @@ public class GuidesTest {
 		String test_SQL = "SELECT * FROM STATUS";
 
 		new WaitWhile(new IsPreviewInProgress(), TimePeriod.LONG);
-
 		
 		guides.createProjectViaGuides(actionSet, projectName);
 		
@@ -386,7 +385,7 @@ public class GuidesTest {
 
 		guides.chooseAction(actionSet, "Set Connection Profile");
 		new DefaultShell("Set Connection Profile");
-		new DefaultTreeItem("Teiid Importer Connections", "TeiidImportCP_" + dataSource).select();
+        new DefaultTreeItem("Teiid Importer Connections", "TeiidImportCP_java:/" + dataSource).select();
 		new PushButton("OK").click();
 		
 		new WaitWhile(new IsPreviewInProgress(), TimePeriod.DEFAULT);
@@ -448,30 +447,30 @@ public class GuidesTest {
     }
     private void wsdlImportWizard(String soapProfile, String model_SOAP_name, String view_SOAP_name){
     	WsdlImportWizard.getInstance()
-				.setConnectionProfile(soapProfile)
-				.selectOperations("FullCountryInfo","FullCountryInfoAllCountries")
-				.nextPage()
-				.setSourceModelName(model_SOAP_name)
-				.setViewModelName(view_SOAP_name)
-				.nextPage()
-				.setJndiName(model_SOAP_name)
-				.nextPage()
-				.nextPage()
-				.addRequestElement("FullCountryInfo/sequence/arg0")
-				.addResponseElement("FullCountryInfo","FullCountryInfoResponse/sequence/return/sequence/capitalCity")
-				.addResponseElement("FullCountryInfo","FullCountryInfoResponse/sequence/return/sequence/continentCode")
-				.addResponseElement("FullCountryInfo","FullCountryInfoResponse/sequence/return/sequence/currencyIsoCode")
-				.addResponseElement("FullCountryInfo","FullCountryInfoResponse/sequence/return/sequence/isoCode")
-				.addResponseElement("FullCountryInfo","FullCountryInfoResponse/sequence/return/sequence/name")
-				.addResponseElement("FullCountryInfo","FullCountryInfoResponse/sequence/return/sequence/phoneCode")
-				
-				.addResponseElement("FullCountryInfoAllCountries","FullCountryInfoAllCountriesResponse/sequence/return/sequence/capitalCity")
-				.addResponseElement("FullCountryInfoAllCountries","FullCountryInfoAllCountriesResponse/sequence/return/sequence/continentCode")
-				.addResponseElement("FullCountryInfoAllCountries","FullCountryInfoAllCountriesResponse/sequence/return/sequence/currencyIsoCode")
-				.addResponseElement("FullCountryInfoAllCountries","FullCountryInfoAllCountriesResponse/sequence/return/sequence/isoCode")
-				.addResponseElement("FullCountryInfoAllCountries","FullCountryInfoAllCountriesResponse/sequence/return/sequence/name")
-				.addResponseElement("FullCountryInfoAllCountries","FullCountryInfoAllCountriesResponse/sequence/return/sequence/phoneCode")
-				.finish();
+            .setConnectionProfile(soapProfile).selectOperations("FullCountryInfo", "FullCountryInfoAllCountries")
+            .nextPage().setSourceModelName(model_SOAP_name).setViewModelName(view_SOAP_name).nextPage()
+            .setJndiName("java:/" + model_SOAP_name).nextPage().nextPage()
+            .addRequestElement("FullCountryInfo/sequence/arg0")
+            .addResponseElement("FullCountryInfo", "FullCountryInfoResponse/sequence/return/sequence/capitalCity")
+            .addResponseElement("FullCountryInfo", "FullCountryInfoResponse/sequence/return/sequence/continentCode")
+            .addResponseElement("FullCountryInfo", "FullCountryInfoResponse/sequence/return/sequence/currencyIsoCode")
+            .addResponseElement("FullCountryInfo", "FullCountryInfoResponse/sequence/return/sequence/isoCode")
+            .addResponseElement("FullCountryInfo", "FullCountryInfoResponse/sequence/return/sequence/name")
+            .addResponseElement("FullCountryInfo", "FullCountryInfoResponse/sequence/return/sequence/phoneCode")
+
+            .addResponseElement("FullCountryInfoAllCountries",
+                "FullCountryInfoAllCountriesResponse/sequence/return/sequence/capitalCity")
+            .addResponseElement("FullCountryInfoAllCountries",
+                "FullCountryInfoAllCountriesResponse/sequence/return/sequence/continentCode")
+            .addResponseElement("FullCountryInfoAllCountries",
+                "FullCountryInfoAllCountriesResponse/sequence/return/sequence/currencyIsoCode")
+            .addResponseElement("FullCountryInfoAllCountries",
+                "FullCountryInfoAllCountriesResponse/sequence/return/sequence/isoCode")
+            .addResponseElement("FullCountryInfoAllCountries",
+                "FullCountryInfoAllCountriesResponse/sequence/return/sequence/name")
+            .addResponseElement("FullCountryInfoAllCountries",
+                "FullCountryInfoAllCountriesResponse/sequence/return/sequence/phoneCode")
+            .finish();
     }
     private void defineViewTable(String projectName, String viewName, String query, String tableName){
 		Matcher<String> matcher = new WithMnemonicTextMatcher("New...");

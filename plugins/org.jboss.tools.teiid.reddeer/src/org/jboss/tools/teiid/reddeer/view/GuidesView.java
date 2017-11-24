@@ -168,11 +168,12 @@ public class GuidesView extends WorkbenchView {
 	 */
 	public void createProjectViaGuides(String actionSet, String projectName) {
 		chooseAction(actionSet, "Define Teiid ");
-		new PushButton("New...").click();
+        DefaultShell openedDialog = new DefaultShell("Define Model Project");
+        new PushButton(openedDialog, "New...").click();
+        DefaultShell newProjectDialog = new DefaultShell("New Model Project");
 		new LabeledText("Project name:").setText(projectName);
-        new FinishButton().click();
-		new DefaultShell("Define Model Project");
-        new OkButton().click();
+        new FinishButton(newProjectDialog).click();
+        new OkButton(openedDialog).click();
 	}
 
 	/**
