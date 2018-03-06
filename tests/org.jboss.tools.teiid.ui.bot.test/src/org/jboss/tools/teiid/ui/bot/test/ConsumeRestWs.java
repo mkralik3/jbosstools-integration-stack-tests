@@ -53,10 +53,10 @@ public class ConsumeRestWs {
 	public void testXml() {
 		String cp = "REST_XML";
 		RestConnectionProfileWizard.openWizard(cp)
-				.setConnectionUrl("http://ws-dvirt.rhcloud.com/dv-test-ws/rest/xml")
-				.setType(RestConnectionProfileWizard.TYPE_XML)
-				.testConnection()
-				.finish();
+                .setConnectionUrl("http://dvqe05.mw.lab.eng.bos.redhat.com:8080/web-app/rest/unsecured/xml")
+                .setType(RestConnectionProfileWizard.TYPE_XML)
+                .testConnection()
+                .finish();
 		
 		String sourceModel = "RestXmlSource";
 		String viewModel = "RestXmlView";
@@ -93,10 +93,10 @@ public class ConsumeRestWs {
 	public void testJson() {
 		String cp = "REST_JSON";
 		RestConnectionProfileWizard.openWizard(cp)
-				.setConnectionUrl("http://ws-dvirt.rhcloud.com/dv-test-ws/rest/json")
-				.setType(RestConnectionProfileWizard.TYPE_JSON)
-				.testConnection()
-				.finish();
+                .setConnectionUrl("http://dvqe05.mw.lab.eng.bos.redhat.com:8080/web-app/rest/unsecured/json")
+                .setType(RestConnectionProfileWizard.TYPE_JSON)
+                .testConnection()
+                .finish();
 		
 		String sourceModel = "RestJsonSource";
 		String viewModel = "RestJsonView";
@@ -133,11 +133,11 @@ public class ConsumeRestWs {
 	public void testXmlHttpDigest() {
 		String cp = "REST_XML_DIGEST";
 		RestConnectionProfileWizard.openWizard(cp)
-				.setConnectionUrl("http://ws-dvirt.rhcloud.com/dv-test-ws-digest/rest/xml")
-				.setType(RestConnectionProfileWizard.TYPE_XML)
-				.setAuth(RestConnectionProfileWizard.AUTH_TYPE_DIGEST, "digest", "digest")
-				.testConnection()
-				.finish();
+                .setConnectionUrl("http://dvqe05.mw.lab.eng.bos.redhat.com:8080/web-app/rest/secure/xml")
+                .setType(RestConnectionProfileWizard.TYPE_XML)
+                .setAuth(RestConnectionProfileWizard.AUTH_TYPE_DIGEST, "user", "user")
+                .testConnection()
+                .finish();
 		
 		String sourceModel = "RestXmlDigestSource";
 		String viewModel = "RestXmlDigestView";
@@ -174,11 +174,11 @@ public class ConsumeRestWs {
 	public void testHttpDigestJson() {
 		String cp = "REST_JSON_DIGEST";
 		RestConnectionProfileWizard.openWizard(cp)
-				.setConnectionUrl("http://ws-dvirt.rhcloud.com/dv-test-ws-digest/rest/json")
-				.setType(RestConnectionProfileWizard.TYPE_JSON)
-				.setAuth(RestConnectionProfileWizard.AUTH_TYPE_DIGEST, "digest", "digest")
-				.testConnection()
-				.finish();
+                .setConnectionUrl("http://dvqe05.mw.lab.eng.bos.redhat.com:8080/web-app/rest/secure/json")
+                .setType(RestConnectionProfileWizard.TYPE_JSON)
+                .setAuth(RestConnectionProfileWizard.AUTH_TYPE_DIGEST, "user", "user")
+                .testConnection()
+                .finish();
 		
 		String sourceModel = "RestJsonDigestSource";
 		String viewModel = "RestJsonDigestView";

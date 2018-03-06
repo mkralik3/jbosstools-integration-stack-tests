@@ -52,11 +52,11 @@ public class ConsumeSoapWs {
 	public void testSoap() {
 		String cp = "SOAP";
 		WsdlConnectionProfileWizard.openWizard(cp)
-				.setWsdl("http://ws-dvirt.rhcloud.com/dv-test-ws/soap?wsdl")
-				.testConnection()
-				.nextPage()
-				.setEndPoint("Countries")
-				.finish();
+                .setWsdl("http://dvqe05.mw.lab.eng.bos.redhat.com:8080/web-app/soap/unsecured?wsdl")
+                .testConnection()
+                .nextPage()
+                .setEndPoint("Countries")
+                .finish();
 
 		String sourceModel = "SoapSource";
 		String viewModel = "SoapView";
@@ -104,11 +104,11 @@ public class ConsumeSoapWs {
 	public void testSoapDigest() {
 		String cp = "SOAP_DIGEST";
 		WsdlConnectionProfileWizard.openWizard(cp)
-				.setWsdl("http://ws-dvirt.rhcloud.com/dv-test-ws-digest/soap?wsdl",WsdlConnectionProfileWizard.AUTH_TYPE_DIGEST,"digest","digest")	
-				.testConnection()
-				.nextPage()
-				.setEndPoint("Countries")
-				.finish();
+                .setWsdl("http://dvqe05.mw.lab.eng.bos.redhat.com:8080/web-app/soap/secure?wsdl",WsdlConnectionProfileWizard.AUTH_TYPE_DIGEST,"user","user")	
+                .testConnection()
+                .nextPage()
+                .setEndPoint("Countries")
+                .finish();
 
 		String sourceModel = "SoapDigestSource";
 		String viewModel = "SoapDigestView";

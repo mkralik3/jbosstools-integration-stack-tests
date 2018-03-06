@@ -144,11 +144,11 @@ public class GuidesTest {
 		new LabeledText("Name:").setText(soapProfile);
         new PushButton(cp, "Next >").click();
 		WsdlConnectionProfileWizard.getInstance()
-				.setWsdl("http://ws-dvirt.rhcloud.com/dv-test-ws/soap?wsdl")
-				.testConnection()
-				.nextPage()
-				.setEndPoint("Countries")
-				.finish();
+                .setWsdl("http://dvqe05.mw.lab.eng.bos.redhat.com:8080/web-app/soap/unsecured?wsdl")
+                .testConnection()
+                .nextPage()
+                .setEndPoint("Countries")
+                .finish();
 
 		guides.chooseAction(actionSet, "Generate "); 
 		new DefaultShell("Create Relational Model from Web Service");
